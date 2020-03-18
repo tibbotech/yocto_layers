@@ -1,0 +1,11 @@
+define KMACHINE pentagram
+define KTYPE debug
+define KARCH arm
+
+include pentagram-standard.scc
+
+include debug/printk.scc
+
+#include debug/axi_mon.scc
+#include debug/pins0.scc
+#include debug/pins9.scc

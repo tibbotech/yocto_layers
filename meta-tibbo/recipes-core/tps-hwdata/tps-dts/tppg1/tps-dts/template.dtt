@@ -1,0 +1,17 @@
+/*
+ * {desc_long}
+ * Copyright (C) 2016 Tibbo Tech. - http://tibbo.com/tps/
+ * License: GPLv2 or later
+ */
+/dts-v1/;
+
+#include "am33xx.tpp.dtsi"
+#include "am335x-TPP.dtsi"
+#include "am335x-TPPs3.dtsi"
+
+/ {
+	model = "{desc_short}";
+	compatible = "ti,am335x-tpp3", "ti,am335x-tpp", "ti,am33xx";
+};
+
+{body}

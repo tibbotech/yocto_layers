@@ -1,0 +1,27 @@
+--- a/src/RS485Imp.c	2016-12-20 14:14:42.000000000 +0300
++++ a/src/RS485Imp.c	2016-12-20 14:17:35.929566274 +0300
+@@ -99,6 +99,8 @@
+ extern int errno;
+ #include "RS485Imp.h"
+ /* #define DEBUG_TIMEOUT */
++#include <syslog.h>
++#include <sys/klog.h>
+ 
+ /*----------------------------------------------------------
+ RS485Port.Initialize
+@@ -1280,6 +1282,7 @@
+ 	int fd,i;
+     	const char *name = (*env)->GetStringUTFChars(env, tty_name, 0);
+ 
++syslog( LOG_INFO, "DEBUG: trying %s %s Port %s\n", __FILE__, __FUNCTION__, name);
+ #if defined(__linux__)
+ 	if(!strcmp(name,"tty0")|| !strcmp(name,"ttyd")||
+ 		!strcmp(name,"ttyq")|| !strcmp(name,"ttym")||
+@@ -1325,6 +1328,7 @@
+ #endif
+ 	for(i=0;i<64;i++){
+ 		sprintf(teststring,"/dev/%s%i",name, i);
++syslog( LOG_INFO, "DEBUG: trying %s %s Port %s%d\n", __FILE__, __FUNCTION__, name, i);
+ 		stat(teststring,&mystat);
+ 		if(S_ISCHR(mystat.st_mode)){
+ 			fd=open(teststring,O_RDONLY|O_NONBLOCK);

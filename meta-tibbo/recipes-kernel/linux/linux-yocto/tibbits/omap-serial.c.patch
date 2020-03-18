@@ -1,0 +1,133 @@
+--- a/drivers/tty/serial/omap-serial.c	2016-09-07 10:45:30.000000000 +0300
++++ a/drivers/tty/serial/omap-serial.c	2016-09-07 11:19:34.977697171 +0300
+@@ -7,6 +7,7 @@
+  * Authors:
+  *	Govindraj R	<govindraj.raja@ti.com>
+  *	Thara Gopinath	<thara@ti.com>
++ *	Dvorkin Dmitry	<dvorkin@tibbo.com>
+  *
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+@@ -164,6 +165,10 @@
+ 	u32			features;
+ 
+ 	int			rts_gpio;
++	int			gpio_a;		// ext socket, line A (always O)
++	int			gpio_b;		// ext socket, line B (always O)
++	int			gpio_c;		// ext socket, line C (always O)
++	int			gpio_d;		// ext socket, line D (always I)
+ 
+ 	struct pm_qos_request	pm_qos_request;
+ 	u32			latency;
+@@ -1348,6 +1353,8 @@
+ 	struct uart_omap_port *up = to_uart_omap_port(port);
+ 	unsigned int mode;
+ 	int val;
++	struct pinctrl *lst = NULL;
++	struct pinctrl_state *pst = NULL;
+ 
+ 	pm_runtime_get_sync(up->dev);
+ 
+@@ -1389,6 +1396,38 @@
+ 		serial_out(up, UART_OMAP_SCR, up->scr);
+ 	}
+ 
++	/* set gpio lines is defined */
++	lst = devm_pinctrl_get( up->port.dev);
++	if ( IS_ERR( lst)) dev_info( up->port.dev, "can't get pinctrl\n");
++	if ( port->rs485.flags & SER_RS485_ENABLED) {
++	  /* 485 */
++	  pst = pinctrl_lookup_state( lst, "norts");
++	  dev_info( up->port.dev, "going pinctrl state 'norts'(485)\n");
++	  if ( gpio_is_valid( up->gpio_a)) gpio_set_value( up->gpio_a, 0);
++	  if ( gpio_is_valid( up->gpio_b)) gpio_set_value( up->gpio_b, 1);
++	  if ( gpio_is_valid( up->gpio_c)) gpio_set_value( up->gpio_c, 1);
++	} else if ( port->rs485.flags & ( SER_RS485_ENABLED << 5)) {
++	  /* 422 */
++	  pst = pinctrl_lookup_state( lst, "norts");
++	  dev_info( up->port.dev, "going pinctrl state 'norts'(422)\n");
++	  if ( gpio_is_valid( up->gpio_a)) gpio_set_value( up->gpio_a, 1);
++	  if ( gpio_is_valid( up->gpio_b)) gpio_set_value( up->gpio_b, 1);
++	  if ( gpio_is_valid( up->gpio_c)) gpio_set_value( up->gpio_c, 1);
++	} else {
++	  /* 232 */
++	  pst = pinctrl_lookup_state( lst, PINCTRL_STATE_DEFAULT);
++	  dev_info( up->port.dev, "going pinctrl state '%s'(232)\n", PINCTRL_STATE_DEFAULT);
++	  if ( gpio_is_valid( up->gpio_a)) gpio_set_value( up->gpio_a, 1);
++	  if ( gpio_is_valid( up->gpio_b)) gpio_set_value( up->gpio_b, 0);
++	  if ( gpio_is_valid( up->gpio_c)) gpio_set_value( up->gpio_c, 1);
++	}
++	if ( !IS_ERR( pst)) {
++	  if ( pinctrl_select_state( lst, pst) != 0) dev_err( up->port.dev, "pinctrl_select_state error");
++	} else {
++	  dev_err( up->port.dev, "pinctrl state not found");
++	}
++	/* set gpio lines is defined / */
++
+ 	pm_runtime_mark_last_busy(up->dev);
+ 	pm_runtime_put_autosuspend(up->dev);
+ 
+@@ -1555,6 +1594,7 @@
+ 
+ 	rs485conf->flags = 0;
+ 	up->rts_gpio = -EINVAL;
++	up->gpio_a = up->gpio_b = up->gpio_c = up->gpio_d = -EINVAL;
+ 
+ 	if (!np)
+ 		return 0;
+@@ -1580,6 +1620,45 @@
+ 		up->rts_gpio = -EINVAL;
+ 	}
+ 
++	/* get ext lines and set default values */
++	up->gpio_a = of_get_named_gpio_flags(np, "gpio-a", 0, &flags);
++	if (gpio_is_valid(up->gpio_a)) {
++		ret = devm_gpio_request(up->dev, up->gpio_a, "tibbit02-a");
++		if (ret < 0) return ret;
++		ret = gpio_direction_output(up->gpio_a, 1);
++		if (ret < 0) return ret;
++	} else if (up->gpio_a == -EPROBE_DEFER) {
++		dev_info( up->port.dev, "xx0\n"); return -EPROBE_DEFER;
++	} else up->gpio_a = -EINVAL;
++	up->gpio_b = of_get_named_gpio_flags(np, "gpio-b", 0, &flags);
++	if (gpio_is_valid(up->gpio_b)) {
++		ret = devm_gpio_request(up->dev, up->gpio_b, "tibbit02-b");
++		if (ret < 0) return ret;
++		ret = gpio_direction_output(up->gpio_b, 0);
++		if (ret < 0) return ret;
++	} else if (up->gpio_b == -EPROBE_DEFER) {
++		return -EPROBE_DEFER;
++	} else up->gpio_b = -EINVAL;
++	up->gpio_c = of_get_named_gpio_flags(np, "gpio-c", 0, &flags);
++	if (gpio_is_valid(up->gpio_c)) {
++		ret = devm_gpio_request(up->dev, up->gpio_c, "tibbit02-c");
++		if (ret < 0) return ret;
++		ret = gpio_direction_output(up->gpio_c, 1);
++		if (ret < 0) return ret;
++	} else if (up->gpio_c == -EPROBE_DEFER) {
++		return -EPROBE_DEFER;
++	} else up->gpio_c = -EINVAL;
++	up->gpio_d = of_get_named_gpio_flags(np, "gpio-d", 0, &flags);
++	if (gpio_is_valid(up->gpio_d)) {
++		ret = devm_gpio_request(up->dev, up->gpio_d, "tibbit02-d");
++		if (ret < 0) return ret;
++		ret = gpio_direction_input(up->gpio_d);
++		if (ret < 0) return ret;
++	} else if (up->gpio_d == -EPROBE_DEFER) {
++		return -EPROBE_DEFER;
++	} else up->gpio_d = -EINVAL;
++	/* get ext lines and set default values / */
++
+ 	if (of_property_read_u32_array(np, "rs485-rts-delay",
+ 				    rs485_delay, 2) == 0) {
+ 		rs485conf->delay_rts_before_send = rs485_delay[0];
+@@ -1707,6 +1786,9 @@
+ 	if (ret != 0)
+ 		goto err_add_port;
+ 
++	if ( pdev->dev.of_node && of_property_read_bool( pdev->dev.of_node, "rs485-on")) {
++	    up->port.rs485_config( &( up->port), &( up->port.rs485));
++	}
+ 	pm_runtime_mark_last_busy(up->dev);
+ 	pm_runtime_put_autosuspend(up->dev);
+ 	return 0;

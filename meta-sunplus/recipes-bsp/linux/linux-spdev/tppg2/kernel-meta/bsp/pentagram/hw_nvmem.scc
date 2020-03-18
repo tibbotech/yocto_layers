@@ -1,0 +1,4 @@
+define KFEATURE_DESCRIPTION "Enable SunPlus OTP"
+define KFEATURE_COMPATIBILITY board
+
+kconf hardware hw_nvmem.cfg

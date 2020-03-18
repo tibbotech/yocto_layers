@@ -1,0 +1,12 @@
+
+part_save() {
+ flash_erase --silent /dev/mtd8 0 0
+ if [ $? -ne 0 ]; then
+   return 1;
+ fi;
+ nandwrite --quiet -p /dev/mtd8 "${f_name}.dtb"
+ if [ $? -ne 0 ]; then
+   return 1;
+ fi;
+ return 0;
+}

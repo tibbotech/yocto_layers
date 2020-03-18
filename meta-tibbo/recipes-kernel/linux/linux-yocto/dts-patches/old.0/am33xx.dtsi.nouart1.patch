@@ -1,0 +1,11 @@
+--- linux/arch/arm/boot/dts/am33xx.dtsi	2015-02-27 02:18:43.000000000 +0300
++++ linux/arch/arm/boot/dts/am33xx.dtsi	2015-02-28 01:31:30.538299239 +0300
+@@ -22,7 +22,7 @@
+ 		i2c1 = &i2c1;
+ 		i2c2 = &i2c2;
+ 		serial0 = &uart0;
+-		serial1 = &uart1;
++		/*serial1 = &uart1;*/
+ 		serial2 = &uart2;
+ 		serial3 = &uart3;
+ 		serial4 = &uart4;

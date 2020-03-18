@@ -1,0 +1,140 @@
+--- a/src/SerialImp.c	2016-12-20 14:40:11.000000000 +0300
++++ a/src/SerialImp.c	2016-12-20 17:04:58.800019178 +0300
+@@ -163,6 +163,9 @@
+ 
+ #include "SerialImp.h"
+ 
++#include <syslog.h>
++#include <sys/klog.h>
++
+ JavaVM *javaVM = NULL;
+ 
+ 
+@@ -663,6 +666,7 @@
+ 	(*env)->DeleteLocalRef( env, jclazz );
+ 
+  	filename = (*env)->GetStringUTFChars( env, jstr, 0 );
++syslog( LOG_INFO, "DEBUG: trying %s %s f: %s\n", __FILE__, __FUNCTION__, filename);
+ 
+ 	/*
+ 		LOCK is one of three functions defined in SerialImp.h
+@@ -697,6 +701,7 @@
+ 	do {
+ 		fd=OPEN (filename, O_RDWR | O_NOCTTY | O_NONBLOCK );
+ 	}  while (fd < 0 && errno==EINTR);
++syslog( LOG_INFO, "DEBUG: trying %s %s f: %s\n", __FILE__, __FUNCTION__, filename);
+ 
+ #ifdef OPEN_EXCL
+        /*
+@@ -4333,6 +4338,7 @@
+ 	char full_windows_name[80];
+ #endif /* WIN32 */
+ 
++syslog( LOG_INFO, "DEBUG: trying %s %s f: %s\n", __FILE__, __FUNCTION__, name);
+ 	ENTER( "RXTXPort:testRead" );
+ #ifdef TRENT_IS_HERE_DEBUGGING_ENUMERATION
+ 	/* vmware lies about which ports are there causing irq conflicts */
+@@ -4364,6 +4370,7 @@
+ 			system_does_not_lock	Win32
+ 	*/
+ 
++syslog( LOG_INFO, "DEBUG: trying %s %s f: %s\n", __FILE__, __FUNCTION__, name);
+ 	if ( LOCK( name, pid ) )
+ 	{
+ 		(*env)->ReleaseStringUTFChars(env, tty_name, name);
+@@ -4379,6 +4386,7 @@
+ 		fd=OPEN ( name, O_RDWR | O_NOCTTY | O_NONBLOCK );
+ 	}  while ( fd < 0 && errno==EINTR );
+ 
++syslog( LOG_INFO, "DEBUG: trying %s %s f: %s\n", __FILE__, __FUNCTION__, name);
+ 	if( fd < 0 )
+ 	{
+ 		report_verbose( "testRead() open \"" );
+@@ -4390,6 +4398,7 @@
+ 		goto END;
+ 	}
+ 
++syslog( LOG_INFO, "DEBUG: trying %s %s f: %s\n", __FILE__, __FUNCTION__, name);
+ 	if ( port_type == PORT_SERIAL )
+ 	{
+ 		int saved_flags;
+@@ -4676,6 +4685,7 @@
+ 	jboolean result = JNI_FALSE;
+ 	char message[80];
+ 
++syslog( LOG_INFO, "DEBUG: trying %s %s f: %d\n", __FILE__, __FUNCTION__, portType);
+ 	switch(portType) {
+ 		case PORT_TYPE_SERIAL:
+ #if defined(__APPLE__)
+@@ -4697,6 +4707,7 @@
+ 			);
+ 			report( message );
+ 	}
++syslog( LOG_INFO, "DEBUG: trying %s %s f: %d\n", __FILE__, __FUNCTION__, result);
+ 	return result;
+ }
+ 
+@@ -4718,6 +4729,7 @@
+ 	int fd,i;
+ 	const char *name = (*env)->GetStringUTFChars(env, tty_name, 0);
+ 
++syslog( LOG_INFO, "DEBUG: trying %s %s f: %s\n", __FILE__, __FUNCTION__, name);
+ 	ENTER( "RXTXCommDriver:isPortPrefixValid" );
+ 	for(i=0;i<64;i++){
+ #if defined(__sun__)
+@@ -4733,6 +4745,7 @@
+ #endif /* _GNU_SOURCE */
+ 		stat(teststring,&mystat);
+ #endif /* __sun__ */
++syslog( LOG_INFO, "DEBUG: trying %s %s f: %s\n", __FILE__, __FUNCTION__, teststring);
+ /* XXX the following hoses freebsd when it tries to open the port later on */
+ #ifndef __FreeBSD__
+ 		if(S_ISCHR(mystat.st_mode)){
+@@ -4756,6 +4769,7 @@
+ #else
+ 	sprintf(teststring,"%s%s",DEVICEDIR,name);
+ #endif /* _GNU_SOURCE */
++syslog( LOG_INFO, "DEBUG: trying %s %s f: %s\n", __FILE__, __FUNCTION__, teststring);
+ 	stat(teststring,&mystat);
+ 	if(S_ISCHR(mystat.st_mode)){
+ 		fd=OPEN(teststring,O_RDONLY|O_NONBLOCK);
+@@ -5156,6 +5170,7 @@
+ 	char buf[ 60 ];
+ 	jclass clazz = (*env)->FindClass( env, exc );
+ 	ENTER( "throw_java_exception" );
++syslog( LOG_INFO, "DEBUG: %s %s f: %s\n", __FILE__, __FUNCTION__, msg);
+ 	if( !clazz ) {
+ 		(*env)->ExceptionDescribe( env );
+ 		(*env)->ExceptionClear( env );
+@@ -5184,6 +5199,7 @@
+ ----------------------------------------------------------*/
+ void report_warning(const char *msg)
+ {
++syslog( LOG_INFO, "DEBUG: %s %s f: %s\n", __FILE__, __FUNCTION__, msg);
+ 	fprintf(stderr, "%s", msg);
+ }
+ 
+@@ -5198,6 +5214,7 @@
+ ----------------------------------------------------------*/
+ void report_verbose(const char *msg)
+ {
++syslog( LOG_INFO, "DEBUG: %s %s f: %s\n", __FILE__, __FUNCTION__, msg);
+ #ifdef DEBUG_VERBOSE
+ 	fprintf(stderr, "%s", msg);
+ #endif /* DEBUG_VERBOSE */
+@@ -5213,6 +5230,7 @@
+ ----------------------------------------------------------*/
+ void report_error(const char *msg)
+ {
++syslog( LOG_INFO, "DEBUG: %s %s f: %s\n", __FILE__, __FUNCTION__, msg);
+ 	fprintf(stderr, "%s", msg);
+ }
+ 
+@@ -5227,6 +5245,7 @@
+ ----------------------------------------------------------*/
+ void report(const char *msg)
+ {
++syslog( LOG_INFO, "DEBUG: %s %s f: %s\n", __FILE__, __FUNCTION__, msg);
+ #ifdef DEBUG
+ 	fprintf(stderr, "%s", msg);
+ #endif /* DEBUG */

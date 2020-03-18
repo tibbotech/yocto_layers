@@ -1,0 +1,13 @@
+--- a/drivers/usb/phy/Kconfig	2017-09-20 09:25:38.000000000 +0300
++++ a/drivers/usb/phy/Kconfig	2018-11-12 06:42:56.000000000 +0300
+@@ -3,6 +3,10 @@
+ #
+ menu "USB Physical Layer drivers"
+ 
++config SUNPLUS_USB_PHY
++	boolean "Sunplus USB PHY"
++	default y
++
+ config USB_PHY
+ 	def_bool n
+ 

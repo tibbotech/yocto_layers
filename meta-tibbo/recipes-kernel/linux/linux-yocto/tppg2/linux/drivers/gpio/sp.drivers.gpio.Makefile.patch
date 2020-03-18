@@ -1,0 +1,7 @@
+--- a/drivers/gpio/Makefile	2017-09-20 09:25:38.000000000 +0300
++++ a/drivers/gpio/Makefile	2018-11-12 06:42:52.000000000 +0300
+@@ -146,3 +146,4 @@
+ obj-$(CONFIG_GPIO_ZYNQ)		+= gpio-zynq.o
+ obj-$(CONFIG_GPIO_ZX)		+= gpio-zx.o
+ obj-$(CONFIG_GPIO_LOONGSON1)	+= gpio-loongson1.o
++obj-y += gpio_sp/

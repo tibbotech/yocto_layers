@@ -1,0 +1,2 @@
+requires m2crypto in python:
+# urpmi python-m2crypto

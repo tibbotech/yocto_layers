@@ -1,0 +1,37 @@
+--- a/drivers/gpu/drm/tilcdc/tilcdc_slave_compat.c	2016-12-09 00:47:39.168758703 +0300
++++ a/drivers/gpu/drm/tilcdc/tilcdc_slave_compat.c	2016-12-09 01:08:29.150950785 +0300
+@@ -215,22 +215,26 @@
+ 	if (!slave || !of_device_is_available(lcdc))
+ 		goto out;
+ 
++printk(KERN_ERR "%s %s:%d\n", __FILE__, __FUNCTION__, __LINE__);
+ 	i2c = of_parse_phandle(slave, "i2c", 0);
+ 	if (!i2c) {
+ 		pr_err("%s: Can't find i2c node trough phandle\n", __func__);
+ 		goto out;
+ 	}
+ 
++printk(KERN_ERR "%s %s:%d\n", __FILE__, __FUNCTION__, __LINE__);
+ 	overlay = tilcdc_get_overlay(&kft);
+ 	if (!overlay)
+ 		goto out;
+ 
++printk(KERN_ERR "%s %s:%d\n", __FILE__, __FUNCTION__, __LINE__);
+ 	encoder = of_find_matching_node(overlay, tilcdc_tda998x_of_match);
+ 	if (!encoder) {
+ 		pr_err("%s: Failed to find tda998x node\n", __func__);
+ 		goto out;
+ 	}
+ 
++printk(KERN_ERR "%s %s:%d\n", __FILE__, __FUNCTION__, __LINE__);
+ 	tilcdc_copy_props(slave, encoder, tilcdc_slave_props, &kft);
+ 
+ 	for_each_child_of_node(overlay, fragment) {
+@@ -247,6 +251,7 @@
+ 
+ 	tilcdc_node_disable(slave);
+ 
++printk(KERN_ERR "%s %s:%d\n", __FILE__, __FUNCTION__, __LINE__);
+ 	ret = of_overlay_create(overlay);
+ 	if (ret)
+ 		pr_err("%s: Creating overlay failed: %d\n", __func__, ret);

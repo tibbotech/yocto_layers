@@ -1,0 +1,2 @@
+add _complete_ to tcmd_proc in usbgadget code!!!
+add locks to g_ninja_req.c:dvu_set_tx_reqs() and change locking system

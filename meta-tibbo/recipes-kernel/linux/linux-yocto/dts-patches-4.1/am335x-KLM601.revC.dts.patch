@@ -1,0 +1,395 @@
+--- linux/arch/arm/boot/dts/am335x-KLM601.revC.dts	1970-01-01 03:00:00.000000000 +0300
++++ linux/arch/arm/boot/dts/am335x-KLM601.revC.dts	2014-12-16 10:12:59.961528417 +0300
+@@ -0,0 +1,391 @@
++/*
++ * KLM601 rev.C
++ * Copyright (C) 2018 Tibbo Tech. - http://tibbo.com/tps/
++ * License: GPLv2 or later
++ */
++/dts-v1/;
++
++#include "am33xx.tpp.dtsi"
++#include "am335x-TPP.dtsi"
++#include "am335x-TPPs3.dtsi"
++
++/ {
++	model = "AM335x KLM601 rev.C";
++	compatible = "ti,am335x-tpp3", "ti,am335x-tpp", "ti,am33xx";
++
++/* gpio 1/0 backlight */
++/*
++	lcd_backlight: lcd_backlight {
++		compatible = "gpio-backlight";
++		pinctrl-names = "default";
++		pinctrl-0 = <&lcd_backlight_pins>;
++		gpios = <&gpio3 17 GPIO_ACTIVE_HIGH>;
++		default-on;
++	};
++*/
++/* pwm backlight */
++	lcd_backlight: lcd_backlight {
++		compatible = "pwm-backlight";
++		pwms = <&ecap2 0 50000 0>;
++		brightness-levels = <0 51 53 56 62 75 101 152 255>;
++		default-brightness-level = <0>; // <8>;
++	};
++
++	panel {
++		compatible = "ti,tilcdc,panel";
++		pinctrl-names = "default";
++		pinctrl-0 = <&hdmi_pins>;
++		backlight = <&lcd_backlight>;
++		status = "okay";
++		panel-info {
++			ac-bias           = <255>;
++			ac-bias-intrpt    = <0>;
++			dma-burst-sz      = <16>;
++			bpp               = <16>;
++			fdd               = <0x80>;
++			sync-edge         = <1>;
++			sync-ctrl         = <1>;
++			raster-order      = <0>;
++			fifo-th           = <0>;
++		};
++		display-timings {
++			native-mode = <&timing0>;
++			timing0: 320x240 {
++				hactive         = <320>;
++				vactive         = <240>;
++				hback-porch     = <39>;		/* pixels */
++				hfront-porch    = <19>;		/* pixels */
++				hsync-len       = <30>;		/* pixels */
++				vback-porch     = <16>;		/* lines */
++				vfront-porch    = <3>;		/* lines */
++				vsync-len       = <3>;		/* lines */
++				clock-frequency = <6500000>;
++				hsync-active    = <0>;
++				vsync-active    = <0>;
++				de-active       = <1>;
++			};
++		};
++	};
++
++	i2c_ext: i2c-ext { /* index:i2c-? | mcp23017 gpio extender */
++		compatible = "i2c-gpio";
++/*		i2c-gpio,scl-open-drain;*/
++/*		i2c-gpio,sda-open-drain;*/
++		i2c-gpio,delay-us = <2>;	/* ~100 kHz */
++		#address-cells = <1>;
++		#size-cells = <0>;
++	};
++
++/* gpio keyboard fast alterntive */
++/*	gpio-decoder0 {*/
++/*		compatible = "gpio-decoder";*/
++/*		pinctrl-names = "default";*/
++/*		pinctrl-0 = <&klm_kbd_pins>;*/
++/*		gpios = <&gpio1 30 GPIO_ACTIVE_HIGH>,*/
++/*			<&gpio1 31 GPIO_ACTIVE_HIGH>,*/
++/*	        	<&gpio2 24 GPIO_ACTIVE_HIGH>,*/ /* have to be 1.24, but 2.24 for some reason */
++/*	        	<&gpio1 27 GPIO_ACTIVE_HIGH>,*/
++/*	        	<&gpio0 31 GPIO_ACTIVE_HIGH>;*/
++/*	};*/
++
++	leds {
++		led@2 {		/* SG */
++			gpios = <&gpio0 17 GPIO_ACTIVE_HIGH>;
++			linux,default-trigger = "heartbeat";
++		};
++		led@3 {		/* SR */
++			gpios = <&gpio2 20 GPIO_ACTIVE_LOW>;
++			linux,default-trigger = "none"/*"mmc1"*/;
++			default-state = "off";
++		};
++	};
++
++	buzzer0 {
++		compatible = "gpio-beeper";
++		gpios = <&gpio3 15 GPIO_ACTIVE_LOW>;
++	};
++
++
++};
++
++&am33xx_pinmux {
++	pinctrl-0 = <&gpio_pins &klm_kbd_pins>;
++	buzzer0_pins: buzzer0_pins {
++		pinctrl-single,pins = <
++			AM33XX_IOPAD(0x994, (PIN_OUTPUT | MUX_MODE7))	/* gpio3.15 #101 */
++		>;
++	};
++	i2c_tps_pins: i2c_tps_pins {
++		pinctrl-single,pins = <
++			AM33XX_IOPAD(0x840, (PIN_INPUT | MUX_MODE7))	/* has to be 3f|2f no S* */
++			AM33XX_IOPAD(0x864, (PIN_INPUT | MUX_MODE7))	/* has to be 3f|2f no S* */
++		>;
++	};
++	i2c_ext_pins: i2c_ext_pins {
++		pinctrl-single,pins = <
++			AM33XX_IOPAD(0x850, (PIN_INPUT | MUX_MODE7))	/* gpio1.20 SDA */
++			AM33XX_IOPAD(0x868, (PIN_INPUT | MUX_MODE7))	/* gpio1.26 SCL */
++		>;
++	};
++	i2c_cac_pins: i2c_cac_pins { /* compass, accelerometer */
++		pinctrl-single,pins = <
++			AM33XX_IOPAD(0x958, (PIN_INPUT_PULLUP | MUX_MODE2))	/* gpio0.04 SDA */
++			AM33XX_IOPAD(0x95c, (PIN_INPUT_PULLUP | MUX_MODE2))	/* gpio0.05 SCL */
++		>;
++	};
++	lcd_backlight_pins: lcd_backlight_pins {
++		pinctrl-single,pins = <
++			AM33XX_IOPAD(0x99c, (PIN_OUTPUT | MUX_MODE4))	/* gpio3.17 pin113 M4=pwm2/M7=gpio */
++		>;
++	};
++	spi_wifi_add_gpio: spi_wifi_add_gpio { /* remove later */
++		pinctrl-single,pins = <
++			AM33XX_IOPAD(0x988, (PIN_OUTPUT | MUX_MODE7))	/* v-v? gpio3.5 pin116 wifi_reset */
++			AM33XX_IOPAD(0x98c, (PIN_INPUT  | MUX_MODE7))	/* v-v? gpio3.6 pin115 wifi_irq (extra1) */
++		>;
++	};
++	user_leds_s0: user_leds_s0 {
++		pinctrl-single,pins = <
++			AM33XX_IOPAD(0x920, (PIN_OUTPUT | MUX_MODE7))	/* gmii1_txd2.gpio0_17 SG */
++			AM33XX_IOPAD(0x93c, (PIN_OUTPUT | MUX_MODE7))	/* gmii1_rxd1.gpio2_20 SR */
++		>;
++	};
++	klm_kbd_pins: klm_kbd_pins {
++		pinctrl-single,pins = <
++			AM33XX_IOPAD(0x880, (PIN_INPUT  | MUX_MODE7))	/* KEY0 gpio1.30 */
++			AM33XX_IOPAD(0x884, (PIN_INPUT  | MUX_MODE7))	/* KEY1 gpio1.31 */
++			AM33XX_IOPAD(0x860, (PIN_INPUT  | MUX_MODE7))	/* KEY2 gpio1.24 */
++			AM33XX_IOPAD(0x86c, (PIN_INPUT  | MUX_MODE7))	/* KEY3 gpio1.27 */
++			AM33XX_IOPAD(0x874, (PIN_INPUT  | MUX_MODE7))	/* KEY4 gpio0.31 */
++		>;
++	};
++	gpio_pins: gpio_pins {
++		pinctrl-single,pins = <
++/* ****** */
++			AM33XX_IOPAD(0x914, (PIN_OUTPUT | MUX_MODE7))	/* SW-UART1-DTR gpio3.3 : reader port */
++			AM33XX_IOPAD(0x990, (PIN_OUTPUT | MUX_MODE7))	/* SW-UART2-DTR gpio3.14 : extention pcb port */
++			AM33XX_IOPAD(0x9a0, (PIN_INPUT  | MUX_MODE7))	/* SW-UART2-DSR gpio3.18 : extention pcb port */
++			AM33XX_IOPAD(0x9a4, (PIN_OUTPUT | MUX_MODE7))	/* RST_OUT gpio3.19 : io pcb port */
++			AM33XX_IOPAD(0x9a8, (PIN_OUTPUT | MUX_MODE7))	/* DL_OUT gpio3.20 : io pcb port */
++			AM33XX_IOPAD(0x960, (PIN_INPUT  | MUX_MODE7))	/* DL_IN gpio0.6 : io pcb port */
++			AM33XX_IOPAD(0x854, (PIN_INPUT  | MUX_MODE7))	/* nRF_SWDIO gpio1.21 I/O : nrf51812 */
++			AM33XX_IOPAD(0x858, (PIN_OUTPUT | MUX_MODE7))	/* nRF_SWCLK gpio1.22 : nrf51812 */
++			/* AM33XX_IOPAD(0x868, (PIN_OUTPUT | MUX_MODE7)) */	/* LED-SCL gpio1.26 */
++			/* AM33XX_IOPAD(0x850, (PIN_OUTPUT | MUX_MODE7)) */	/* LED-SDA gpio1.20 */
++/* ****** */
++			AM33XX_IOPAD(0x91c, (PIN_INPUT  | MUX_MODE7))	/* MD gpio0.16 */
++			AM33XX_IOPAD(0x85c, (PIN_OUTPUT | MUX_MODE7))	/* KEY-RESET gpio1.23 */
++			AM33XX_IOPAD(0x9b4, (PIN_INPUT  | MUX_MODE7))	/* console switch gpio0.20 */
++			AM33XX_IOPAD(0x9b0, (PIN_INPUT  | MUX_MODE7))	/* accel int0 gpio0.19 */
++			AM33XX_IOPAD(0x9ac, (PIN_INPUT  | MUX_MODE7))	/* compass int0 gpio3.21 */
++			/* chip select temporary console switch */
++			AM33XX_IOPAD(0x944, (PIN_INPUT | MUX_MODE7))  /* gpio0.29: future navigation CS */
++		>;
++	};
++	uart2_pins: uart2_pins { /* add UART2 !!! */
++		pinctrl-single,pins = <
++			AM33XX_IOPAD(0x988, (PIN_INPUT  | MUX_MODE2))	/* cts: gpio3.05 */
++			AM33XX_IOPAD(0x98c, (PIN_OUTPUT | MUX_MODE2))	/* rts: gpio3.06 */
++			AM33XX_IOPAD(0x950, (PIN_INPUT  | MUX_MODE1))	/* rx : gpio0.02 */
++			AM33XX_IOPAD(0x954, (PIN_OUTPUT | MUX_MODE1))	/* tx : gpio0.03 */
++		>;
++	};
++	uart3_pins: uart3_pins {
++		pinctrl-single,pins = <
++			AM33XX_IOPAD(0x904, (PIN_OUTPUT | MUX_MODE2))	/* rts: gpio2.31 */
++			AM33XX_IOPAD(0x8f8, (PIN_INPUT  | MUX_MODE3))	/* rxd: gpio2.28 pin092 S5B */
++			AM33XX_IOPAD(0x8fc, (PIN_OUTPUT | MUX_MODE3))	/* txd: gpio2.29 pin093 S5A */
++		>;
++	};
++	uart3_norts_pins: uart3_norts_pins {
++		pinctrl-single,pins = <
++			AM33XX_IOPAD(0x904, (PIN_OUTPUT | MUX_MODE7))	/* rts: gpio2.31 */
++			AM33XX_IOPAD(0x8f8, (PIN_INPUT  | MUX_MODE3))	/* rxd: gpio2.28 pin092 S5B */
++			AM33XX_IOPAD(0x8fc, (PIN_OUTPUT | MUX_MODE3))	/* txd: gpio2.29 pin093 S5A */
++		>;
++	};
++	/* first two pins are different from TPS */
++	uart4_pins: uart4_pins {
++		pinctrl-single,pins = <
++			AM33XX_IOPAD(0x8f0, (PIN_INPUT  | MUX_MODE2))	/* cts: gpio2.26 */
++			AM33XX_IOPAD(0x8f4, (PIN_OUTPUT | MUX_MODE2))	/* rts: gpio2.27 */
++			AM33XX_IOPAD(0x968, (PIN_INPUT  | MUX_MODE1))	/* rx : gpio1.08 */
++			AM33XX_IOPAD(0x96c, (PIN_OUTPUT | MUX_MODE1))	/* tx : gpio1.09 */
++		>;
++	};
++	uart5_pins: uart5_pins {
++		pinctrl-single,pins = <
++			AM33XX_IOPAD(0x948, (PIN_INPUT  | MUX_MODE2))	/* rx gpio0.00 */
++			AM33XX_IOPAD(0x94c, (PIN_OUTPUT | MUX_MODE2))	/* tx gpio0.01 */
++		>;
++	};
++	mmc1_pins: mmc1_pins {	/* for mmc2: wifi */
++		pinctrl-single,pins = <
++			AM33XX_IOPAD(0x92c, (PIN_INPUT_PULLUP    | MUX_MODE4))	/* mmc1_d0  gpio3.09 */
++			AM33XX_IOPAD(0x930, (PIN_INPUT_PULLUP    | MUX_MODE4))	/* mmc1_d1  gpio3.10 */
++			AM33XX_IOPAD(0x934, (PIN_INPUT_PULLUP    | MUX_MODE4))	/* mmc1_d2  gpio2.18 */
++			AM33XX_IOPAD(0x938, (PIN_INPUT_PULLUP    | MUX_MODE4))	/* mmc1_d3  gpio2.19 */
++			AM33XX_IOPAD(0x928, (PIN_INPUT_PULLUP    | MUX_MODE6))	/* mmc1_cmd gpio0.21 */
++			AM33XX_IOPAD(0x924, (PIN_INPUT_PULLUP    | MUX_MODE6))	/* mmc1_clk gpio0.28 */
++			/* no card detect */	/* mmc1_cd  S21_C */
++		>;
++	};
++	spi_rtcnavi_pins: spi_rtcnavi_pins {	/* for RTC and Navi */
++		pinctrl-single,pins = <
++			AM33XX_IOPAD(0x908, (PIN_OUTPUT | MUX_MODE2))	/* spi1_clk   gpio3.00 */
++			AM33XX_IOPAD(0x90c, (PIN_OUTPUT | MUX_MODE2))	/* spi1_mosi  gpio3.01 */
++			AM33XX_IOPAD(0x910, (PIN_INPUT  | MUX_MODE2))	/* spi1_miso  gpio3.02 */
++			/*AM33XX_IOPAD(0x944, (PIN_OUTPUT | MUX_MODE2))*/	/* spi1_csNav gpio0.29 */
++			AM33XX_IOPAD(0x964, (PIN_OUTPUT | MUX_MODE2))	/* spi1_csRtc gpio0.07 */
++		>;
++	};
++	spi_rtcnavi_pinsG: spi_rtcnavi_pinsG {	/* for RTC and Navi */
++		pinctrl-single,pins = <
++			AM33XX_IOPAD(0x908, (PIN_OUTPUT | MUX_MODE7))	/* clk   gpio3.00 */
++			AM33XX_IOPAD(0x90c, (PIN_OUTPUT | MUX_MODE7))	/* mosi  gpio3.01 */
++			AM33XX_IOPAD(0x910, (PIN_INPUT  | MUX_MODE7))	/* miso  gpio3.02 */
++			/*AM33XX_IOPAD(0x944, (PIN_OUTPUT | MUX_MODE7))*/	/* csNav gpio0.29 - temp for switch console */
++			AM33XX_IOPAD(0x964, (PIN_OUTPUT | MUX_MODE7))	/* csRtc gpio0.07 */
++		>;
++	};
++};
++&cpsw_emac0 {  status = "disabled";  };
++&mac {  status = "disabled";  };
++&tpsleds {  status = "disabled";  };
++&i2c_tps {
++	gpios = <&gpio1 25 GPIO_ACTIVE_HIGH	/* i2c_soft0.sda, gpio1_25, 0x64 (PIN_INPUT | MUX_MODE7) */
++		 &gpio1 16 GPIO_ACTIVE_HIGH	/* i2c_soft0.scl, gpio1_16, 0x40 (PIN_OUTPUT_PULLUP | MUX_MODE7) */
++		>;
++};
++&i2c1 {
++ pinctrl-names = "default";
++ pinctrl-0 = <&i2c_cac_pins>;
++ status = "okay";
++ /* accel: accel@53 {
++    compatible = "adi,adxl34x";
++    interrupts = <19 GPIO_ACTIVE_HIGH>;
++    interrupt-parent = <&gpio0>;
++    reg = <0x53>;
++ }; */
++};
++/* MCP23017 gpio extener */
++&i2c_ext {
++	pinctrl-names = "default";
++	pinctrl-0 = <&i2c_ext_pins>;
++	gpios = <&gpio1 20 GPIO_ACTIVE_HIGH	/* i2c_soft0.sda, gpio1_20, 0x50 (PIN_INPUT | MUX_MODE7) */
++		 &gpio1 26 GPIO_ACTIVE_HIGH	/* i2c_soft0.scl, gpio1_26, 0x68 (PIN_OUTPUT_PULLUP | MUX_MODE7) */
++		>;
++	status = "okay";
++	gpio_ext: gpio_ext@20 {
++		compatible = "microchip,mcp23017";
++		gpio-controller;
++		#gpio-cells = <2>;
++		reg = <0x20>;
++	};
++};
++
++/* MMC for WiFi */
++&mmc2 {
++ pinctrl-names = "default";
++ pinctrl-0 = <&mmc1_pins>;
++ disable-wp;
++ no-mmc;
++ ti,non-removable;
++ cap-sd-highspeed;
++ keep-power-in-suspend;
++ bus-width = <4>;
++ vmmc-supply = <&vmmc_reg>;
++ max-frequency = <48000000>;
++ status = "okay";  };
++/* MMC for mmc */
++&mmc3 {
++ pinctrl-names = "default";
++ pinctrl-0 = <&mmc2_pins>;
++ max-frequency = <23500000>;
++ status = "okay";  };
++
++/* ------ USB ----- */
++&cppi41dma {  status = "okay";  };
++&usb {  status = "okay";  };
++&usb_ctrl_mod {  status = "okay";  };
++&usb0_phy {  status = "okay";  };
++&usb0 {  dr_mode = "otg";  status = "okay";  };
++&usb1_phy {  status = "okay";  };
++&usb1 {  dr_mode = "host";  status = "okay";  };
++
++/* ----- UARTS ---- */
++/* OS debug port */
++&uart0 {  status = "okay";  };
++/* now it's Wiegand (external) - disabled */
++&uart1 {
++  pinctrl-names = "default";
++  pinctrl-0 = <&uart1_pins>;
++  status = /*"okay"*/"disabled";  };
++&twg_s01 {  status = "okay";  };
++/* extention PCB or TiOS */
++&uart2 {
++  pinctrl-names = "default";
++  pinctrl-0 = <&uart2_pins>;
++  status = "okay";  };
++/* 485, for engine control */
++&uart3 {
++ rts-gpio = <&gpio2 31 GPIO_ACTIVE_HIGH>;
++ status = "okay";  };
++/* modem */
++&uart4 {  status = "okay";  };
++/* bluetooth */
++&uart5 {  status = "okay";  };
++
++/* ------ RTC, Navi */
++/* hw spi, temporary disbaled */
++&spi1 {
++ pinctrl-names = "default";
++ pinctrl-0 = <&spi_rtcnavi_pins>;
++ /* insert devices (rtc,navi) there */
++ ti,pindir-d0-out-d1-in = <1>;
++ status = "disabled"/*"okay"*/;
++ spi@0 {
++	compatible = "tps,spigen";
++	spi-max-frequency = <57600000>;
++	reg = <0>;
++ };
++ spi@1 {
++	compatible = "ds3234";
++	spi-max-frequency = <500000>;
++	#address-cells = <1>;
++	#size-cells = <0>;
++	reg = <1>;
++ };
++};
++/* sw spi, temporary enabled */
++&spi_s23 {
++ pinctrl-0 = <&spi_rtcnavi_pinsG>;
++ gpio-sck  = <&gpio3 0 GPIO_ACTIVE_HIGH>; /* 0x908 */
++ gpio-mosi = <&gpio3 1 GPIO_ACTIVE_HIGH>; /* 0x90c */
++ gpio-miso = <&gpio3 2 GPIO_ACTIVE_HIGH>; /* 0x910 */
++ cs-gpios  = /*<&gpio0 29 GPIO_ACTIVE_HIGH>, - tenp for switch console */<&gpio0 7 GPIO_ACTIVE_HIGH>; /* 0x944, 0x960 */
++ /*num-chipselects = <2>;*/
++ status = "okay"/*"disabled"*/;
++ spi@0 {
++	compatible = "tps,spigen";
++	/*spi-max-frequency = <57600000>; */
++	/*reg = <0>; */
++ };
++ spi@1 {  status = "disabled";
++	compatible = "ds3234";
++	spi-max-frequency = <500000>;
++	#address-cells = <1>;
++	#size-cells = <0>;
++	reg = <1>;
++ };
++};
++
++/* ------ LCD ------ */
++&lcdc {  /*max-pixelclock = <16000>;*/  status = "okay";  };
++/* pwm backlight */
++&epwmss2 {  status = "okay";  };
++&ecap2 {
++ status = "okay";
++ pinctrl-names = "default";
++ pinctrl-0 = <&lcd_backlight_pins>;
++};
++

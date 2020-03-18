@@ -1,0 +1,9 @@
+--- linux/drivers/of/Makefile	2019-09-12 17:12:01.626557402 +0300
++++ linux/drivers/of/Makefile	2019-09-12 17:18:46.615814127 +0300
+@@ -1,5 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
+ obj-y = base.o device.o platform.o property.o
++obj-$(CONFIG_OF_CONFIGFS) += configfs.o
+ obj-$(CONFIG_OF_KOBJ) += kobj.o
+ obj-$(CONFIG_OF_DYNAMIC) += dynamic.o
+ obj-$(CONFIG_OF_FLATTREE) += fdt.o

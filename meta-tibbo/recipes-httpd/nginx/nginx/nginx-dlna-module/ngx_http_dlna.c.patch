@@ -1,0 +1,11 @@
+--- ../a/ngx_http_dlna.c	2017-10-21 18:33:27.970069410 +0300
++++ ../a/ngx_http_dlna.c	2017-10-21 18:54:45.616090074 +0300
+@@ -1237,7 +1237,7 @@
+ 
+                     r->location = root->location;
+                     r->port = ntohs(port[n].port);
+-                    r->addr = addr[i].opt.u.sockaddr_in.sin_addr.s_addr;
++                    r->addr = addr[i].opt.sockaddr.sockaddr_in.sin_addr.s_addr;
+ 
+                     root->port = r->port;
+                     root->addr = r->addr;

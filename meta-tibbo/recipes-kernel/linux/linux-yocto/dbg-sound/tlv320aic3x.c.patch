@@ -1,0 +1,45 @@
+--- a/sound/soc/codecs/tlv320aic3x.c	2016-04-21 10:21:52.000000000 +0300
++++ a/sound/soc/codecs/tlv320aic3x.c	2016-04-22 10:31:34.702758487 +0300
+@@ -203,8 +203,10 @@
+ 	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+ 	struct aic3x_priv *aic3x = snd_soc_codec_get_drvdata(codec);
+ 
++dev_err(codec->dev, "%s %d\n", __FUNCTION__, event);
+ 	switch (event) {
+ 	case SND_SOC_DAPM_POST_PMU:
++dev_err(codec->dev, "%s 0\n", __FUNCTION__);
+ 		/* change mic bias voltage to user defined */
+ 		snd_soc_update_bits(codec, MICBIAS_CTRL,
+ 				MICBIAS_LEVEL_MASK,
+@@ -212,6 +214,7 @@
+ 		break;
+ 
+ 	case SND_SOC_DAPM_PRE_PMD:
++dev_err(codec->dev, "%s 1\n", __FUNCTION__);
+ 		snd_soc_update_bits(codec, MICBIAS_CTRL,
+ 				MICBIAS_LEVEL_MASK, 0);
+ 		break;
+@@ -1403,6 +1406,7 @@
+ {
+ 	struct aic3x_priv *aic3x = snd_soc_codec_get_drvdata(codec);
+ 
++dev_err(codec->dev, "%s level:%d\n", __FUNCTION__, level);
+ 	switch (level) {
+ 	case SND_SOC_BIAS_ON:
+ 		break;
+@@ -1623,6 +1627,7 @@
+ 		break;
+ 	}
+ 
++dev_err(codec->dev, "%s vg:%d ctrlReg:%d ctrlReg:%X\n", __FUNCTION__, aic3x->micbias_vg, MICBIAS_CTRL, MICBIAS_CTRL);
+ 	/* set mic bias voltage */
+ 	switch (aic3x->micbias_vg) {
+ 	case AIC3X_MICBIAS_2_0V:
+@@ -1752,6 +1757,7 @@
+ 		}
+ 
+ 		if (!of_property_read_u32(np, "ai3x-micbias-vg", &value)) {
++dev_err(&i2c->dev, "micbias from of_:%d\n", value);
+ 			switch (value) {
+ 			case 1 :
+ 				aic3x->micbias_vg = AIC3X_MICBIAS_2_0V;

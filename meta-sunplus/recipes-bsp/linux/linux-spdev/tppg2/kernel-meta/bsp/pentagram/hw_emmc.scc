@@ -1,0 +1,4 @@
+define KFEATURE_DESCRIPTION "Enable SunPlus EMMC"
+define KFEATURE_COMPATIBILITY board
+
+kconf hardware hw_emmc.cfg

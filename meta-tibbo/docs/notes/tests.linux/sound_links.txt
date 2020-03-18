@@ -1,0 +1,23 @@
+
+tlv320aic3104 patch
+http://mailman.alsa-project.org/pipermail/alsa-devel/2015-February/087292.html
+http://mailman.alsa-project.org/pipermail/alsa-devel/2015-February/087293.html
+http://mailman.alsa-project.org/pipermail/alsa-devel/2015-February/087333.html
+
+tlv320aic3104 patch diff view
+http://code.metager.de/source/diff/linux/stable/sound/soc/codecs/tlv320aic3x.c?r2=%2Flinux%2Fstable%2Fsound%2Fsoc%2Fcodecs%2Ftlv320aic3x.c%409503112d909cbbc2865a28c2586c436254169da8&r1=%2Flinux%2Fstable%2Fsound%2Fsoc%2Fcodecs%2Ftlv320aic3x.c%4038d3df61e094eb3c8f8af7c6f264a8cd59501ec0
+
+note on Linux device drivers for AIC31xx/DAC31xx/AIC325x/AIC320x/AIC326x/AIC321x
+from TI
+http://e2e.ti.com/support/data_converters/audio_converters/f/64/t/266169
+
+
+driver itself
+http://lxr.free-electrons.com/source/sound/soc/codecs/tlv320aic3x.c
+http://lxr.free-electrons.com/source/sound/soc/codecs/tlv320aic3x.c?a=arm
+
+ALSA howto
+http://www.tldp.org/HOWTO/Alsa-sound-7.html
+
+eLinux audio cape
+http://elinux.org/CircuitCo:Audio_Cape_RevB

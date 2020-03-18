@@ -1,0 +1,5 @@
+define KFEATURE_DESCRIPTION "Enable SunPlus FB output"
+define KFEATURE_COMPATIBILITY board
+
+kconf hardware general.cfg
+kconf hardware video_out.cfg

@@ -1,0 +1,127 @@
+/dts-v1/;
+
+#include "skeleton.dtsi"
+
+#include <dt-bindings/interrupt-controller/arm-gic.h>
+
+/ {
+	model = "Sunplus 3502 (CA9)";
+	compatible = "sunplus,3502-achip";
+
+	interrupt-parent = <&gic>;
+
+	aliases {
+		serial0 = &uart0;
+	};
+
+	chosen {
+		bootargs = "console=ttyS0,115200 root=/dev/ram rw loglevel=8 earlyprintk";
+	};
+
+	memory {
+		reg = <0x00000000 0x04000000>;
+	};
+
+	cpus {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		cpu0: cpu@0 {
+			compatible = "arm,cortex-a9";
+			device_type = "cpu";
+			reg = <0>;
+		};
+
+		cpu@1 {
+			compatible = "arm,cortex-a9";
+			device_type = "cpu";
+			reg = <1>;
+			enable-method = "sunplus,sc-smp";
+			cpu-boot-reg = <0x9e809ff0>;
+		};
+	};
+
+	clocks {
+                #address-cells = <1>;
+                #size-cells = <1>;
+                ranges;
+
+		extclk: clk@osc0 {
+			#clock-cells = <0>;
+			compatible = "fixed-clock";
+			clock-frequency = <27000000>;
+			clock-output-names = "extclk";
+		};
+
+		divextclk: clk@0 {
+			#clock-cells = <0>;
+			compatible = "fixed-factor-clock";
+			clocks  = <&extclk>;
+			clock-mult = <1>;
+			clock-div = <2>;
+			clock-output-names = "extdivclk";
+		};
+
+		sysclk: clk@sys0 {
+			#clock-cells = <0>;
+			compatible = "fixed-clock";
+			clock-frequency = <250000000>;
+			clock-output-names = "sysclk";
+		};
+	};
+
+	soc@A {
+		compatible = "simple-bus";
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges;
+
+		scu@9f100000 {
+			compatible = "arm,cortex-a9-scu";
+			reg = <0x9f100000 0x100>;
+		};
+
+		gic: interrupt-controller@CPU {
+			compatible = "arm,cortex-a9-gic";
+			interrupt-controller;
+			#interrupt-cells = <3>;
+			reg = <0x9f101000 0x1000>,
+				<0x9f100100 0x2000>;
+		};
+
+		arm_periph_clk: clk@ca9 {
+			#clock-cells = <0>;
+			compatible = "fixed-clock";	/* for testing */
+			clock-frequency = <250000000>;	/* core clk / 2 */
+			clock-output-names = "arm_periph_clk";
+		};
+
+		global_timer: timer@9f100200 {
+			compatible = "arm,cortex-a9-global-timer";
+			reg = <0x9f100200 0x100>;
+			interrupts = <GIC_PPI 11 IRQ_TYPE_EDGE_RISING>;
+			interrupt-parent = <&gic>;
+			clocks = <&arm_periph_clk>;
+		};
+
+		/* STC_AV2 */
+		timer: timer@G99 {
+			compatible = "sunplus,sp-stc";
+			reg = <0x9c003180 0x80>;
+			interrupt-parent = <&gic>;
+			interrupts =
+				<GIC_SPI 164 IRQ_TYPE_EDGE_RISING>, /* timer0 */
+				<GIC_SPI 165 IRQ_TYPE_EDGE_RISING>, /* timer1 */
+				<GIC_SPI 166 IRQ_TYPE_EDGE_RISING>, /* timer2 */
+				<GIC_SPI 167 IRQ_TYPE_EDGE_RISING>; /* timer3 */
+		};
+
+		uart0: serial@G18 {
+			compatible = "sunplus,sp-uart";
+			reg = <0x9c000900 0x80>;
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 53 IRQ_TYPE_LEVEL_HIGH>;
+			clocks = <&sysclk>;
+		};
+	};
+};

@@ -1,0 +1,41 @@
+This feature template enables support for initramfs. This file contains four parts:
+1.What's initramfs
+2.How to build it in Wind River Linux
+3.How to use it in target board
+
+
+1.What's initramfs
+
+initramfs is an alternative, simpler method of having files available at boot time 
+without having them in a persistent mountable filesystem. It's linked in the kernel file 
+when compiling the kernel. So we can boot the target board only using the kernel with initramfs.
+For more details, please refer to linux/Documentation/filesystems/ramfs-rootfs-initramfs.txt
+
+2.How to build it in Wind River Linux
+
+After configuring a BSP using Wind River Linux, following command will generate a kernel 
+with initramfs support:
+
+	#make boot-image BOOTIMAGE_FSTYPE=initramfs BOOTIMAGE_TYPE=flash
+
+Then the file of "export/<BSP>-initramfs" will be the kernel with initramfs.
+Because initramfs is designed for small filesystem, it's recommended to use glibc_small 
+and uclibc_small to configure a BSP. If using glibc_std or glibc_cgl, it may make the kernel 
+rather big and can't boot in the target board.
+
+3.How to use it in target board
+
+Because the kernel with initramfs already contains root filesystem, when booting the kernel,
+we mustn't pass any "root=/dev/xxx"(xxx means nfs, hda1 etc.) to kernel cmdline, otherwise 
+the kernel won't use the initramfs as root filesystem. Besides this notice, booting the kernel
+with initramfs doesn't need special steps.
+
+It should be noted that on powerpc arch:
+Because the kernel often needs dtb file loaded after 2MBytes space from the kernel loading address,
+if the kernel size is larger than 2MByts, the kernel will overlap with the dtb, which will lead to
+the kernel booting failure. Please modify loading address of the dtb file to fit the kernel size.
+e.g.
+The kernel size is 5MBytes, loading address of the kernel is 0x200000 and the 
+default dtb loading address is 0x400000. Then the dtb loading address will be
+changed to 0x200000 + 0x500000(5MBytes) = 0x700000
+

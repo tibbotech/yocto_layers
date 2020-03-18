@@ -1,0 +1,12 @@
+115200
+connect "/etc/ppp/peers/T_reset.sh /dev/ttyO3 S7 && /etc/ppp/peers/T_speed.sh /dev/ttyO3 S7 && /etc/ppp/peers/T_gprs.sh /dev/ttyO3 S7 && /usr/sbin/chat -v -f /etc/chatscripts/Pdefault.chat"
+/dev/ttyO3
+user mts
+noipdefault
+usepeerdns
+defaultroute
+replacedefaultroute
+nodeflate
+nobsdcomp
+#debug
+#kdebug 10

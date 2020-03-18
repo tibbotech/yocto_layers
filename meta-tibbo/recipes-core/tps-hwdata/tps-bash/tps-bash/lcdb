@@ -1,0 +1,19 @@
+
+lcdbl_io="/sys/class/backlight/lcd_backlight/"
+
+lcdbl_max() {
+ if [ ! -d "${lcdbl_io}" ]; then return 0;  fi;
+ if [ ! -f "${lcdbl_io}/max_brightness" ]; then
+   return 1;
+ fi;
+ cat "${lcdbl_io}/max_brightness"
+}
+
+lcdbl_set() {
+ if [ ! -d "${lcdbl_io}" ]; then return 0;  fi;
+ if [ ! -f "${lcdbl_io}/brightness" ]; then
+   return 1;
+ fi;
+ echo "${1}" > "${lcdbl_io}/brightness";
+ return 0;
+}

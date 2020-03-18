@@ -1,0 +1,36 @@
+/*
+ * Automatic software update for U-Boot
+ * Make sure the flashing addresses ('load' prop) is correct for your board!
+ */
+
+/dts-v1/;
+
+/ {
+	description = "Automatic U-Boot update";
+	#address-cells = <1>;
+
+	images {
+		update@1 {
+			description = "U-Boot SPL0";
+			data = /incbin/("./MLO-tpp-klm601");
+			compression = "none";
+			arch = "arm";
+			type = "firmware";
+			tps-upd-to = "NAND.SPL0";
+			hash@1 {
+				algo = "sha1";
+			};
+		};
+		update@2 {
+			description = "U-Boot binary";
+			data = /incbin/("./u-boot.img-klm601");
+			compression = "none";
+			arch = "arm";
+			type = "firmware";
+			tps-upd-to = "NAND.u-boot";
+			hash@1 {
+				algo = "sha1";
+			};
+		};
+	};
+};

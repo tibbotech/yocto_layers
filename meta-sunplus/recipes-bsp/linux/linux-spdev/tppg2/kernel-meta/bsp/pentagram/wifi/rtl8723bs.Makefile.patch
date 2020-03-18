@@ -1,0 +1,7 @@
+--- a/drivers/staging/Makefile	2017-07-23 21:09:50.000000000 +0300
++++ a/drivers/staging/Makefile	2017-07-23 21:18:40.904975982 +0300
+@@ -41,3 +41,4 @@
+ obj-$(CONFIG_KS7010)		+= ks7010/
+ obj-$(CONFIG_GREYBUS)		+= greybus/
+ obj-$(CONFIG_BCM2835_VCHIQ)	+= vc04_services/
++obj-$(CONFIG_RTL8723BS)		+= rtl8723bs/

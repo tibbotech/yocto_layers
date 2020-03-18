@@ -1,0 +1,11 @@
+--- a/examples/squeezenet.cpp	2020-02-19 15:23:40.823248745 +0300
++++ a/examples/squeezenet.cpp	2020-02-19 17:40:22.474721948 +0300
+@@ -78,7 +78,7 @@
+ {
+     const char* imagepath = argv[1];
+ 
+-    cv::Mat m = cv::imread(imagepath, CV_LOAD_IMAGE_COLOR);
++    cv::Mat m = cv::imread(imagepath, cv::IMREAD_COLOR);
+     if (m.empty())
+     {
+         fprintf(stderr, "cv::imread %s failed\n", imagepath);

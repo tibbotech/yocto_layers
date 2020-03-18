@@ -1,0 +1,9 @@
+U-Boot# i2c dev 3
+Setting bus to 3
+U-Boot# i2c probe
+// eeprom:
+U-Boot# i2c mm 57 ff 
+ ff ? 56                                                                       
+ ff ? U-Boot# i2c md 57 ff                                                     
+ 00ff: 56    V                                                                  
+   

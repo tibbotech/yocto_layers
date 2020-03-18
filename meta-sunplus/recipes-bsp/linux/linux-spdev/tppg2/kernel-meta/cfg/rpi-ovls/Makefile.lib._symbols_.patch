@@ -1,0 +1,10 @@
+--- a/scripts/Makefile.lib	2019-03-29 23:18:45.483802210 +0800
++++ a/scripts/Makefile.lib	2019-04-01 19:57:38.827414186 +0800
+@@ -293,6 +293,7 @@
+ 	-Wproperty_name_chars_strict
+ endif
+ 
++DTC_FLAGS += -@
+ DTC_FLAGS += $(DTC_FLAGS_$(basetarget))
+ 
+ # Generate an assembly file to wrap the output of the device tree compiler

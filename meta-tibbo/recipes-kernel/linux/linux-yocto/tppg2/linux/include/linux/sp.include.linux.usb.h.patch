@@ -1,0 +1,33 @@
+--- a/include/linux/usb.h	2017-09-20 09:25:38.000000000 +0300
++++ a/include/linux/usb.h	2018-11-12 06:42:56.000000000 +0300
+@@ -22,6 +22,10 @@
+ #include <linux/mutex.h>	/* for struct mutex */
+ #include <linux/pm_runtime.h>	/* for runtime PM */
+ 
++
++/*#define CONFIG_RETRY_TIMES*/
++
++
+ struct usb_device;
+ struct usb_driver;
+ struct wusb_dev;
+@@ -688,6 +692,11 @@
+ 	struct usb3_lpm_parameters u1_params;
+ 	struct usb3_lpm_parameters u2_params;
+ 	unsigned lpm_disable_count;
++#ifdef	CONFIG_RETRY_TIMES
++	int reset_count;
++	struct timespec t_prev;
++#endif
++	struct urb* current_urb;
+ };
+ #define	to_usb_device(d) container_of(d, struct usb_device, dev)
+ 
+@@ -1559,6 +1568,7 @@
+ 	usb_complete_t complete;	/* (in) completion routine */
+ 	struct usb_iso_packet_descriptor iso_frame_desc[0];
+ 					/* (in) ISO ONLY */
++	u8 uphy_stuck_flag;
+ };
+ 
+ /* ----------------------------------------------------------------------- */

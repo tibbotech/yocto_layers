@@ -1,0 +1,133 @@
+--- linux/arch/arm/boot/dts/am335x-TPPs2.dts	1970-01-01 03:00:00.000000000 +0300
++++ linux/arch/arm/boot/dts/am335x-TPPs2.dts	2014-12-16 10:12:59.961528417 +0300
+@@ -0,0 +1,130 @@
++/*
++ * Tibbo Project PCB 2 for Linux (TPP2)
++ * Copyright (C) 2015 Tibbo Tech. - http://tibbo.com/tps/
++ * License: GPLv2 or later
++ */
++/dts-v1/;
++
++#include "am33xx.tpp.dtsi"
++#include "am335x-TPP.dtsi"
++
++/ {
++	model = "AM335x TPPs2";
++	compatible = "ti,am335x-tpp2", "ti,am335x-tpp", "ti,am33xx";
++	dvgit0@0 {
++		compatible = "dv-git";
++		pinctrl-names = "default";
++		pinctrl-0 = <&dvgit0_pins>;
++		status = "okay";
++		message = "message from dvgit module";
++		gpios = <&gpio2 30 GPIO_ACTIVE_HIGH>;/*<&gpio3 16 GPIO_ACTIVE_HIGH>;*/
++	};
++};
++
++&am33xx_pinmux {
++	pinctrl-0 = <&old_dcan1_pins>;
++	dvgit0_pins: dvgit0_pins {
++		pinctrl-single,pins = <
++			/*0x198*/0x100 (PIN_INPUT | MUX_MODE7)	/* mmc2_cd  S21_C */
++		>;
++	};
++	old_dcan1_pins: old_dcan1_pins {
++		pinctrl-single,pins = <
++			/*0x100 (PIN_OUTPUT | MUX_MODE7)*/	/* gpio2.30 pin94  S19A */
++			0x104 (PIN_OUTPUT | MUX_MODE7)	/* gpio2.31 pin95  S19B */
++/* for tst */
++			0xe4  (PIN_OUTPUT | MUX_MODE7)	/* gpio1.28 pin60  S23D, other mode - mmc2 */
++			0x78  (PIN_OUTPUT | MUX_MODE7)	/* gpio1.28 pin60  S23D, other mode - mmc2 */
++			0x8c  (PIN_OUTPUT | MUX_MODE7)	/* gpio2.01 pin65  S21A, other mode - mmc2 */
++			0x88  (PIN_OUTPUT | MUX_MODE7)	/* gpio2.00 pin64  S19C */
++			0x21c (PIN_OUTPUT | MUX_MODE7)	/* gpio0.18 pin18  S25A */
++			0x234 (PIN_OUTPUT | MUX_MODE7)	/* gpio0.18 pin109 S3D */
++/* for tst / */
++/* pwms */
++			0x190 (PIN_OUTPUT_PULLDOWN | MUX_MODE1)	/* gpio3.14 S15C */
++			0x150 (PIN_OUTPUT_PULLDOWN | MUX_MODE3)	/* gpio0.02 WIFI#10 */
++			/*0x194 (PIN_OUTPUT_PULLDOWN | MUX_MODE1)*/	/* gpio3.15 already a buzzer */
++			0x154 (PIN_OUTPUT_PULLDOWN | MUX_MODE3)	/* gpio0.03 WIFI#9*/
++			0xc8 (PIN_OUTPUT_PULLDOWN | MUX_MODE2)	/* gpio2.16 S5D */
++			0x48 (PIN_OUTPUT_PULLDOWN | MUX_MODE6)	/* gpio1.18 S23B */
++			0xcc (PIN_OUTPUT_PULLDOWN | MUX_MODE2)	/* gpio2.17 S5C */
++			0x4c (PIN_OUTPUT_PULLDOWN | MUX_MODE6)	/* gpio1.19 S23C */
++/* pwms / */
++		>;
++	};
++};
++
++&mcasp0 {
++	status = "disabled";
++};
++
++&usb {
++	status = "disabled"/*"okay"*/;
++
++	control@44e10620 {
++		status = "disabled"/*"okay"*/;
++	};
++
++	usb-phy@47401300 {
++		status = "disabled"/*"okay"*/;
++	};
++
++	usb-phy@47401b00 {
++		status = "disabled";
++	};
++
++	usb@47401000 {
++		status = "disabled"/*"okay"*/;
++	};
++
++	usb@47401800 {
++		status = "disabled";
++		dr_mode = "host";
++	};
++
++	dma-controller@47402000  {
++		status = "disabled"/*"okay"*/;
++	};
++};
++
++&uart1 {
++	status = "okay";
++};
++&uart3 {
++	status = "okay";
++};
++&uart4 {
++	status = "okay";
++};
++&uart5 {
++	status = "okay";
++};
++
++&epwmss1 {
++	status = "okay";
++	ehrpwm@48302200 {
++		status = "okay";
++	};
++};
++
++&timer4 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&timer4_pins>;
++	status = "okay";
++};
++&timer5 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&timer5_pins>;
++	status = "okay";
++};
++&timer6 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&timer6_pins>;
++	status = "okay";
++};
++&timer7 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&timer7_pins>;
++	status = "okay";
++};
++

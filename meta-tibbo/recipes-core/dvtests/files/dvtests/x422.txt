@@ -1,0 +1,133 @@
+./arch/alpha/include/uapi/asm/ioctls.h:#define TIOCNOTTY	0x5422
+./arch/arm/boot/dts/am335x-TPPs3.dtsi:			0x1b4 (PIN_OUTPUT | MUX_MODE7)		/* mode 232/422/: gpio2.29 pin093 S7B */
+./arch/arm/boot/dts/am335x-TPPs3.dtsi:			0x68  (PIN_OUTPUT | MUX_MODE7)		/* mode 232/422/485: gpio2.14 pin078 S11B */
+./arch/arm/boot/dts/am335x-TPPA.dtsi:			0x1b4 (PIN_OUTPUT | MUX_MODE7)		/* mode 232/422/: gpio2.29 pin093 S7B */
+./arch/arm/boot/dts/am335x-TPPA.dtsi:			0x68  (PIN_OUTPUT | MUX_MODE7)		/* mode 232/422/485: gpio2.14 pin078 S11B */
+./arch/parisc/include/uapi/asm/ioctls.h:#define TIOCNOTTY	0x5422
+./arch/parisc/kernel/hardware.c:	{HPHW_A_DIRECT, 0x00A, 0x0000D, 0x00, "Solaris RS-422/423 MUX (J2093A)"}, 
+./arch/parisc/kernel/hardware.c:	{HPHW_A_DIRECT, 0x00B, 0x0000D, 0x00, "Solaris RS-422/423 Quadriloops MUX"}, 
+./drivers/char/pcmcia/synclink_cs.c:#define PVR_RS422    0x40   /* 0100b */
+./drivers/char/pcmcia/synclink_cs.c:	case MGSL_INTERFACE_RS422: val |= PVR_RS422; break;
+./drivers/tty/synclink_gt.c:	case MGSL_INTERFACE_RS422:
+./drivers/tty/serial/jsm/jsm_driver.c:	case PCI_DEVICE_ID_NEO_2_422_485:
+./drivers/tty/serial/jsm/jsm_driver.c:	case PCI_DEVICE_ID_CLASSIC_4_422:
+./drivers/tty/serial/jsm/jsm_driver.c:	case PCI_DEVICE_ID_CLASSIC_8_422:
+./drivers/tty/serial/jsm/jsm_driver.c:	case PCI_DEVICE_ID_CLASSIC_4_422:
+./drivers/tty/serial/jsm/jsm_driver.c:	case PCI_DEVICE_ID_CLASSIC_8_422:
+./drivers/tty/serial/jsm/jsm_driver.c:	case PCI_DEVICE_ID_NEO_2_422_485:
+./drivers/tty/serial/jsm/jsm_driver.c:	case PCI_DEVICE_ID_CLASSIC_4_422:
+./drivers/tty/serial/jsm/jsm_driver.c:	case PCI_DEVICE_ID_CLASSIC_8_422:
+./drivers/tty/serial/jsm/jsm_driver.c:	{ PCI_DEVICE(PCI_VENDOR_ID_DIGI, PCI_DEVICE_ID_NEO_1_422), 0, 0, 7 },
+./drivers/tty/serial/jsm/jsm_driver.c:	{ PCI_DEVICE(PCI_VENDOR_ID_DIGI, PCI_DEVICE_ID_NEO_1_422_485), 0, 0, 8 },
+./drivers/tty/serial/jsm/jsm_driver.c:	{ PCI_DEVICE(PCI_VENDOR_ID_DIGI, PCI_DEVICE_ID_NEO_2_422_485), 0, 0, 9 },
+./drivers/tty/serial/jsm/jsm_driver.c:	{ PCI_DEVICE(PCI_VENDOR_ID_DIGI, PCI_DEVICE_ID_CLASSIC_4_422), 0, 0, 15 },
+./drivers/tty/serial/jsm/jsm_driver.c:	{ PCI_DEVICE(PCI_VENDOR_ID_DIGI, PCI_DEVICE_ID_CLASSIC_8_422), 0, 0, 17 },
+./drivers/tty/serial/jsm/jsm.h:#define PCI_DEVICE_ID_CLASSIC_4_422	0x00D0
+./drivers/tty/serial/jsm/jsm.h:#define PCI_DEVICE_ID_CLASSIC_8_422	0x00D1
+./drivers/tty/serial/jsm/jsm.h:#define PCI_DEVICE_ID_NEO_1_422         0x00CC
+./drivers/tty/serial/jsm/jsm.h:#define PCI_DEVICE_ID_NEO_1_422_485     0x00CD
+./drivers/tty/serial/jsm/jsm.h:#define PCI_DEVICE_ID_NEO_2_422_485     0x00CE
+./drivers/tty/serial/ioc3_serial.c:#define LOGICAL_PORTS		2	/* rs232(0) and rs422(1) */
+./drivers/tty/serial/ioc3_serial.c: * we have 2 logical ports (rs232, rs422) for each physical port
+./drivers/tty/serial/ioc3_serial.c: * evens are rs232, odds are rs422
+./drivers/tty/serial/ioc3_serial.c:#define PROTO_RS422		1
+./drivers/tty/serial/ioc3_serial.c:	char rs422_select_pin;
+./drivers/tty/serial/ioc3_serial.c:	.rs422_select_pin = GPPR_UARTA_MODESEL_PIN,
+./drivers/tty/serial/ioc3_serial.c:	.rs422_select_pin = GPPR_UARTB_MODESEL_PIN,
+./drivers/tty/serial/ioc3_serial.c:					+ hooks->rs422_select_pin));
+./drivers/tty/serial/ioc3_serial.c:	case PROTO_RS422:
+./drivers/tty/serial/ioc3_serial.c:		DPRINT_CONFIG(("%s: rs422\n", __func__));
+./drivers/tty/serial/ioc3_serial.c:					+ hooks->rs422_select_pin));
+./drivers/tty/serial/ioc3_serial.c:							PROTO_RS422);
+./drivers/tty/serial/ioc3_serial.c:		return "SGI IOC3 Serial [rs422]";
+./drivers/tty/serial/ioc4_serial.c:#define DEVICE_NAME_RS422  "ttyAIOC"
+./drivers/tty/serial/ioc4_serial.c:#define DEVICE_MINOR_RS422 84
+./drivers/tty/serial/ioc4_serial.c:#define PROTO_RS422	7
+./drivers/tty/serial/ioc4_serial.c:#define UART_PORT_RS422		1
+./drivers/tty/serial/ioc4_serial.c:		/* uart ports are allocated here - 1 for rs232, 1 for rs422 */
+./drivers/tty/serial/ioc4_serial.c:	int rs422_select_pin;
+./drivers/tty/serial/ioc4_serial.c:		writel(0, (&port->ip_mem->gppr[hooks->rs422_select_pin].raw));
+./drivers/tty/serial/ioc4_serial.c:	case PROTO_RS422:
+./drivers/tty/serial/ioc4_serial.c:		writel(1, (&port->ip_mem->gppr[hooks->rs422_select_pin].raw));
+./drivers/tty/serial/ioc4_serial.c:		return "SGI IOC4 Serial [rs422]";
+./drivers/tty/serial/ioc4_serial.c:static struct uart_driver ioc4_uart_rs422 = {
+./drivers/tty/serial/ioc4_serial.c:	.driver_name	= "ioc4_serial_rs422",
+./drivers/tty/serial/ioc4_serial.c:	.dev_name	= DEVICE_NAME_RS422,
+./drivers/tty/serial/ioc4_serial.c:	.minor		= DEVICE_MINOR_RS422,
+./drivers/tty/serial/ioc4_serial.c:				case UART_PORT_RS422:
+./drivers/tty/serial/ioc4_serial.c:					uart_remove_one_port(&ioc4_uart_rs422,
+./drivers/tty/serial/ioc4_serial.c:						: UART_PORT_RS422;
+./drivers/tty/serial/ioc4_serial.c:						: &ioc4_uart_rs422;
+./drivers/tty/serial/ioc4_serial.c:				port_type == PROTO_RS232 ? "rs232" : "rs422"));
+./drivers/tty/serial/ioc4_serial.c:	/* register port with the serial core - 1 rs232, 1 rs422 */
+./drivers/tty/serial/ioc4_serial.c:	ret = ioc4_serial_core_attach(idd->idd_pdev, PROTO_RS422);
+./drivers/tty/serial/ioc4_serial.c:	if ((ret = uart_register_driver(&ioc4_uart_rs422)) < 0) {
+./drivers/tty/serial/ioc4_serial.c:			"%s: Couldn't register rs422 IOC4 serial driver\n",
+./drivers/tty/serial/ioc4_serial.c:		goto out_uart_rs422;
+./drivers/tty/serial/ioc4_serial.c:out_uart_rs422:
+./drivers/tty/serial/ioc4_serial.c:	uart_unregister_driver(&ioc4_uart_rs422);
+./drivers/tty/serial/ioc4_serial.c:	uart_unregister_driver(&ioc4_uart_rs422);
+./drivers/tty/serial/8250/serial_cs.c:	PCMCIA_DEVICE_PROD_ID12("Computerboards, Inc.", "PCM-COM422", 0xd0b78f51, 0x7e2d49ed),
+./drivers/tty/serial/8250/8250_pci.c:static int pci_quatech_rs422(struct uart_8250_port *port)
+./drivers/tty/serial/8250/8250_pci.c:	int rs422 = 0;
+./drivers/tty/serial/8250/8250_pci.c:		rs422 = 1;
+./drivers/tty/serial/8250/8250_pci.c:	return rs422;
+./drivers/tty/serial/8250/8250_pci.c:	/* For now just warn about RS422 */
+./drivers/tty/serial/8250/8250_pci.c:	if (pci_quatech_rs422(port))
+./drivers/tty/serial/8250/8250_pci.c:		pr_warn("quatech: software control of RS422 features not currently supported.\n");
+./drivers/tty/serial/8250/8250_pci.c:#define PCI_DEVICE_ID_COMMTECH_4222PCI335 0x0004
+./drivers/tty/serial/8250/8250_pci.c:#define PCI_DEVICE_ID_COMMTECH_4224PCI335 0x0002
+./drivers/tty/serial/8250/8250_pci.c:		case PCI_DEVICE_ID_COMMTECH_4222PCI335:
+./drivers/tty/serial/8250/8250_pci.c:		case PCI_DEVICE_ID_COMMTECH_4224PCI335:
+./drivers/tty/serial/8250/8250_pci.c:#define PCI_SUBDEVICE_ID_OCTPRO422	0x0208
+./drivers/tty/serial/8250/8250_pci.c:#define PCI_SUBDEVICE_ID_POCTAL422	0x0408
+./drivers/tty/serial/8250/8250_pci.c:#define PCI_DEVICE_ID_COMMTECH_4224PCIE	0x0020
+./drivers/tty/serial/8250/8250_pci.c:#define PCI_DEVICE_ID_COMMTECH_4228PCIE	0x0021
+./drivers/tty/serial/8250/8250_pci.c:#define PCI_DEVICE_ID_COMMTECH_4222PCIE	0x0022
+./drivers/tty/serial/8250/8250_pci.c:		.device		= PCI_DEVICE_ID_NI_PXI8422_2324,
+./drivers/tty/serial/8250/8250_pci.c:		.device		= PCI_DEVICE_ID_NI_PXI8422_2322,
+./drivers/tty/serial/8250/8250_pci.c:	 * SBS Technologies, Inc., PMC-OCTALPRO 422
+./drivers/tty/serial/8250/8250_pci.c:		.subdevice	= PCI_SUBDEVICE_ID_OCTPRO422,
+./drivers/tty/serial/8250/8250_pci.c:	 * SBS Technologies, Inc., P-Octal 422
+./drivers/tty/serial/8250/8250_pci.c:		.subdevice	= PCI_SUBDEVICE_ID_POCTAL422,
+./drivers/tty/serial/8250/8250_pci.c:		.device = PCI_DEVICE_ID_COMMTECH_4222PCI335,
+./drivers/tty/serial/8250/8250_pci.c:		.device = PCI_DEVICE_ID_COMMTECH_4224PCI335,
+./drivers/tty/serial/8250/8250_pci.c:		.device = PCI_DEVICE_ID_COMMTECH_4222PCIE,
+./drivers/tty/serial/8250/8250_pci.c:		.device = PCI_DEVICE_ID_COMMTECH_4224PCIE,
+./drivers/tty/serial/8250/8250_pci.c:		.device = PCI_DEVICE_ID_COMMTECH_4228PCIE,
+./drivers/tty/serial/8250/8250_pci.c:	{	PCI_VENDOR_ID_SEALEVEL, PCI_DEVICE_ID_SEALEVEL_UCOMM422,
+./drivers/tty/serial/8250/8250_pci.c:	 * 100 series are RS232, 200 series RS422,
+./drivers/tty/serial/8250/8250_pci.c:		PCI_SUBVENDOR_ID_SBSMODULARIO, PCI_SUBDEVICE_ID_OCTPRO422, 0, 0,
+./drivers/tty/serial/8250/8250_pci.c:		PCI_SUBVENDOR_ID_SBSMODULARIO, PCI_SUBDEVICE_ID_POCTAL422, 0, 0,
+./drivers/tty/serial/8250/8250_pci.c:	 * Note that JC140x are RS422/485 cards which require ox950
+./drivers/tty/serial/8250/8250_pci.c:	{	PCI_VENDOR_ID_NI, PCI_DEVICE_ID_NI_PXI8422_2324,
+./drivers/tty/serial/8250/8250_pci.c:	{	PCI_VENDOR_ID_NI, PCI_DEVICE_ID_NI_PXI8422_2322,
+./drivers/tty/serial/8250/8250_pci.c:	{	PCI_VENDOR_ID_COMMTECH, PCI_DEVICE_ID_COMMTECH_4222PCI335,
+./drivers/tty/serial/8250/8250_pci.c:	{	PCI_VENDOR_ID_COMMTECH, PCI_DEVICE_ID_COMMTECH_4224PCI335,
+./drivers/tty/serial/8250/8250_pci.c:	{	PCI_VENDOR_ID_COMMTECH, PCI_DEVICE_ID_COMMTECH_4222PCIE,
+./drivers/tty/serial/8250/8250_pci.c:	{	PCI_VENDOR_ID_COMMTECH, PCI_DEVICE_ID_COMMTECH_4224PCIE,
+./drivers/tty/serial/8250/8250_pci.c:	{	PCI_VENDOR_ID_COMMTECH, PCI_DEVICE_ID_COMMTECH_4228PCIE,
+./drivers/tty/rocket_int.h:#define InterfaceModeRS422  0x08
+./drivers/tty/rocket_int.h:#define PCI_DEVICE_ID_RP2_422           0x000F	/* Rocketport Plus 2 port RS422          */ 
+./drivers/tty/mxser.c:					opmode != RS422_MODE &&
+./drivers/tty/rocket.h:#define ROCKET_MODE_RS422       0x00002000
+./drivers/tty/rocket.h:#define MODEL_RP2_422         0x000F	/* RP Plus 2 port RS232        */
+./drivers/tty/mxser.h:#define RS422_MODE		2
+./drivers/tty/rocket.c:	case 422:
+./drivers/tty/rocket.c:		info->flags |= ROCKET_MODE_RS422;
+./drivers/tty/rocket.c:		case ROCKET_MODE_RS422:
+./drivers/tty/rocket.c:			sSetInterfaceMode(&info->channel, InterfaceModeRS422);
+./drivers/tty/rocket.c:		case ROCKET_MODE_RS422:
+./drivers/tty/rocket.c:			sSetInterfaceMode(cp, InterfaceModeRS422);
+./drivers/tty/rocket.c:	{ PCI_DEVICE(PCI_VENDOR_ID_RP, PCI_DEVICE_ID_RP2_422) },
+./drivers/tty/rocket.c:	case PCI_DEVICE_ID_RP2_422:
+./drivers/tty/rocket.c:		rocketModel[i].model = MODEL_RP2_422;
+./drivers/tty/rocket.c:		strcpy(rocketModel[i].modelString, "RocketPort Plus 2 port RS422");
+./include/media/tvp514x.h:	OUTPUT_10BIT_422_EMBEDDED_SYNC = 0,
+./include/media/tvp514x.h:	OUTPUT_20BIT_422_SEPERATE_SYNC,
+./include/media/tvp514x.h:	OUTPUT_10BIT_422_SEPERATE_SYNC = 3,
+./include/linux/ioc4.h:#define IOC4_GPCR_DIR_4 0x10	/* Ser. port 0 xcvr select (0=232, 1=422) */
+./include/linux/ioc4.h:#define IOC4_GPCR_DIR_5 0x20	/* Ser. port 1 xcvr select (0=232, 1=422) */
+./include/linux/ioc4.h:#define IOC4_GPCR_DIR_6 0x40	/* Ser. port 2 xcvr select (0=232, 1=422) */
+./include/linux/ioc4.h:#define IOC4_GPCR_DIR_7 0x80	/* Ser. port 3 xcvr select (0=232, 1=422) */
+./include/uapi/linux/synclink.h:#define MGSL_INTERFACE_RS422    3

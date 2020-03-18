@@ -1,0 +1,38 @@
+diff --git a/drivers/gpu/drm/tilcdc/tilcdc_crtc.c b/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
+index 3621ff42979f..589156b2f76c 100644
+--- a/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
++++ b/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
+@@ -206,10 +206,33 @@
+ {
+ 	struct drm_device *dev = crtc->dev;
+ 	struct tilcdc_drm_private *priv = dev->dev_private;
++	struct tilcdc_crtc *tilcdc_crtc = to_tilcdc_crtc(crtc);
++	int ret;
+ 
+ 	if (priv->rev != 2)
+ 		return;
+ 
++	/*
++	 * If the LCDC was already enabled (e.g. by the bootloader)
++	 * do the complete software reset sequence.
++	 */
++	if (tilcdc_read(dev, LCDC_RASTER_CTRL_REG) & LCDC_RASTER_ENABLE) {
++
++		/* Enable DMA Frame Done Interrupt */
++		tilcdc_write(dev, LCDC_INT_ENABLE_SET_REG, LCDC_FRAME_DONE);
++		tilcdc_clear_irqstatus(dev, 0xffffffff);
++
++		tilcdc_crtc->frame_done = false;
++		tilcdc_clear(dev, LCDC_RASTER_CTRL_REG, LCDC_RASTER_ENABLE);
++
++		ret = wait_event_timeout(tilcdc_crtc->frame_done_wq,
++					 tilcdc_crtc->frame_done,
++					 msecs_to_jiffies(500));
++		if (ret == 0)
++			dev_err(dev->dev, "%s: timeout waiting for framedone while resetting LCDC\n",
++				__func__);
++	}
++
+ 	tilcdc_set(dev, LCDC_CLK_RESET_REG, LCDC_CLK_MAIN_RESET);
+ 	usleep_range(250, 1000);
+ 	tilcdc_clear(dev, LCDC_CLK_RESET_REG, LCDC_CLK_MAIN_RESET);

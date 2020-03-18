@@ -1,0 +1,11 @@
+[Unit]
+Description=8821cs Bluetooth hciattach
+BindsTo=dev-%i.device
+
+[Service]
+Type=simple
+#ExecStartPre=/sbin/bt_reset
+ExecStart=/usr/bin/rtk_hciattach -n -s 115200 %i rtk_h5
+
+[Install]
+WantedBy=network.target

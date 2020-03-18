@@ -1,0 +1,46 @@
+// tpb
+Net:   phy_register():500                                                      
+phy_register():500                                                             
+<ethaddr> not set. Validating first E-fuse MAC                                 
+drivers/net/cpsw.c cpsw_register():1030                                        
+drivers/net/cpsw.c cpsw_mdio_init(mdio_base:4A101000,div:FF) :532              
+drivers/net/cpsw.c cpsw_mdio_init()->raw_writel(reg:400000FF,acc:4A101004) :536
+drivers/net/cpsw.c cpsw_register():1032                                        
+drivers/net/cpsw.c cpsw_register():1034                                        
+drivers/net/cpsw.c cpsw_phy_init():959                                         
+phy_connect():797                                                              
+phy_find_by_mask(phy_mask:1):768                                               
+get_phy_device_by_mask(phy_mask:1):661                                         
+search_for_existing_phy(phy_mask:1):642
+create_phy_by_mask(phy_mask:1,devad:FFFFFFFF):627                              
+get_phy_id(addr:0,devad:FFFFFFFF):599
+drivers/net/cpsw.c cpsw_mdio_read(phy_id:FFFFFFFF,dev_addr:FFFFFFFF,phy_reg:2):3
+get_phy_id():603 bus->read(addr:0,devad:FFFFFFFF,MII_PHYSID1:2) r:-22
+create_phy_by_mask(phy_mask:1,devad:1):627
+get_phy_id(addr:0,devad:1):599
+drivers/net/cpsw.c cpsw_mdio_read(phy_id:1,dev_addr:1,phy_reg:2):493
+drivers/net/cpsw.c cpsw_mdio_read ->raw_writel(reg:80410000,acc:4A101080):500
+drivers/net/cpsw.c cpsw_mdio_read():505 reg:20410243 data:243
+get_phy_id():603 bus->read(addr:0,devad:1,MII_PHYSID1:2) r:579
+drivers/net/cpsw.c cpsw_mdio_read(phy_id:1,dev_addr:1,phy_reg:3):493
+drivers/net/cpsw.c cpsw_mdio_read ->raw_writel(reg:80610000,acc:4A101080):500
+drivers/net/cpsw.c cpsw_mdio_read():505 reg:20610C54 data:C54
+get_phy_id():612 bus->read(addr:0,devad:1,MII_PHYSID1:3) r:3156
+get_phy_id():618 phy_id:2430C54
+phy_device_create(addr:0,phy_id:2430C54):555
+get_phy_driver():538
+phy_probe():510
+phy_connect_dev():781
+phy_reset():699
+drivers/net/cpsw.c cpsw_mdio_read(phy_id:0,dev_addr:FFFFFFFF,phy_reg:0):493
+drivers/net/cpsw.c cpsw_mdio_read ->raw_writel(reg:80000000,acc:4A101080):500
+drivers/net/cpsw.c cpsw_mdio_read():505 reg:FFFF data:FFFFFFFF
+drivers/net/cpsw.c cpsw_phy_init():968
+phy_config():831
+__board_phy_config():820
+drivers/net/cpsw.c cpsw_mdio_read(phy_id:0,dev_addr:FFFFFFFF,phy_reg:14):493
+drivers/net/cpsw.c cpsw_mdio_read ->raw_writel(reg:82800000,acc:4A101080):500
+drivers/net/cpsw.c cpsw_mdio_read():505 reg:280FFFF data:FFFFFFFF
+drivers/net/cpsw.c cpsw_phy_init():974
+drivers/net/cpsw.c cpsw_register():1038
+cpsw, usb_ether

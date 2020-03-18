@@ -1,0 +1,13 @@
+{T.user}
+plugin rp-pppoe.so
+{T.TTY}
+noipdefault
+usepeerdns
+defaultroute
+#replacedefaultroute
+persist
+noauth
+maxfail 0
+ipparam "metric {T.UNIT}"
+{T.DEBUG}
+{T.UNIT}

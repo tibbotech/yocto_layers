@@ -1,0 +1,9 @@
+--- a/drivers/net/ethernet/Kconfig	2017-09-20 09:25:38.000000000 +0300
++++ a/drivers/net/ethernet/Kconfig	2018-11-12 06:42:54.000000000 +0300
+@@ -181,5 +181,6 @@
+ source "drivers/net/ethernet/xilinx/Kconfig"
+ source "drivers/net/ethernet/xircom/Kconfig"
+ source "drivers/net/ethernet/synopsys/Kconfig"
++source "drivers/net/ethernet/sp/Kconfig"
+
+ endif # ETHERNET

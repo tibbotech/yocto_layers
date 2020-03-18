@@ -1,0 +1,20 @@
+--- a/examples/fasterrcnn.cpp	2020-02-19 15:23:40.822248745 +0300
++++ a/examples/fasterrcnn.cpp	2020-02-19 17:50:46.362757944 +0300
+@@ -307,7 +307,7 @@
+ 
+         cv::rectangle(image, cv::Rect(cv::Point(x, y),
+                                       cv::Size(label_size.width, label_size.height + baseLine)),
+-                      cv::Scalar(255, 255, 255), CV_FILLED);
++                      cv::Scalar(255, 255, 255), -1);
+ 
+         cv::putText(image, text, cv::Point(x, y + label_size.height),
+                     cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 0));
+@@ -321,7 +321,7 @@
+ {
+     const char* imagepath = argv[1];
+ 
+-    cv::Mat m = cv::imread(imagepath, CV_LOAD_IMAGE_COLOR);
++    cv::Mat m = cv::imread(imagepath, cv::IMREAD_COLOR);
+     if (m.empty())
+     {
+         fprintf(stderr, "cv::imread %s failed\n", imagepath);

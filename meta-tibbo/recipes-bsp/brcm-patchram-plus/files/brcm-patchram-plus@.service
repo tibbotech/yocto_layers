@@ -1,0 +1,12 @@
+[Unit]
+Description=AP6256 Bluetooth up
+Before=bluetooth.target
+BindsTo=dev-tty%i.device
+After=dev-tty%i.device
+
+[Service]
+ExecStartPre=-/opt/bt-reset.sh
+ExecStart=brcm_patchram_plus --enable_hci --no2bytes --tosleep 200000 --baudrate 3000000 --patchram /lib/firmware/brcm/BCM4345C5_003.006.006.0058.0135.hcd /dev/tty%i
+
+[Install]
+WantedBy=multi-user.target dev-tty%i.device

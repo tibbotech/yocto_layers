@@ -1,0 +1,11 @@
+--- a/drivers/mmc/host/spsdv2.c	2019-05-16 15:50:02.439582196 +0300
++++ a/drivers/mmc/host/spsdv2.c	2019-05-16 18:03:16.328671694 +0300
+@@ -30,7 +30,7 @@
+ 	SPSDC_LOG_VERBOSE,
+ 	SPSDC_LOG_MAX
+ };
+-static int loglevel = SPSDC_LOG_WARNING;
++static int loglevel = SPSDC_LOG_ERROR;
+ 
+ /**
+  * we do not need `SPSDC_LOG_' prefix here, when specify @level.

@@ -1,0 +1,24 @@
+From: Bruce Ashfield <bruce.ashfield@windriver.com>
+Subject: initramfs: allow an optional wrapper script around initramfs generation
+
+It is sometimes useful to have a secondary script call the 
+gen_initramfs_list.sh script. This allows special interpretation
+of the initramfs root filesystem or other manipulations to be
+injected.
+
+Signed-off-by: Bruce Ashfield <bruce.ashfield@windriver.com>
+
+
+diff --git a/usr/Makefile b/usr/Makefile
+index 201f27f..0a3b635 100644
+--- a/usr/Makefile
++++ b/usr/Makefile
+@@ -18,7 +18,7 @@ $(obj)/initramfs_data.o: $(obj)/initramfs_data.cpio.gz FORCE
+ # Generate the initramfs cpio archive
+ 
+ hostprogs-y := gen_init_cpio
+-initramfs   := $(CONFIG_SHELL) $(srctree)/scripts/gen_initramfs_list.sh
++initramfs   := $(INITRAMFS_WRAPPER) $(CONFIG_SHELL) $(srctree)/scripts/gen_initramfs_list.sh
+ ramfs-input := $(if $(filter-out "",$(CONFIG_INITRAMFS_SOURCE)), \
+ 			$(shell echo $(CONFIG_INITRAMFS_SOURCE)),-d)
+ ramfs-args  := \

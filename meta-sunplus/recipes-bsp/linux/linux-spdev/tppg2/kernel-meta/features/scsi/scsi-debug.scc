@@ -1,0 +1,8 @@
+define KFEATURE_DESCRIPTION "Enable options for SCSI debug support"
+define KFEATURE_COMPATIBILITY board
+
+# if we are turning on debug support, we need to be sure that core scsi
+# support is enabled.
+include scsi.scc
+
+kconf hardware scsi-debug.cfg

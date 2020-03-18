@@ -1,0 +1,18 @@
+--- a/drivers/pinctrl/sppctl/sp7021_gpio_ops.c	2019-10-03 09:37:11.281894120 +0300
++++ a/drivers/pinctrl/sppctl/sp7021_gpio_ops.c	2019-10-03 09:38:37.869522612 +0300
+@@ -49,6 +49,7 @@
+  u32 r;
+  sp7021gpio_chip_t *pc = ( sp7021gpio_chip_t *)gpiochip_get_data( _c);
+  r = readl( pc->base2 + SP7021_GPIO_OFF_GFR + R32_ROF(_n));
++ if ( _n == 2) KINF( _c->parent, "u F r:%X = %d %p off:%d\n", r, R32_VAL(r,R32_BOF(_n)), pc->base2, SP7021_GPIO_OFF_GFR + R32_ROF(_n));
+ //KINF( _c->parent, "u F r:%X = %d %p off:%d\n", r, R32_VAL(r,R32_BOF(_n)), pc->base2, SP7021_GPIO_OFF_GFR + R32_ROF(_n));
+  return( R32_VAL(r,R32_BOF(_n)));  }
+ 
+@@ -71,6 +72,7 @@
+    if ( _f != R32_VAL(r,R32_BOF(_n))) {
+      if ( _f == muxF_G) r |= BIT(R32_BOF(_n));
+      else r &= ~BIT(R32_BOF(_n));
++if ( _n == 2) KINF( _c->parent, "F w:%X\n", r);
+ //KINF( _c->parent, "F w:%X\n", r);
+      writel( r, pc->base2 + SP7021_GPIO_OFF_GFR + R32_ROF(_n));
+    }

@@ -1,0 +1,9 @@
+[Unit]
+Description=TPS Conf Reset CH4-jumper handler
+
+[Service]
+Restart=on-failure
+ExecStart=/opt/tps-resetconf/reset_conf.sh
+
+[Install]
+WantedBy=multi-user.target

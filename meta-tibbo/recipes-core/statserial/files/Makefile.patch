@@ -1,0 +1,30 @@
+--- ./Makefile	2014-12-03 22:44:42.000000000 +0300
++++ ./Makefile	2014-12-03 22:45:41.006428625 +0300
+@@ -1,5 +1,5 @@
+-CC	= gcc
+-LD	= gcc
++CC	?= gcc
++LD	?= gcc
+ 
+ # for debug
+ #CFLAGS	= -Wall -g
+@@ -10,14 +10,13 @@
+ LDFLAGS = -s -N
+ 
+ statserial:	statserial.o
+-	$(LD) $(LDFLAGS) -o statserial statserial.o -lcurses
+-
+-statserial.o: statserial.c
+-	$(CC) $(CFLAGS) -c statserial.c
++	$(CC) -o statserial statserial.c -lcurses
+ 
+ install: statserial
+-	install -m 555 statserial /usr/local/bin/statserial
+-	install -m 444 statserial.1 /usr/local/man/man1/statserial.1
++	install -d $(PREFIX)/usr/local/bin/
++	install -m 555 statserial $(PREFIX)/usr/local/bin/statserial
++	install -d $(PREFIX)/usr/local/man/man1/
++	install -m 444 statserial.1 $(PREFIX)/usr/local/man/man1/statserial.1
+ 
+ clean:
+ 	$(RM) statserial statserial.o core *~

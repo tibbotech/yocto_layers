@@ -1,0 +1,375 @@
+From bf2a81ea550af136e1f82551cf90da7531f29b9c Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Tue, 11 Aug 2015 12:25:59 +0200
+Subject: [PATCH] Makefile: don't overwrite C/LDFLAGS
+
+Signed-off-by: Koen Kooi <koen@dominion.thruhere.net>
+---
+ mjpg-streamer-experimental/Makefile                      | 13 ++++++-------
+ .../plugins/input_control/Makefile                       |  8 ++++----
+ mjpg-streamer-experimental/plugins/input_file/Makefile   |  6 +++---
+ mjpg-streamer-experimental/plugins/input_http/Makefile   |  6 +++---
+ mjpg-streamer-experimental/plugins/input_ptp2/Makefile   |  8 ++++----
+ .../plugins/input_testpicture/Makefile                   |  6 +++---
+ mjpg-streamer-experimental/plugins/input_uvc/Makefile    | 16 ++++++++--------
+ .../plugins/output_autofocus/Makefile                    |  8 ++++----
+ mjpg-streamer-experimental/plugins/output_file/Makefile  |  6 +++---
+ mjpg-streamer-experimental/plugins/output_http/Makefile  | 12 ++++++------
+ mjpg-streamer-experimental/plugins/output_rtsp/Makefile  |  6 +++---
+ mjpg-streamer-experimental/plugins/output_udp/Makefile   |  6 +++---
+ .../plugins/output_viewer/Makefile                       |  8 ++++----
+ 13 files changed, 54 insertions(+), 55 deletions(-)
+
+diff --git a/mjpg-streamer-experimental/Makefile b/mjpg-streamer-experimental/Makefile
+index 1e1874e..5279ceb 100644
+--- a/mjpg-streamer-experimental/Makefile
++++ b/mjpg-streamer-experimental/Makefile
+@@ -16,12 +16,12 @@ DESTDIR = /usr/local
+ CC = gcc
+ 
+ SVNDEV := -D'SVN_REV="$(shell svnversion -c .)"'
+-CFLAGS += $(SVNDEV)
++MCFLAGS += $(SVNDEV)
+ 
+ # general compile flags, enable all warnings to make compile more verbose
+-CFLAGS += -DLINUX -D_GNU_SOURCE -Wall 
+-CFLAGS += -g -Wuninitialized
+-#CFLAGS +=  -DDEBUG
++MCFLAGS += -DLINUX -D_GNU_SOURCE -Wall 
++MCFLAGS += -g -Wuninitialized
++#MCFLAGS +=  -DDEBUG
+ 
+ # we are using the libraries "libpthread" and "libdl"
+ # libpthread is used to run several tasks (virtually) in parallel
+@@ -43,10 +43,9 @@ PLUGINS += output_http.so
+ # PLUGINS += input_megatec.so
+ # PLUGINS += output_mars2020.so
+ PLUGINS += output_rtsp.so
+-# PLUGINS += input_ptp2.so # commented out because it depends on libgphoto
++PLUGINS += input_ptp2.so # commented out because it depends on libgphoto
+ #PLUGINS += input_http.so 
+ # PLUGINS += output_viewer.so # commented out because it depends on SDL
+-PLUGINS += input_raspicam.so
+ 
+ # define the names of object files
+ OBJECTS=mjpg_streamer.o utils.o
+@@ -61,7 +60,7 @@ application: $(APP_BINARY)
+ plugins: $(PLUGINS)
+ 
+ $(APP_BINARY): mjpg_streamer.c mjpg_streamer.h mjpg_streamer.o utils.c utils.h utils.o
+-	$(CC) $(CFLAGS) $(OBJECTS) $(LFLAGS) -o $(APP_BINARY)
++	$(CC) $(CFLAGS) $(MCFLAGS) $(OBJECTS) $(LDLAGS) $(LFLAGS) -o $(APP_BINARY)
+ 	chmod 755 $(APP_BINARY)
+ 
+ output_autofocus.so: mjpg_streamer.h utils.h
+diff --git a/mjpg-streamer-experimental/plugins/input_control/Makefile b/mjpg-streamer-experimental/plugins/input_control/Makefile
+index 6c0297b..a18b7a6 100644
+--- a/mjpg-streamer-experimental/plugins/input_control/Makefile
++++ b/mjpg-streamer-experimental/plugins/input_control/Makefile
+@@ -11,8 +11,8 @@ CC = gcc
+ 
+ OTHER_HEADERS = ../../mjpg_streamer.h ../../utils.h ../output.h ../input.h
+ 
+-CFLAGS += -O2 -DLINUX -D_GNU_SOURCE -Wall -shared -fPIC
+-#CFLAGS += -DDEBUG
++MCFLAGS += -O2 -DLINUX -D_GNU_SOURCE -Wall -shared -fPIC
++#MCFLAGS += -DDEBUG
+ 
+ all: input_control.so
+ 
+@@ -20,7 +20,7 @@ clean:
+ 	rm -f *.a *.o core *~ *.so *.lo
+ 
+ input_control.so: $(OTHER_HEADERS) input_uvc.c dynctrl.lo
+-	$(CC) $(CFLAGS) $(LFLAGS) -o $@ input_uvc.c dynctrl.lo
++	$(CC) $(CFLAGS) $(MCFLAGS) $(LDLAGS) $(LFLAGS) -o $@ input_uvc.c dynctrl.lo
+ 
+ dynctrl.lo: dynctrl.c dynctrl.h uvcvideo.h
+-	$(CC) -c $(CFLAGS) -o $@ dynctrl.c
++	$(CC) -c $(CFLAGS) $(MCFLAGS) -o $@ dynctrl.c
+diff --git a/mjpg-streamer-experimental/plugins/input_file/Makefile b/mjpg-streamer-experimental/plugins/input_file/Makefile
+index 7f7665c..fbfd705 100644
+--- a/mjpg-streamer-experimental/plugins/input_file/Makefile
++++ b/mjpg-streamer-experimental/plugins/input_file/Makefile
+@@ -11,8 +11,8 @@ CC = gcc
+ 
+ OTHER_HEADERS = ../../mjpg_streamer.h ../../utils.h ../output.h ../input.h
+ 
+-CFLAGS += -O2 -DLINUX -D_GNU_SOURCE -Wall -shared -fPIC
+-#CFLAGS += -DDEBUG
++MCFLAGS += -O2 -DLINUX -D_GNU_SOURCE -Wall -shared -fPIC
++#MCFLAGS += -DDEBUG
+ LFLAGS += 
+ 
+ all: input_file.so
+@@ -21,4 +21,4 @@ clean:
+ 	rm -f *.a *.o core *~ *.so *.lo
+ 
+ input_file.so: $(OTHER_HEADERS) input_file.c
+-	$(CC) $(CFLAGS) $(LFLAGS) -o $@ input_file.c
++	$(CC) $(CFLAGS) $(MCFLAGS) $(LDLAGS) $(LFLAGS) -o $@ input_file.c
+diff --git a/mjpg-streamer-experimental/plugins/input_http/Makefile b/mjpg-streamer-experimental/plugins/input_http/Makefile
+index cf92c6a..982ec1c 100644
+--- a/mjpg-streamer-experimental/plugins/input_http/Makefile
++++ b/mjpg-streamer-experimental/plugins/input_http/Makefile
+@@ -11,8 +11,8 @@ CC = gcc
+ 
+ OTHER_HEADERS = ../../mjpg_streamer.h ../../utils.h ../output.h ../input.h
+ 
+-CFLAGS += -O2 -DLINUX -D_GNU_SOURCE -Wall -shared -fPIC
+-#CFLAGS += -DDEBUG
++MCFLAGS += -O2 -DLINUX -D_GNU_SOURCE -Wall -shared -fPIC
++#MCFLAGS += -DDEBUG
+ LFLAGS += -lpthread -ldl
+ 
+ HEADERS = misc.h mjpg-proxy.h version.h
+@@ -26,7 +26,7 @@ clean:
+ 
+ 
+ input_http.so: $(OTHER_HEADERS) $(FILES)
+-	$(CC) $(CFLAGS) -o $@ $(SOURCES)
++	$(CC) $(CFLAGS) $(MCFLAGS) -o $@ $(SOURCES)
+ 	
+ zip:
+ 	zip -9 input_http.zip $(FILES) Makefile
+diff --git a/mjpg-streamer-experimental/plugins/input_ptp2/Makefile b/mjpg-streamer-experimental/plugins/input_ptp2/Makefile
+index 703f3a8..507e783 100644
+--- a/mjpg-streamer-experimental/plugins/input_ptp2/Makefile
++++ b/mjpg-streamer-experimental/plugins/input_ptp2/Makefile
+@@ -2,9 +2,9 @@ CC = gcc
+ 
+ OTHER_HEADERS = ../../mjpg_streamer.h ../../utils.h ../output.h ../input.h
+ 
+-CFLAGS += -O0 -DLINUX -D_GNU_SOURCE -Wall -shared -fPIC -g
+-#CFLAGS += -DDEBUG
+-LFLAGS += -lpthread -ldl -lgphoto2
++MCFLAGS += -O0 -DLINUX -D_GNU_SOURCE -Wall -shared -fPIC -g
++#MCFLAGS += -DDEBUG
++LFLAGS += -lpthread -ldl -lgphoto2 -lm -lgphoto2_port -lm -lexif 
+ 
+ all: input_ptp2.so
+ 
+@@ -12,4 +12,4 @@ clean:
+ 	rm -f *.a *.o core *~ *.so *.lo
+ 
+ input_ptp2.so: $(OTHER_HEADERS) input_ptp2.c input_ptp2.h
+-	$(CC) $(CFLAGS) $(LFLAGS) -o $@ input_ptp2.c
++	$(CC) $(CFLAGS) $(MCFLAGS) $(LDLAGS) $(LFLAGS) -o $@ input_ptp2.c
+diff --git a/mjpg-streamer-experimental/plugins/input_testpicture/Makefile b/mjpg-streamer-experimental/plugins/input_testpicture/Makefile
+index 6022b33..36dc5d4 100644
+--- a/mjpg-streamer-experimental/plugins/input_testpicture/Makefile
++++ b/mjpg-streamer-experimental/plugins/input_testpicture/Makefile
+@@ -11,8 +11,8 @@ CC = gcc
+ 
+ OTHER_HEADERS = ../../mjpg_streamer.h ../../utils.h ../output.h ../input.h
+ 
+-CFLAGS += -O2 -DLINUX -D_GNU_SOURCE -Wall -shared -fPIC
+-#CFLAGS += -DDEBUG
++MCFLAGS += -O2 -DLINUX -D_GNU_SOURCE -Wall -shared -fPIC
++#MCFLAGS += -DDEBUG
+ LFLAGS += -lpthread -ldl
+ 
+ all: input_testpicture.so
+@@ -32,7 +32,7 @@ clean_pictures:
+ 	rm -f pictures/640x480_1.jpg pictures/640x480_2.jpg
+ 
+ input_testpicture.so: $(OTHER_HEADERS) input_testpicture.c testpictures.h
+-	$(CC) $(CFLAGS) -o $@ input_testpicture.c
++	$(CC) $(CFLAGS) $(MCFLAGS) -o $@ input_testpicture.c
+ 
+ # converts multiple JPG files to a single C header file
+ testpictures.h: pictures/960x720_1.jpg pictures/640x480_1.jpg pictures/320x240_1.jpg pictures/160x120_1.jpg pictures/160x120_2.jpg pictures/320x240_2.jpg pictures/640x480_2.jpg pictures/960x720_2.jpg
+diff --git a/mjpg-streamer-experimental/plugins/input_uvc/Makefile b/mjpg-streamer-experimental/plugins/input_uvc/Makefile
+index 9e768c8..074bfcf 100644
+--- a/mjpg-streamer-experimental/plugins/input_uvc/Makefile
++++ b/mjpg-streamer-experimental/plugins/input_uvc/Makefile
+@@ -11,19 +11,19 @@ CC = gcc
+ 
+ OTHER_HEADERS = ../../mjpg_streamer.h ../../utils.h ../output.h ../input.h
+ 
+-CFLAGS += -O1  -DLINUX -D_GNU_SOURCE -Wall -shared -fPIC
++MCFLAGS += -O1  -DLINUX -D_GNU_SOURCE -Wall -shared -fPIC
+ 
+-#CFLAGS += -g -DDEBUG
++#MCFLAGS += -g -DDEBUG
+ 
+ ifeq ($(USE_LIBV4L2),true)
+ LFLAGS += -lv4l2
+-CFLAGS += -DUSE_LIBV4L2
++MCFLAGS += -DUSE_LIBV4L2
+ endif
+ 
+ ifndef NO_LIBJPEG
+ LFLAGS += -ljpeg
+ else
+-CFLAGS += -DNO_LIBJPEG
++MCFLAGS += -DNO_LIBJPEG
+ endif
+ 
+ all: input_uvc.so
+@@ -32,13 +32,13 @@ clean:
+ 	rm -f *.a *.o core *~ *.so *.lo
+ 
+ input_uvc.so: $(OTHER_HEADERS) input_uvc.c v4l2uvc.lo jpeg_utils.lo dynctrl.lo
+-	$(CC) $(CFLAGS) -o $@ input_uvc.c v4l2uvc.lo jpeg_utils.lo dynctrl.lo $(LFLAGS)
++	$(CC) $(CFLAGS) $(MCFLAGS) -o $@ input_uvc.c v4l2uvc.lo jpeg_utils.lo dynctrl.lo $(LDLAGS) $(LFLAGS)
+ 
+ v4l2uvc.lo: huffman.h uvc_compat.h v4l2uvc.c v4l2uvc.h
+-	$(CC) -c $(CFLAGS) -o $@ v4l2uvc.c
++	$(CC) -c $(CFLAGS) $(MCFLAGS) -o $@ v4l2uvc.c
+ 
+ jpeg_utils.lo: jpeg_utils.c jpeg_utils.h
+-	$(CC) -c $(CFLAGS) -o $@ jpeg_utils.c
++	$(CC) -c $(CFLAGS) $(MCFLAGS) -o $@ jpeg_utils.c
+ 
+ dynctrl.lo: dynctrl.c dynctrl.h
+-	$(CC) -c $(CFLAGS) -o $@ dynctrl.c
++	$(CC) -c $(CFLAGS) $(MCFLAGS) -o $@ dynctrl.c
+diff --git a/mjpg-streamer-experimental/plugins/output_autofocus/Makefile b/mjpg-streamer-experimental/plugins/output_autofocus/Makefile
+index 10355a7..67dc544 100644
+--- a/mjpg-streamer-experimental/plugins/output_autofocus/Makefile
++++ b/mjpg-streamer-experimental/plugins/output_autofocus/Makefile
+@@ -11,8 +11,8 @@ CC = gcc
+ 
+ OTHER_HEADERS = ../../mjpg_streamer.h ../../utils.h ../output.h ../input.h
+ 
+-#CFLAGS += -O2 -DLINUX -D_GNU_SOURCE -Wall -shared -fPIC
+-CFLAGS += -DDEBUG -O2 -DLINUX -D_GNU_SOURCE -Wall -shared -fPIC
++#MCFLAGS += -O2 -DLINUX -D_GNU_SOURCE -Wall -shared -fPIC
++MCFLAGS += -DDEBUG -O2 -DLINUX -D_GNU_SOURCE -Wall -shared -fPIC
+ LFLAGS += -lpthread -ldl
+ 
+ all: output_autofocus.so
+@@ -21,7 +21,7 @@ clean:
+ 	rm -f *.a *.o core *~ *.so *.lo
+ 
+ output_autofocus.so: $(OTHER_HEADERS) output_autofocus.c processJPEG_onlyCenter.lo
+-	$(CC) $(CFLAGS) -lm -o $@ output_autofocus.c processJPEG_onlyCenter.lo
++	$(CC) $(CFLAGS) $(MCFLAGS) -lm -o $@ output_autofocus.c processJPEG_onlyCenter.lo
+ 
+ processJPEG_onlyCenter.lo: $(OTHER_HEADERS) processJPEG_onlyCenter.h
+-	$(CC) -c $(CFLAGS) -o $@ processJPEG_onlyCenter.c
++	$(CC) -c $(CFLAGS) $(MCFLAGS) -o $@ processJPEG_onlyCenter.c
+diff --git a/mjpg-streamer-experimental/plugins/output_file/Makefile b/mjpg-streamer-experimental/plugins/output_file/Makefile
+index fa002ce..1123035 100644
+--- a/mjpg-streamer-experimental/plugins/output_file/Makefile
++++ b/mjpg-streamer-experimental/plugins/output_file/Makefile
+@@ -11,8 +11,8 @@ CC = gcc
+ 
+ OTHER_HEADERS = ../../mjpg_streamer.h ../../utils.h ../output.h ../input.h
+ 
+-CFLAGS += -O2 -DLINUX -D_GNU_SOURCE -Wall -shared -fPIC
+-CFLAGS += -DDEBUG -g
++MCFLAGS += -O2 -DLINUX -D_GNU_SOURCE -Wall -shared -fPIC
++MCFLAGS += -DDEBUG -g
+ LFLAGS += -lpthread -ldl
+ 
+ all: output_file.so
+@@ -21,4 +21,4 @@ clean:
+ 	rm -f *.a *.o core *~ *.so *.lo
+ 
+ output_file.so: $(OTHER_HEADERS) output_file.c
+-	$(CC) $(CFLAGS) -o $@ output_file.c
++	$(CC) $(CFLAGS) $(MCFLAGS) -o $@ output_file.c
+diff --git a/mjpg-streamer-experimental/plugins/output_http/Makefile b/mjpg-streamer-experimental/plugins/output_http/Makefile
+index d387011..b98eb33 100644
+--- a/mjpg-streamer-experimental/plugins/output_http/Makefile
++++ b/mjpg-streamer-experimental/plugins/output_http/Makefile
+@@ -11,15 +11,15 @@ CC = gcc
+ 
+ OTHER_HEADERS = ../../mjpg_streamer.h ../../utils.h ../output.h ../input.h
+ 
+-CFLAGS += -DLINUX -D_GNU_SOURCE -Wall -shared -fPIC -Wuninitialized
++MCFLAGS += -DLINUX -D_GNU_SOURCE -Wall -shared -fPIC -Wuninitialized
+ 
+-#CFLAGS += -g -DDEBUG # uncomment it to get debug symbols compiled in and debug messages shown
+-#CFLAGS += -DMANAGMENT # experimental feature to control the clients maximum allowed thread count
++#MCFLAGS += -g -DDEBUG # uncomment it to get debug symbols compiled in and debug messages shown
++#MCFLAGS += -DMANAGMENT # experimental feature to control the clients maximum allowed thread count
+ 
+ LFLAGS += -lpthread -ldl
+ 
+ ifeq ($(WXP_COMPAT),true)
+-CFLAGS += -DWXP_COMPAT
++MCFLAGS += -DWXP_COMPAT
+ endif
+ 
+ all: output_http.so
+@@ -28,7 +28,7 @@ clean:
+ 	rm -f *.a *.o core *~ *.so *.lo
+ 
+ output_http.so: $(OTHER_HEADERS) output_http.c httpd.lo
+-	$(CC) $(CFLAGS) -o $@ output_http.c httpd.lo
++	$(CC) $(CFLAGS) $(MCFLAGS) -o $@ output_http.c httpd.lo
+ 
+ httpd.lo: $(OTHER_HEADERS) httpd.h httpd.c
+-	$(CC) -c $(CFLAGS) -o $@ httpd.c
++	$(CC) -c $(CFLAGS) $(MCFLAGS) -o $@ httpd.c
+diff --git a/mjpg-streamer-experimental/plugins/output_rtsp/Makefile b/mjpg-streamer-experimental/plugins/output_rtsp/Makefile
+index 7a4fcd1..15c715b 100644
+--- a/mjpg-streamer-experimental/plugins/output_rtsp/Makefile
++++ b/mjpg-streamer-experimental/plugins/output_rtsp/Makefile
+@@ -13,8 +13,8 @@ CC = gcc
+ 
+ OTHER_HEADERS = ../../mjpg_streamer.h ../../utils.h ../output.h ../input.h
+ 
+-CFLAGS += -O2 -DLINUX -D_GNU_SOURCE -Wall -shared -fPIC
+-CFLAGS += -DDEBUG
++MCFLAGS += -O2 -DLINUX -D_GNU_SOURCE -Wall -shared -fPIC
++MCFLAGS += -DDEBUG
+ LFLAGS += -lpthread -ldl
+ 
+ all: output_rtsp.so
+@@ -23,4 +23,4 @@ clean:
+ 	rm -f *.a *.o core *~ *.so *.lo
+ 
+ output_rtsp.so: $(OTHER_HEADERS) output_rtsp.c
+-	$(CC) $(CFLAGS) -o $@ output_rtsp.c
++	$(CC) $(CFLAGS) $(MCFLAGS) -o $@ output_rtsp.c
+diff --git a/mjpg-streamer-experimental/plugins/output_udp/Makefile b/mjpg-streamer-experimental/plugins/output_udp/Makefile
+index 4950dc7..699b345 100644
+--- a/mjpg-streamer-experimental/plugins/output_udp/Makefile
++++ b/mjpg-streamer-experimental/plugins/output_udp/Makefile
+@@ -13,8 +13,8 @@ CC = gcc
+ 
+ OTHER_HEADERS = ../../mjpg_streamer.h ../../utils.h ../output.h ../input.h
+ 
+-CFLAGS += -O2 -DLINUX -D_GNU_SOURCE -Wall -shared -fPIC
+-CFLAGS += -DDEBUG
++MCFLAGS += -O2 -DLINUX -D_GNU_SOURCE -Wall -shared -fPIC
++MCFLAGS += -DDEBUG
+ LFLAGS += -lpthread -ldl
+ 
+ all: output_udp.so
+@@ -23,4 +23,4 @@ clean:
+ 	rm -f *.a *.o core *~ *.so *.lo
+ 
+ output_udp.so: $(OTHER_HEADERS) output_udp.c
+-	$(CC) $(CFLAGS) -o $@ output_udp.c
++	$(CC) $(CFLAGS) $(MCFLAGS) -o $@ output_udp.c
+diff --git a/mjpg-streamer-experimental/plugins/output_viewer/Makefile b/mjpg-streamer-experimental/plugins/output_viewer/Makefile
+index 39aa91d..bac7e42 100644
+--- a/mjpg-streamer-experimental/plugins/output_viewer/Makefile
++++ b/mjpg-streamer-experimental/plugins/output_viewer/Makefile
+@@ -11,9 +11,9 @@ CC = gcc
+ 
+ OTHER_HEADERS = ../../mjpg_streamer.h ../../utils.h ../output.h ../input.h
+ 
+-CFLAGS += -O2 -DLINUX -D_GNU_SOURCE -Wall -shared -fPIC
+-CFLAGS += -DUSE_SDL -I/usr/include/SDL
+-#CFLAGS += -DDEBUG
++MCFLAGS += -O2 -DLINUX -D_GNU_SOURCE -Wall -shared -fPIC
++MCFLAGS += -DUSE_SDL -I/usr/include/SDL
++#MCFLAGS += -DDEBUG
+ 
+ LFLAGS += -ljpeg -lSDL
+ 
+@@ -23,4 +23,4 @@ clean:
+ 	rm -f *.a *.o core *~ *.so *.lo
+ 
+ output_viewer.so: $(OTHER_HEADERS) output_viewer.c
+-	$(CC) $(CFLAGS) $(LFLAGS) -o $@ output_viewer.c
++	$(CC) $(CFLAGS) $(MCFLAGS) $(LDLAGS) $(LFLAGS) -o $@ output_viewer.c
+-- 
+2.0.1
+

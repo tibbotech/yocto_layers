@@ -1,0 +1,13 @@
+--- ./Makefile	2017-03-01 18:13:34.000000000 +0300
++++ ./Makefile	2017-03-01 18:15:29.794906781 +0300
+@@ -1,8 +1,8 @@
+ rtk_hciattach:hciattach.c hciattach_rtk.o  
+-	cc -o rtk_hciattach hciattach.c hciattach_rtk.o  
++	${CC} ${LDFLAGS} -o rtk_hciattach hciattach.c hciattach_rtk.o  
+ 
+ hciattach_rtk.o:hciattach_rtk.c
+-	cc -c hciattach_rtk.c
++	${CC} -c hciattach_rtk.c
+ 
+ clean:
+ 	rm -f *.o  rtk_hciattach

@@ -1,0 +1,29 @@
+#!/usr/bin/env node
+
+var um = require("/usr/lib/node_modules/tibbo-uartmode");
+
+if ( process.argv.length < 3) {
+  console.log( 'Usage: '+ process.argv[ 1] + ' <port>');
+  process.exit( -1);
+}
+var port = process.argv[ 2];
+console.log( 'port is:' + port);
+var cur_mode =  um.tibbo_uartmode.G( port);
+console.log( 'cur_mode:' + mode_out( cur_mode));
+cur_mode = um.CuartMode232;
+var ret = um.tibbo_uartmode.S( port, cur_mode);
+console.log( 'setting:' + mode_out( cur_mode) + ' ret:' + ret);
+cur_mode = um.CuartMode485;
+var ret = um.tibbo_uartmode.S( port, cur_mode);
+console.log( 'setting:' + mode_out( cur_mode) + ' ret:' + ret);
+cur_mode =  um.tibbo_uartmode.G( port);
+console.log( 'cur_mode:' + mode_out( cur_mode));
+
+function mode_out( _mode) {
+ switch ( _mode) {
+   case um.CuartModeNaN: return( 'NaN');
+   case um.CuartMode232: return( '232');
+   case um.CuartMode422: return( '422');
+   case um.CuartMode485: return( '485');
+ }
+}

@@ -1,0 +1,7 @@
+include features/wifi/wifi-common.scc
+include hw_spi.scc
+kconf hardware other_modules.cfg
+kconf hardware tppg1_libe.cfg
+
+patch pentagram-sc7021-achip.dtsi.liber.patch
+

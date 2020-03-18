@@ -1,0 +1,14 @@
+[Service]
+ExecStart=/usr/bin/node /opt/node-apps/demo1/site/app.js
+Restart=on-failure
+CPUAccounting=true
+CPUQuota=10%
+MemoryAccounting=true
+MemoryLimit=50M
+
+[Unit]
+Description=example "hello world" app
+After=network-online.target
+
+[Install]
+WantedBy=multi-user.target

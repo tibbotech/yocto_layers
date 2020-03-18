@@ -1,0 +1,6 @@
+[Match]
+Name = eth0
+
+[Network]
+Address = 192.168.75.208/24
+Gateway = 192.168.75.1

@@ -1,0 +1,13 @@
+--- a/drivers/usb/host/ohci.h	2017-09-20 09:25:38.000000000 +0300
++++ a/drivers/usb/host/ohci.h	2018-11-12 06:42:55.000000000 +0300
+@@ -433,10 +433,6 @@
+ 	struct dentry		*debug_async;
+ 	struct dentry		*debug_periodic;
+ 	struct dentry		*debug_registers;
+-
+-	/* platform-specific data -- must come last */
+-	unsigned long           priv[0] __aligned(sizeof(s64));
+-
+ };
+ 
+ #ifdef CONFIG_USB_PCI

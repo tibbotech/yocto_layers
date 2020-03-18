@@ -1,0 +1,70 @@
+--- a/drivers/net/wireless/libertas/if_spi.c	2016-04-23 14:09:34.000000000 +0300
++++ a/drivers/net/wireless/libertas/if_spi.c	2016-04-25 17:29:59.089346949 +0300
+@@ -1127,24 +1127,29 @@
+ 	int err = 0;
+ 
+ 	lbs_deb_enter(LBS_DEB_SPI);
++printk(KERN_INFO "%s: 0\n", __FUNCTION__);
+ 
+ 	if (!pdata) {
+ 		err = -EINVAL;
+ 		goto out;
+ 	}
+ 
++printk(KERN_INFO "%s: 1\n", __FUNCTION__);
+ 	if (pdata->setup) {
++printk(KERN_INFO "%s: 10\n", __FUNCTION__);
+ 		err = pdata->setup(spi);
+ 		if (err)
+ 			goto out;
+ 	}
+ 
++printk(KERN_INFO "%s: 2\n", __FUNCTION__);
+ 	/* Allocate card structure to represent this specific device */
+ 	card = kzalloc(sizeof(struct if_spi_card), GFP_KERNEL);
+ 	if (!card) {
+ 		err = -ENOMEM;
+ 		goto teardown;
+ 	}
++printk(KERN_INFO "%s: 3\n", __FUNCTION__);
+ 	spi_set_drvdata(spi, card);
+ 	card->pdata = pdata;
+ 	card->spi = spi;
+@@ -1157,6 +1162,7 @@
+ 	/* Initialize the SPI Interface Unit */
+ 
+ 	/* Firmware load */
++printk(KERN_INFO "%s: 4\n", __FUNCTION__);
+ 	err = if_spi_init_card(card);
+ 	if (err)
+ 		goto free_card;
+@@ -1165,11 +1171,13 @@
+ 	 * Register our card with libertas.
+ 	 * This will call alloc_etherdev.
+ 	 */
++printk(KERN_INFO "%s: 5\n", __FUNCTION__);
+ 	priv = lbs_add_card(card, &spi->dev);
+ 	if (!priv) {
+ 		err = -ENOMEM;
+ 		goto free_card;
+ 	}
++printk(KERN_INFO "%s: 6\n", __FUNCTION__);
+ 	card->priv = priv;
+ 	priv->setup_fw_on_resume = 1;
+ 	priv->card = card;
+@@ -1184,6 +1192,7 @@
+ 	INIT_WORK(&card->packet_work, if_spi_host_to_card_worker);
+ 	INIT_WORK(&card->resume_work, if_spi_resume_worker);
+ 
++printk(KERN_INFO "%s: 7 irq:%d\n", __FUNCTION__, spi->irq);
+ 	err = request_irq(spi->irq, if_spi_host_interrupt,
+ 			IRQF_TRIGGER_FALLING, "libertas_spi", card);
+ 	if (err) {
+@@ -1196,6 +1205,7 @@
+ 	 * This will call register_netdev, and we'll start
+ 	 * getting interrupts...
+ 	 */
++printk(KERN_INFO "%s: 8\n", __FUNCTION__);
+ 	err = lbs_start_card(priv);
+ 	if (err)
+ 		goto release_irq;

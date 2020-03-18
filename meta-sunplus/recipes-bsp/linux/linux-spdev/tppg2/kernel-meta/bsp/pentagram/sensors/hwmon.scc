@@ -1,0 +1,2 @@
+include hw_thermal.scc
+kconf non-hardware hwmon.cfg

@@ -1,0 +1,11 @@
+[Unit]
+Description=PPP link to %I
+Before=network.target
+BindsTo=dev-tty%i.device
+After=dev-tty%i.device
+
+[Service]
+ExecStart=/usr/sbin/pppd call tty%i /dev/tty%i nodetach nolog
+
+[Install]
+WantedBy=multi-user.target dev-tty%i.device

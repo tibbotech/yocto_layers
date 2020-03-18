@@ -1,0 +1,59 @@
+--- a/arch/arm/boot/dts/sp7021-tpsgpio.dts	2019-10-24 11:11:18.735427930 +0300
++++ a/arch/arm/boot/dts/sp7021-tpsgpio.dts	2019-10-24 11:14:13.940814797 +0300
+@@ -49,9 +49,22 @@
+  pinctrl-0 = <&hdmi_A_tx1>;
+ };
+ 
+-&uart1 {  status = "disabled";  };
+-&uart2 {  status = "disabled";  };
+-&uart3 {  status = "disabled";  };
++&uart1 {
++ pinctrl-names = "default";
++ pinctrl-0 = <&pins_uart1>;
++ gpio-rts = <&pctl 10 GPIO_ACTIVE_HIGH>;
++ gpio-cts = <&pctl 11 GPIO_ACTIVE_HIGH>;
++};
++&uart2 {
++ pinctrl-names = "default";
++ pinctrl-0 = <&pins_uart2>;
++};
++&uart3 {
++ pinctrl-names = "default";
++ pinctrl-0 = <&pins_uart3>;
++ gpio-rts = <&pctl 18 GPIO_ACTIVE_HIGH>;
++ gpio-cts = <&pctl 19 GPIO_ACTIVE_HIGH>;
++};
+ &uart4 {  status = "disabled";  };
+ 
+ &pctl {
+@@ -116,24 +129,24 @@
+     sppctl,pins = <
+       SP7021_IOPAD(8,SP7021_PCTL_G_PMUX,MUXF_UA1_TX,0)
+       SP7021_IOPAD(9,SP7021_PCTL_G_PMUX,MUXF_UA1_RX,0)
+-      SP7021_IOPAD(10,SP7021_PCTL_G_PMUX,MUXF_UA1_RTS,0)
+-      SP7021_IOPAD(11,SP7021_PCTL_G_PMUX,MUXF_UA1_CTS,0)
++      SP7021_IOPAD(10,SP7021_PCTL_G_GPIO,0,0)
++      SP7021_IOPAD(11,SP7021_PCTL_G_PMUX,MUXF_UA1_CTS,0)
+     >;
+  };
+  pins_uart2: pins_uart2 {
+     sppctl,pins = <
+       SP7021_IOPAD(12,SP7021_PCTL_G_PMUX,MUXF_UA2_TX,0)
+       SP7021_IOPAD(13,SP7021_PCTL_G_PMUX,MUXF_UA2_RX,0)
+-      SP7021_IOPAD(14,SP7021_PCTL_G_PMUX,MUXF_UA2_RTS,0)
+-      SP7021_IOPAD(15,SP7021_PCTL_G_PMUX,MUXF_UA2_CTS,0)
++      SP7021_IOPAD(14,SP7021_PCTL_G_PMUX,MUXF_UA2_RTS,0)
++      SP7021_IOPAD(15,SP7021_PCTL_G_PMUX,MUXF_UA2_CTS,0)
+     >;
+  };
+  pins_uart3: pins_uart3 {
+     sppctl,pins = <
+       SP7021_IOPAD(16,SP7021_PCTL_G_PMUX,MUXF_UA3_TX,0)
+       SP7021_IOPAD(17,SP7021_PCTL_G_PMUX,MUXF_UA3_RX,0)
+-      SP7021_IOPAD(18,SP7021_PCTL_G_PMUX,MUXF_UA3_RTS,0)
+-      SP7021_IOPAD(19,SP7021_PCTL_G_PMUX,MUXF_UA3_CTS,0)
++      SP7021_IOPAD(18,SP7021_PCTL_G_GPIO,0,0)
++      SP7021_IOPAD(19,SP7021_PCTL_G_PMUX,MUXF_UA3_CTS,0)
+     >;
+  };
+  pins_uart4: pins_uart4 {

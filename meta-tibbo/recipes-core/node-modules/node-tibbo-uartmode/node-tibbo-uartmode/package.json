@@ -1,0 +1,12 @@
+{
+ "name": "tibbo-uartmode",
+ "version": "0.0.1",
+ "description": "LTPS uart mode switch API",
+ "main": "app.js",
+ "scripts": {
+   "test": "echo \"Error: no test specified\" && exit 1"
+ },
+ "gypfile": true,
+ "author": "Dvorkin Dmitry <dvorkin@tibbo.com>",
+ "license": "GPL"
+}

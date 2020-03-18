@@ -1,0 +1,5 @@
+define KFEATURE_DESCRIPTION "Enable SunPlus Ethernet"
+define KFEATURE_COMPATIBILITY board
+
+include features/net/net.scc
+kconf hardware hw_net.cfg

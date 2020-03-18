@@ -1,0 +1,13 @@
+[Unit]
+Description=Bluez Alsa
+Requires=sys-subsystem-bluetooth-devices-hci0.device
+After=sys-subsystem-bluetooth-devices-hci0.device
+
+[Service]
+Type=simple
+Restart=on-failure
+ExecStart=/usr/bin/bluealsa --disable-hfp
+ExecReload=/bin/kill -HUP $MAINPID
+
+[Install]
+WantedBy=multi-user.target

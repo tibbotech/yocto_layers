@@ -1,0 +1,6 @@
+urpmi libtool
+urpmi automake
+urpmi autoconf
+urpmi make
+
+install jse 1.7 to /usr/java/

@@ -1,0 +1,9 @@
+--- a/drivers/staging/Kconfig	2016-11-21 19:14:37.000000000 +0300
++++ a/drivers/staging/Kconfig	2016-11-21 19:27:15.959727661 +0300
+@@ -110,4 +110,6 @@
+ 
+ source "drivers/staging/most/Kconfig"
+ 
++source "drivers/staging/rtl8723bs/Kconfig"
++
+ endif # STAGING

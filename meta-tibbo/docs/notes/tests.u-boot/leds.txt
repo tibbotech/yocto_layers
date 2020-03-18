@@ -1,0 +1,5 @@
+leds blue:
+// off
+# gpio leds 1
+// on
+# gpio leds 0

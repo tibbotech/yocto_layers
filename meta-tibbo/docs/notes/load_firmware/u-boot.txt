@@ -1,0 +1,40 @@
+---- if *no* U-Boot in NAND:
+xmodem for "u-boot-spl.bin", then ymodem for "u-boot.img"
+then you'll get U-Boot CLI.
+
+---- using U-Boot CLI:
+you'll see CLI prompt like "TPBs3#"
+ - prepare:
+setenv autoload off
+dhcp
+setenv serverip 10.1.1.1
+ - load U-Boot SPL
+tftp $loadaddr MLO
+nand erase.part NAND.SPL
+nand write $loadaddr NAND.SPL $filesize
+ - load U-Boot
+tftp $loadaddr u-boot.img
+nand erase.part NAND.u-boot
+nand write $loadaddr NAND.u-boot $filesize
+ - load DTS
+tftp $loadaddr uImage-am335x-TPPs2.dtb
+tftp $loadaddr uImage-am335x-TPPs3.dtb
+# or for GPIO test:
+tftp $loadaddr uImage-am335x-TPPs3-t-gpio.dtb
+nand erase.part NAND.kernel-dts
+nand write $loadaddr NAND.kernel-dts $filesize
+ - load kernel
+tftp $loadaddr uImage
+nand erase.part NAND.kernel
+nand write $loadaddr NAND.kernel $filesize
+ - load rootfs
+tftp $loadaddr TPS-tpp.ubi
+tftp $loadaddr TPS-pm-tpp.ubi
+tftp $loadaddr TPS-agent-tpp.ubi
+nand erase.part NAND.rootfs
+nand write $loadaddr NAND.rootfs $filesize
+
+---- u-boot quick help
+# ?
+# printenv
+# mtdparts

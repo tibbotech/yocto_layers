@@ -1,0 +1,38 @@
+/*
+ * Automatic software update for U-Boot
+ * Make sure the flashing addresses ('load' prop) is correct for your board!
+ */
+
+/dts-v1/;
+
+/ {
+	description = "TPS3 + nodejs";
+	#address-cells = <1>;
+
+	images {
+		update@1 {
+			description = "Kernel DTS";
+			data = /incbin/("./uImage-am335x-KLM601.revB.dtb");
+			compression = "none";
+			arch = "arm";
+			os = "linux";
+			type = "flat_dt";
+			tps-upd-to = "NAND.kernel-dts0";
+			hash@1 {
+				algo = "sha1";
+			};
+		};
+		update@2 {
+			description = "Kernel DTS";
+			data = /incbin/("./uImage-am335x-TPPs3.dtb");
+			compression = "none";
+			arch = "arm";
+			os = "linux";
+			type = "flat_dt";
+			tps-upd-to = "NAND.kernel-dts1";
+			hash@1 {
+				algo = "sha1";
+			};
+		};
+	};
+};

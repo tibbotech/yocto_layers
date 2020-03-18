@@ -1,0 +1,35 @@
+--- a/drivers/pinctrl/devicetree.c	2019-02-13 22:04:05.584890285 +0300
++++ a/drivers/pinctrl/devicetree.c	2019-02-13 22:12:55.167728068 +0300
+@@ -72,6 +72,8 @@
+ 	int i;
+ 	struct pinctrl_dt_map *dt_map;
+ 
++dev_err( p->dev, " %s %s():%d\n", dev_name(pctldev->dev), __FUNCTION__, __LINE__);
++//return( -ENOMEM);
+ 	/* Initialize common mapping table entry fields */
+ 	for (i = 0; i < num_maps; i++) {
+ 		map[i].dev_name = dev_name(p->dev);
+@@ -88,11 +90,15 @@
+ 		return -ENOMEM;
+ 	}
+ 
++dev_err( p->dev, " %s %s():%d\n", dev_name(pctldev->dev), __FUNCTION__, __LINE__);
++//return( -ENOMEM);
+ 	dt_map->pctldev = pctldev;
+ 	dt_map->map = map;
+ 	dt_map->num_maps = num_maps;
+ 	list_add_tail(&dt_map->node, &p->dt_maps);
+ 
++dev_err( p->dev, " %s %s():%d\n", dev_name(pctldev->dev), __FUNCTION__, __LINE__);
++//return( -ENOMEM);
+ 	return pinctrl_register_map(map, num_maps, false);
+ }
+ 
+@@ -149,6 +155,7 @@
+ 	if (ret < 0)
+ 		return ret;
+ 
++dev_err( p->dev, " %s %s():%d\n", dev_name(pctldev->dev), __FUNCTION__, __LINE__);
+ 	/* Stash the mapping table chunk away for later use */
+ 	return dt_remember_or_free_map(p, statename, pctldev, map, num_maps);
+ }

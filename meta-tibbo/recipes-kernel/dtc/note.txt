@@ -1,0 +1,3 @@
+that's 1.3.0 (old version)
+it adds DTS part patch
+from beagleboard_git_3.8/meta-beagleboard/common-bsp/recipes-kernel/dtc

@@ -1,0 +1,14 @@
+# name: pppoe-<eth0>@<provider>
+
+[Unit]
+Description=PPPoE link on {T.TTY} to %i
+Before=network.target
+BindsTo=sys-subsystem-net-devices-{T.TTY}.device
+After=sys-subsystem-net-devices-{T.TTY}.device
+
+[Service]
+ExecStart=/usr/sbin/pppd call pppoe-%i {T.TTY} nodetach nolog
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target sys-subsystem-net-devices-{T.TTY}.device

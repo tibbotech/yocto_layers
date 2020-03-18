@@ -1,0 +1,32 @@
+--- linux/arch/arm/boot/dts/am335x-TPPs3-fwuploader.dts	1970-01-01 03:00:00.000000000 +0300
++++ linux/arch/arm/boot/dts/am335x-TPPs3-fwuploader.dts	2014-12-16 10:12:59.961528417 +0300
+@@ -0,0 +1,28 @@
++/*
++ * TPP3 firmware uploader/tester predefined configuration
++ * Copyright (C) 2016 Tibbo Tech. - http://tibbo.com/tps/
++ * License: GPLv2 or later
++ */
++/dts-v1/;
++
++#include "am33xx.tpp.dtsi"
++#include "am335x-TPP.dtsi"
++#include "am335x-TPPs3.dtsi"
++
++/ {
++	model = "AM335x TPPs3 FW Uploader";
++	compatible = "ti,am335x-tpp3", "ti,am335x-tpp", "ti,am33xx";
++};
++
++&am33xx_pinmux {
++	pinctrl-0 = <&gpio_pins>;
++	gpio_pins: gpio_pins {
++		pinctrl-single,pins = <
++			AM33XX_IOPAD(0xa34, (PIN_OUTPUT | INPUT_EN | MUX_MODE7))
++		>;
++	};
++};
++
++&mmc3 {  status = "okay";  };
++&uart1 {  status = "okay";  };
++&uart0 {  status = "okay";  };
++

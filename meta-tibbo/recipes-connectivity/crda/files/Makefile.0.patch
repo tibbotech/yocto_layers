@@ -1,0 +1,19 @@
+--- a/Makefile	2010-01-25 20:43:20.000000000 +0300
++++ a/Makefile	2010-10-11 21:29:25.803864675 +0400
+@@ -14,7 +14,7 @@
+ UDEV_LEVEL=$(CRDA_UDEV_LEVEL)-
+ # You can customize this if your distributions uses
+ # a different location.
+-UDEV_RULE_DIR?=/lib/udev/rules.d/
++UDEV_RULE_DIR?=/etc/udev/rules.d/
+ 
+ # If your distribution requires a custom pubkeys dir
+ # you must update this variable to reflect where the
+@@ -109,7 +109,6 @@
+ 
+ verify: $(REG_BIN) regdbdump
+ 	$(NQ) '  CHK  $(REG_BIN)'
+-	$(Q)./regdbdump $(REG_BIN) >/dev/null
+ 
+ %.gz: %
+ 	@$(NQ) ' GZIP' $<

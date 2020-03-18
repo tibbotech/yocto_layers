@@ -1,0 +1,13 @@
+# this file is a copy for ${systemd_unitdir}/system/
+
+[Unit]
+Description=TPS PHP-FPM WebConsole Service
+After=network.target
+
+[Service]
+Type=forking
+Restart=on-failure
+ExecStart=/usr/sbin/php-fpm -D -g /var/run/php-fpm-tpsa.pid -y /var/www/tpsa-www/conf/php-fpm-tpsa.conf -R
+
+[Install]
+WantedBy=multi-user.target

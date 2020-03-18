@@ -1,0 +1,44 @@
+--- linux/arch/arm/boot/dts/am335x-TPPs3-t-i2c.dts	1970-01-01 03:00:00.000000000 +0300
++++ linux/arch/arm/boot/dts/am335x-TPPs3-t-i2c.dts	2014-12-16 10:12:59.961528417 +0300
+@@ -0,0 +1,39 @@
++/*
++ * Tibbo Project PCB 3 for Linux (TPP3)
++ * Copyright (C) 2016 Tibbo Tech. - http://tibbo.com/tps/
++ * License: GPLv2 or later
++ */
++/dts-v1/;
++
++#include "am33xx.tpp.dtsi"
++#include "am335x-TPP.dtsi"
++
++/ {
++	model = "AM335x TPPs3 I2C";
++	compatible = "ti,am335x-tpp3", "ti,am335x-tpp", "ti,am33xx";
++
++	i2c-s01 {
++		pinctrl-names = "default";
++		pinctrl-0 = <&i2c_s01_pins>;
++		gpios = <&gpio0 14 GPIO_ACTIVE_HIGH	/* i2c_soft2.sda, gpio0_15, S1B, 0x180 (PIN_OUTPUT_PULLUP | MUX_MODE7) */
++			 &gpio0 15 GPIO_ACTIVE_HIGH	/* i2c_soft2.scl, gpio0_14, S1A, 0x184 (PIN_INPUT | MUX_MODE7) */
++			>;
++		status = "okay";
++	};
++	i2c-s03 {
++		pinctrl-names = "default";
++		pinctrl-0 = <&i2c_s03_pins>;
++		gpios = <&gpio0 7  GPIO_ACTIVE_HIGH	/* i2c_soft3.sda, gpio0_07, S3B, 0x164 (PIN_OUTPUT_PULLUP | MUX_MODE7) */
++			 &gpio0 19 GPIO_ACTIVE_HIGH	/* i2c_soft3.scl, gpio0_19, S3A, 0x1b0 (PIN_INPUT | MUX_MODE7) */
++			>;
++		status = "okay";
++	};
++	spi-s05 {
++		pinctrl-names = "default";
++		pinctrl-0 = <&spi_s05_pins>;
++	};
++
++};
++
++&uart4 {  status = "okay";  };  /* S13 */
++&uart5 {  status = "okay";  };  /* S09 */
++/*&spi-s05 {  status = "okay";  };*/  /* S05 */
++

@@ -1,0 +1,10 @@
+--- a/drivers/clk/Makefile	2017-09-20 09:25:38.000000000 +0300
++++ a/drivers/clk/Makefile	2018-11-12 06:42:52.000000000 +0300
+@@ -42,6 +42,7 @@
+ obj-$(CONFIG_COMMON_CLK_SI5351)		+= clk-si5351.o
+ obj-$(CONFIG_COMMON_CLK_SI514)		+= clk-si514.o
+ obj-$(CONFIG_COMMON_CLK_SI570)		+= clk-si570.o
++obj-$(CONFIG_ARCH_PENTAGRAM)	+= clk-sp-q628.o
+ obj-$(CONFIG_ARCH_STM32)		+= clk-stm32f4.o
+ obj-$(CONFIG_ARCH_TANGO)		+= clk-tango4.o
+ obj-$(CONFIG_CLK_TWL6040)		+= clk-twl6040.o

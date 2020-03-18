@@ -1,0 +1,5 @@
+define KFEATURE_DESCRIPTION "Enable userspace I2C access"
+define KFEATURE_COMPATIBILITY board
+
+include i2c.scc
+kconf hardware i2cdev.cfg

@@ -1,0 +1,15 @@
+[Unit]
+Description=WPA (interface- and nl80211 driver-specific)
+Requires=sys-subsystem-net-devices-%i.device
+After=sys-subsystem-net-devices-%i.device
+Before=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+Restart=on-failure
+ExecStart=/usr/sbin/wpa_supplicant -c/etc/wpa_supplicant/%I.conf -Dnl80211 -i%I
+
+[Install]
+DefaultInstance=wlan0
+WantedBy=multi-user.target

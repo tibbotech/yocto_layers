@@ -1,0 +1,10 @@
+--- a/drivers/net/wireless/libertas/if_spi.c	2016-04-27 09:41:00.000000000 +0300
++++ a/drivers/net/wireless/libertas/if_spi.c	2016-04-27 12:00:46.507851335 +0300
+@@ -262,6 +262,7 @@
+ 	ret = spu_read(card, reg, (u8 *)&buf, sizeof(buf));
+ 	if (ret == 0)
+ 		*val = le16_to_cpup(&buf);
++//pr_err("%s ret:%d buf:%d)\n", __FUNCTION__, ret, buf);
+ 	return ret;
+ }
+ 

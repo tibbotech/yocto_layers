@@ -1,0 +1,17 @@
+--- a/arch/arm/boot/dts/pentagram-sc7021-achip.dtsi	2019-01-31 12:11:46.233165436 +0300
++++ a/arch/arm/boot/dts/pentagram-sc7021-achip.dtsi	2019-01-31 12:12:20.932708291 +0300
+@@ -668,10 +668,12 @@
+ 			clock-names = "sys_pll";
+ 			resets = <&rstc RST_SPI_COMBO_0>;
+ 			spi-max-frequency = <10000000>;
+-			spi0: spi@ {
+-				compatible = "rohm,dh2228fv";
++			spi0: spi@0 {
++				compatible = "tpsga1000v0";
+ 				reg = <0x0>;
+ 				spi-max-frequency = <10000000>;
++				gpio-reset = <13>;
++				gpio-strap = <14>;
+ 			};
+ 		};
+ 

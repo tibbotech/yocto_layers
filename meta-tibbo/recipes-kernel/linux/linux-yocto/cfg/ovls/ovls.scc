@@ -1,0 +1,7 @@
+define KFEATURE_DESCRIPTION "Device tree overlays in configfs"
+define KFEATURE_COMPATIBILITY all
+force kconf non-hardware ovls.cfg
+patch Kconfig.patch
+# patch Kconfig.configfs.patch
+# patch Makefile.configfs.patch
+# patch configfs.patch

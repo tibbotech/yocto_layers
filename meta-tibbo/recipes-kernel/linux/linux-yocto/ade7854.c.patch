@@ -1,0 +1,142 @@
+--- a/drivers/staging/iio/meter/ade7854.c	2017-08-24 15:53:44.000000000 +0300
++++ a/drivers/staging/iio/meter/ade7854.c	2017-08-25 16:00:33.246037337 +0300
+@@ -188,55 +188,55 @@
+ 
+ static IIO_DEV_ATTR_AIGAIN(S_IWUSR | S_IRUGO,
+ 		ade7854_read_24bit,
+-		ade7854_write_24bit,
++		ade7854_write_32bit,
+ 		ADE7854_AIGAIN);
+ static IIO_DEV_ATTR_BIGAIN(S_IWUSR | S_IRUGO,
+ 		ade7854_read_24bit,
+-		ade7854_write_24bit,
++		ade7854_write_32bit,
+ 		ADE7854_BIGAIN);
+ static IIO_DEV_ATTR_CIGAIN(S_IWUSR | S_IRUGO,
+ 		ade7854_read_24bit,
+-		ade7854_write_24bit,
++		ade7854_write_32bit,
+ 		ADE7854_CIGAIN);
+ static IIO_DEV_ATTR_NIGAIN(S_IWUSR | S_IRUGO,
+ 		ade7854_read_24bit,
+-		ade7854_write_24bit,
++		ade7854_write_32bit,
+ 		ADE7854_NIGAIN);
+ static IIO_DEV_ATTR_AVGAIN(S_IWUSR | S_IRUGO,
+ 		ade7854_read_24bit,
+-		ade7854_write_24bit,
++		ade7854_write_32bit,
+ 		ADE7854_AVGAIN);
+ static IIO_DEV_ATTR_BVGAIN(S_IWUSR | S_IRUGO,
+ 		ade7854_read_24bit,
+-		ade7854_write_24bit,
++		ade7854_write_32bit,
+ 		ADE7854_BVGAIN);
+ static IIO_DEV_ATTR_CVGAIN(S_IWUSR | S_IRUGO,
+ 		ade7854_read_24bit,
+-		ade7854_write_24bit,
++		ade7854_write_32bit,
+ 		ADE7854_CVGAIN);
+ static IIO_DEV_ATTR_APPARENT_POWER_A_GAIN(S_IWUSR | S_IRUGO,
+ 		ade7854_read_24bit,
+-		ade7854_write_24bit,
++		ade7854_write_32bit,
+ 		ADE7854_AVAGAIN);
+ static IIO_DEV_ATTR_APPARENT_POWER_B_GAIN(S_IWUSR | S_IRUGO,
+ 		ade7854_read_24bit,
+-		ade7854_write_24bit,
++		ade7854_write_32bit,
+ 		ADE7854_BVAGAIN);
+ static IIO_DEV_ATTR_APPARENT_POWER_C_GAIN(S_IWUSR | S_IRUGO,
+ 		ade7854_read_24bit,
+-		ade7854_write_24bit,
++		ade7854_write_32bit,
+ 		ADE7854_CVAGAIN);
+ static IIO_DEV_ATTR_ACTIVE_POWER_A_OFFSET(S_IWUSR | S_IRUGO,
+ 		ade7854_read_24bit,
+-		ade7854_write_24bit,
++		ade7854_write_32bit,
+ 		ADE7854_AWATTOS);
+ static IIO_DEV_ATTR_ACTIVE_POWER_B_OFFSET(S_IWUSR | S_IRUGO,
+ 		ade7854_read_24bit,
+-		ade7854_write_24bit,
++		ade7854_write_32bit,
+ 		ADE7854_BWATTOS);
+ static IIO_DEV_ATTR_ACTIVE_POWER_C_OFFSET(S_IWUSR | S_IRUGO,
+ 		ade7854_read_24bit,
+-		ade7854_write_24bit,
++		ade7854_write_32bit,
+ 		ADE7854_CWATTOS);
+ static IIO_DEV_ATTR_REACTIVE_POWER_A_GAIN(S_IWUSR | S_IRUGO,
+ 		ade7854_read_24bit,
+@@ -252,11 +252,11 @@
+ 		ADE7854_CVARGAIN);
+ static IIO_DEV_ATTR_REACTIVE_POWER_A_OFFSET(S_IWUSR | S_IRUGO,
+ 		ade7854_read_24bit,
+-		ade7854_write_24bit,
++		ade7854_write_32bit,
+ 		ADE7854_AVAROS);
+ static IIO_DEV_ATTR_REACTIVE_POWER_B_OFFSET(S_IWUSR | S_IRUGO,
+ 		ade7854_read_24bit,
+-		ade7854_write_24bit,
++		ade7854_write_32bit,
+ 		ADE7854_BVAROS);
+ static IIO_DEV_ATTR_REACTIVE_POWER_C_OFFSET(S_IWUSR | S_IRUGO,
+ 		ade7854_read_24bit,
+@@ -310,13 +310,13 @@
+ 		ade7854_read_8bit,
+ 		ade7854_write_8bit,
+ 		ADE7854_PEAKCYC);
+-static IIO_DEV_ATTR_CHKSUM(ade7854_read_24bit,
++static IIO_DEV_ATTR_CHKSUM(ade7854_read_32bit,
+ 		ADE7854_CHECKSUM);
+-static IIO_DEV_ATTR_ANGLE0(ade7854_read_24bit,
++static IIO_DEV_ATTR_ANGLE0(ade7854_read_16bit,
+ 		ADE7854_ANGLE0);
+-static IIO_DEV_ATTR_ANGLE1(ade7854_read_24bit,
++static IIO_DEV_ATTR_ANGLE1(ade7854_read_16bit,
+ 		ADE7854_ANGLE1);
+-static IIO_DEV_ATTR_ANGLE2(ade7854_read_24bit,
++static IIO_DEV_ATTR_ANGLE2(ade7854_read_16bit,
+ 		ADE7854_ANGLE2);
+ static IIO_DEV_ATTR_AIRMS(S_IRUGO,
+ 		ade7854_read_24bit,
+@@ -347,28 +347,28 @@
+ 		NULL,
+ 		ADE7854_CVRMS);
+ static IIO_DEV_ATTR_AIRMSOS(S_IRUGO,
+-		ade7854_read_16bit,
+-		ade7854_write_16bit,
++		ade7854_read_24bit,
++		ade7854_write_32bit,
+ 		ADE7854_AIRMSOS);
+ static IIO_DEV_ATTR_BIRMSOS(S_IRUGO,
+-		ade7854_read_16bit,
+-		ade7854_write_16bit,
++		ade7854_read_24bit,
++		ade7854_write_32bit,
+ 		ADE7854_BIRMSOS);
+ static IIO_DEV_ATTR_CIRMSOS(S_IRUGO,
+-		ade7854_read_16bit,
+-		ade7854_write_16bit,
++		ade7854_read_24bit,
++		ade7854_write_32bit,
+ 		ADE7854_CIRMSOS);
+ static IIO_DEV_ATTR_AVRMSOS(S_IRUGO,
+ 		ade7854_read_16bit,
+ 		ade7854_write_16bit,
+ 		ADE7854_AVRMSOS);
+ static IIO_DEV_ATTR_BVRMSOS(S_IRUGO,
+-		ade7854_read_16bit,
+-		ade7854_write_16bit,
++		ade7854_read_24bit,
++		ade7854_write_32bit,
+ 		ADE7854_BVRMSOS);
+ static IIO_DEV_ATTR_CVRMSOS(S_IRUGO,
+-		ade7854_read_16bit,
+-		ade7854_write_16bit,
++		ade7854_read_24bit,
++		ade7854_write_32bit,
+ 		ADE7854_CVRMSOS);
+ static IIO_DEV_ATTR_VOLT_A(ade7854_read_24bit,
+ 		ADE7854_VAWV);

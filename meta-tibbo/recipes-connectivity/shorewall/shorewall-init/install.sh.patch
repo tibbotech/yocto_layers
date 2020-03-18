@@ -1,0 +1,30 @@
+--- a/install.sh	2016-08-06 17:57:47.000000000 +0300
++++ a/install.sh	2016-08-27 16:27:32.131319692 +0300
+@@ -297,6 +297,9 @@
+     openwrt)
+ 	echo "Installing Openwrt-specific configuration..."
+ 	;;
++    ltps)
++	echo "Installing LTPS-specific configuration..."
++	;;
+     linux)
+ 	echo "ERROR: Shorewall-init is not supported on this system" >&2
+ 	exit 1
+@@ -469,7 +472,7 @@
+ fi
+ 
+ case $HOST in
+-    debian)
++    debian|ltps)
+ 	if [ $configure -eq 1 ]; then
+ 	    install_file ifupdown ${DESTDIR}/etc/network/if-up.d/shorewall 0544
+ 	    install_file ifupdown ${DESTDIR}/etc/network/if-down.d/shorewall 0544
+@@ -600,7 +603,7 @@
+ 
+ if [ -d ${DESTDIR}/etc/ppp ]; then
+     case $HOST in
+-	debian|suse)
++	debian|suse|ltps)
+ 	    for directory in ip-up.d ip-down.d ipv6-up.d ipv6-down.d; do
+ 		mkdir -p ${DESTDIR}/etc/ppp/$directory #SuSE doesn't create the IPv6 directories
+ 		cp -fp ${DESTDIR}${LIBEXECDIR}/shorewall-init/ifupdown ${DESTDIR}${CONFDIR}/ppp/$directory/shorewall

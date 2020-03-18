@@ -1,0 +1,8 @@
+
+http://www.element14.com/community/community/designcenter/single-board-computers/next-gen_beaglebone/blog/2013/05/22/bbb--working-with-the-pru-icssprussv2
+
+http://www.pbmaster.org/en/
+
+search for PRU-ICSS in am335x
+
+http://www.ti.com.cn/cn/lit/wp/spry155b/spry155b.pdf

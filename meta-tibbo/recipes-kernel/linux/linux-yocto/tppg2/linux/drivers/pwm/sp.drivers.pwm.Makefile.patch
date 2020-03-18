@@ -1,0 +1,9 @@
+--- a/drivers/pwm/Makefile	2017-09-20 09:25:38.000000000 +0300
++++ a/drivers/pwm/Makefile	2018-11-12 06:42:55.000000000 +0300
+@@ -1,5 +1,6 @@
+ obj-$(CONFIG_PWM)		+= core.o
+ obj-$(CONFIG_PWM_SYSFS)		+= sysfs.o
++obj-$(CONFIG_PWM_SC7021)	+= pwm_sc7021/
+ obj-$(CONFIG_PWM_AB8500)	+= pwm-ab8500.o
+ obj-$(CONFIG_PWM_ATMEL)		+= pwm-atmel.o
+ obj-$(CONFIG_PWM_ATMEL_HLCDC_PWM)	+= pwm-atmel-hlcdc.o

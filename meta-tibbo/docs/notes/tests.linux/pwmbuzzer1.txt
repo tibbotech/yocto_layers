@@ -1,0 +1,34 @@
+
+read pwmbuzzer0.txt before!!!
+
+CONFIG_INPUT_PWM_BEEPER=y
+
+http://www.programmershare.com/2308554/
+
+# all in main DTS
+
+{
+    buzzer0 {
+	compatible = "pwm-beeper";
+	pinctrl-names = "default";
+	pinctrl-0 = <&buzzer0_pins>;
+	pwms = <&ehrpwm0 1 1000000 0>;
+	};
+};
+
+&am33xx_pinmux {
+...
+       buzzer0_pins: buzzer0_pins {
+               pinctrl-single,pins = <
+                       0x194 (PIN_OUTPUT | MUX_MODE1)  /* buzzer pin gpio#101 in TPS */
+               >;
+       };
+...
+};
+
+&epwmss0 {
+       status = "okay";
+};
+&ehrpwm0 {
+       status = "okay";
+};

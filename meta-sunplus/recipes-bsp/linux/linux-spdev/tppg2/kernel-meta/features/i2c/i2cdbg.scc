@@ -1,0 +1,5 @@
+define KFEATURE_DESCRIPTION "Enable I2C Debugging Options"
+define KFEATURE_COMPATIBILITY board
+
+include i2c.scc
+kconf hardware i2cdbg.cfg

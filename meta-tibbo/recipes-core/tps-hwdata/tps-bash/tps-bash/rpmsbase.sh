@@ -1,0 +1,1 @@
+export RPMSBASE="http://tibbo.com/downloads/LTPS/packets"

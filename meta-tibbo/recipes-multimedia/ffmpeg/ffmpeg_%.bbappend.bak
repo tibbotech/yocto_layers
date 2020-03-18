@@ -1,0 +1,2 @@
+
+PACKAGECONFIG = "avdevice avfilter gpl theora x264"

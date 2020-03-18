@@ -1,0 +1,9 @@
+[Unit]
+Description=IEC 61499 Implementation for Distributed Devices of the Next Generation
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/forte
+
+[Install]
+WantedBy=multi-user.target

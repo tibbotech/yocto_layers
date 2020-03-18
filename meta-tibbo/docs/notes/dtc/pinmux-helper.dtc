@@ -1,0 +1,31 @@
+/dts-v1/;
+/plugin/;
+
+/ { compatible = "ti,beaglebone", "ti,beaglebone-black";
+    /* identification */
+    part-number = "pinctrl-test-0";
+    fragment@0 {
+        target = <&am33xx_pinmux>;
+        __overlay__ {
+            pinctrl_test: pinctrl_test_0_pins {
+                pinctrl-single,pins = <
+                    0x030 0x07 /* P8_12 OUTPUT | MODE7 */
+                    0x034 0x07 /* P8_11 OUTPUT | MODE7 */
+                    /* Add more pins here */
+                >;
+            };
+        };
+    };
+
+    fragment@1 {
+        target = <&ocp>;
+        __overlay__ {
+            test_helper: helper {
+                compatible = "bone-pinmux-helper";
+                pinctrl-names = "default";
+                pinctrl-0 = <&pinctrl_test>;
+                status = "okay";
+            };
+        };
+    };
+};

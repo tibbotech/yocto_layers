@@ -1,0 +1,5 @@
+define KFEATURE_DESCRIPTION "Enable SunPlus PWM"
+define KFEATURE_COMPATIBILITY board
+
+include features/pwm/pwm.scc
+kconf hardware hw_pwm.cfg

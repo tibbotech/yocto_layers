@@ -1,0 +1,11 @@
+--- a/drivers/pinctrl/core.c	2019-02-13 21:13:49.276273654 +0300
++++ a/drivers/pinctrl/core.c	2019-02-13 21:44:27.289974329 +0300
+@@ -1319,6 +1319,8 @@
+ 
+ 	pr_debug("add %u pinctrl maps\n", num_maps);
+ 
++pr_err("sppctl: failed to register map %p\n", maps);
++//return( 0);
+ 	/* First sanity check the new mapping */
+ 	for (i = 0; i < num_maps; i++) {
+ 		if (!maps[i].dev_name) {

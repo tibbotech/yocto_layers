@@ -1,0 +1,23 @@
+--- a/drivers/usb/host/ehci.h	2017-09-20 09:25:38.000000000 +0300
++++ a/drivers/usb/host/ehci.h	2018-11-12 06:42:55.000000000 +0300
+@@ -271,6 +271,20 @@
+ 	unsigned long		priv[0] __aligned(sizeof(s64));
+ };
+ 
++#ifdef CONFIG_USB_HOST_RESET_SP
++struct ehci_hcd_sp {
++	/* must be 1st member here for hcd_to_ehci() to work */
++	struct ehci_hcd ehci;
++
++	struct task_struct	  	*reset_thread;
++	struct notifier_block 	 ehci_notifier;
++
++	u32 dum[3];
++
++	u32 flag;
++};
++#endif
++
+ /* convert between an HCD pointer and the corresponding EHCI_HCD */
+ static inline struct ehci_hcd *hcd_to_ehci(struct usb_hcd *hcd)
+ {

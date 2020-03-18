@@ -1,0 +1,4 @@
+define KFEATURE_DESCRIPTION "Enable SunPlus SPI NAND"
+define KFEATURE_COMPATIBILITY board
+
+kconf hardware sp_nand.cfg

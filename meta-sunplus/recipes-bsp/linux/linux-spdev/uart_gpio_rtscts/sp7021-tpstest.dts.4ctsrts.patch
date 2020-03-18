@@ -1,0 +1,22 @@
+--- a/arch/arm/boot/dts/sp7021-tpstest.dts	2019-10-22 17:06:37.241780851 +0300
++++ a/arch/arm/boot/dts/sp7021-tpstest.dts	2019-10-22 19:51:46.523829577 +0300
+@@ -71,6 +71,8 @@
+  pinctrl-names = "default";
+  /* pinctrl-0 = <&pins_uart4>; */
+  pinctrl-0 = <&pins_btuart &pins_bt_reset>;
++ gpio-rts = <&pctl 82 GPIO_ACTIVE_HIGH>;
++ gpio-cts = <&pctl 83 GPIO_ACTIVE_HIGH>;
+ };
+ 
+ &pctl {
+@@ -167,8 +169,8 @@
+     sppctl,pins = <
+       SP7021_IOPAD(40,SP7021_PCTL_G_PMUX,MUXF_UA4_RX,0)
+       SP7021_IOPAD(41,SP7021_PCTL_G_PMUX,MUXF_UA4_TX,0)
+-      SP7021_IOPAD(82,SP7021_PCTL_G_PMUX,MUXF_UA4_RTS,SP7021_PCTL_L_ONV)
+-      SP7021_IOPAD(83,SP7021_PCTL_G_PMUX,MUXF_UA4_CTS,0)
++      SP7021_IOPAD(82,SP7021_PCTL_G_GPIO,0,SP7021_PCTL_L_ONV)
++      SP7021_IOPAD(83,SP7021_PCTL_G_GPIO,0,SP7021_PCTL_L_INV)
+     >;
+  };
+  pins_bt_reset: pins_bt_reset {

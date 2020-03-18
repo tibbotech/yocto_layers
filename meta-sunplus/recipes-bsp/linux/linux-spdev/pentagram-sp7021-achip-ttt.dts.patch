@@ -1,0 +1,106 @@
+--- /dev/null	2019-08-29 09:27:06.677396414 +0300
++++ a/arch/arm/boot/dts/pentagram-sp7021-achip-ttt.dts	2019-09-04 19:26:43.206873420 +0300
+@@ -0,0 +1,103 @@
++/dts-v1/;
++
++#include "pentagram-sp7021-achip.dtsi"
++
++#include <dt-bindings/interrupt-controller/arm-gic.h>
++
++/ {
++	model = "Sunplus SP7021 EMU (CA7)";
++	compatible = "sunplus,sp7021-achip";
++
++	chosen {
++		bootargs = "console=ttyS0,115200 root=/dev/ram rw loglevel=8 user_debug=255 earlyprintk";
++	};
++
++	memory {
++		reg = <0x00000000 0x20000000>; /* 512MB */
++	};
++};
++
++&i2cm0{
++ pinctrl-names = "default";
++ pinctrl-0 = <&i2cm0_pins>;
++};
++
++&i2cm1{
++ pinctrl-names = "default";
++ pinctrl-0 = <&i2cm1_pins>;
++};
++
++&l2sw {
++ status = "disabled";
++};
++
++&sdio {
++ pinctrl-names = "default";
++ pinctrl-0 = <&pins_sdio>;
++ max-frequency = <40000000>; bus-width = <4>;
++};
++
++&pctl {
++ pinctrl-names = "default";
++ pinctrl-0 = <&zero_eth0 &zero_eth1 &zero_l2sw>;
++
++ i2cm0_pins: i2cm0_pins {
++  sppctl,pins = <
++       SP7021_IOPAD(8,SP7021_PCTL_G_PMUX,MUXF_I2CM0_CLK,0)
++       SP7021_IOPAD(9,SP7021_PCTL_G_PMUX,MUXF_I2CM0_DAT,0)
++  >;
++ };
++
++ i2cm1_pins: i2cm1_pins {
++  sppctl,pins = <
++       SP7021_IOPAD(10,SP7021_PCTL_G_PMUX,MUXF_I2CM1_CLK,0)
++       SP7021_IOPAD(11,SP7021_PCTL_G_PMUX,MUXF_I2CM1_DAT,0)
++  >;
++ };
++
++ pins_sdio: pins_sdio {
++  sppctl,pins = <
++       SP7021_IOPAD(17,SP7021_PCTL_G_PMUX,MUXF_SDIO_D1,0)
++       SP7021_IOPAD(19,SP7021_PCTL_G_PMUX,MUXF_SDIO_D0,0)
++       SP7021_IOPAD(21,SP7021_PCTL_G_PMUX,MUXF_SDIO_CLK,0)
++       SP7021_IOPAD(23,SP7021_PCTL_G_PMUX,MUXF_SDIO_CMD,0)
++       SP7021_IOPAD(25,SP7021_PCTL_G_PMUX,MUXF_SDIO_D3,0)
++       SP7021_IOPAD(27,SP7021_PCTL_G_PMUX,MUXF_SDIO_D2,0)
++  >;
++ };
++
++ zero_l2sw: zero_l2sw {
++  sppctl,zero_func = <
++       MUXF_L2SW_CLK_OUT
++       MUXF_L2SW_MAC_SMI_MDC
++       MUXF_L2SW_MAC_SMI_MDIO
++  >;
++ };
++ zero_eth0: zero_eth0 {
++  sppctl,zero_func = <
++       MUXF_L2SW_LED_ON0
++       MUXF_L2SW_LED_FLASH0
++       MUXF_L2SW_P0_MAC_RMII_TXEN
++       MUXF_L2SW_P0_MAC_RMII_TXD0
++       MUXF_L2SW_P0_MAC_RMII_TXD1
++       MUXF_L2SW_P0_MAC_RMII_CRSDV
++       MUXF_L2SW_P0_MAC_RMII_RXD0
++       MUXF_L2SW_P0_MAC_RMII_RXD1
++       MUXF_L2SW_P0_MAC_RMII_RXER
++  >;
++ };
++ zero_eth1: zero_eth1 {
++  sppctl,zero_func = <
++       MUXF_L2SW_LED_ON1
++       MUXF_L2SW_LED_FLASH1
++       MUXF_L2SW_P1_MAC_RMII_TXEN
++       MUXF_L2SW_P1_MAC_RMII_TXD0
++       MUXF_L2SW_P1_MAC_RMII_TXD1
++       MUXF_L2SW_P1_MAC_RMII_CRSDV
++       MUXF_L2SW_P1_MAC_RMII_RXD0
++       MUXF_L2SW_P1_MAC_RMII_RXD1
++       MUXF_L2SW_P1_MAC_RMII_RXER
++  >;
++ };
++
++};

@@ -1,0 +1,11 @@
+--- a/mtcnn/mtcnn.cpp	2020-02-19 15:23:40.908248750 +0300
++++ a/mtcnn/mtcnn.cpp	2020-02-19 17:39:28.540718836 +0300
+@@ -346,7 +346,7 @@
+ {
+     const char* imagepath = argv[1];
+ 
+-    cv::Mat cv_img = cv::imread(imagepath, CV_LOAD_IMAGE_COLOR);
++    cv::Mat cv_img = cv::imread(imagepath, cv::IMREAD_COLOR);
+     if (cv_img.empty())
+     {
+         fprintf(stderr, "cv::imread %s failed\n", imagepath);

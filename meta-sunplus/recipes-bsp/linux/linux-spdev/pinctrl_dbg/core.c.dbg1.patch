@@ -1,0 +1,38 @@
+--- a/drivers/pinctrl/core.c	2019-02-15 10:03:07.208286714 +0300
++++ a/drivers/pinctrl/core.c	2019-02-15 10:41:59.366835840 +0300
+@@ -1006,11 +1006,13 @@
+ 	p = kzalloc(sizeof(*p), GFP_KERNEL);
+ 	if (!p)
+ 		return ERR_PTR(-ENOMEM);
++pr_err("%s():%d\n", __FUNCTION__, __LINE__);
+ 	p->dev = dev;
+ 	INIT_LIST_HEAD(&p->states);
+ 	INIT_LIST_HEAD(&p->dt_maps);
+ 
+ 	ret = pinctrl_dt_to_map(p, pctldev);
++pr_err("%s():%d r:%d\n", __FUNCTION__, __LINE__, ret);
+ 	if (ret < 0) {
+ 		kfree(p);
+ 		return ERR_PTR(ret);
+@@ -1021,11 +1023,13 @@
+ 	mutex_lock(&pinctrl_maps_mutex);
+ 	/* Iterate over the pin control maps to locate the right ones */
+ 	for_each_maps(maps_node, i, map) {
++//pr_err("%s():%d %d\n", __FUNCTION__, __LINE__, i);
+ 		/* Map must be for this device */
+ 		if (strcmp(map->dev_name, devname))
+ 			continue;
+ 
+ 		ret = add_setting(p, pctldev, map);
++//pr_err("%s():%d %d\n", __FUNCTION__, __LINE__, ret);
+ 		/*
+ 		 * At this point the adding of a setting may:
+ 		 *
+@@ -1047,6 +1051,7 @@
+ 	}
+ 	mutex_unlock(&pinctrl_maps_mutex);
+ 
++pr_err("%s():%d %d\n", __FUNCTION__, __LINE__, ret);
+ 	if (ret < 0) {
+ 		/* If some other error than deferral occurred, return here */
+ 		pinctrl_free(p, false);

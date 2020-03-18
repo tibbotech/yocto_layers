@@ -1,0 +1,24 @@
+
+example
+http://processors.wiki.ti.com/index.php/Linux_Core_PWM_User%27s_Guide
+
+try: input/misc/pwm-beeper.c !
+
+# in main DTS
+
+&am33xx_pinmux {
+       buzzer_pins: buzzer_pins {
+               pinctrl-single,pins = <
+                       0x194 (PIN_OUTPUT | MUX_MODE1)  /* buzzer pin gpio#101 in TPS */
+               >;
+       };
+};
+
+&epwmss0 {
+       status = "okay";
+};
+&ehrpwm0 {
+       status = "okay";
+       pinctrl-names = "default";
+       pinctrl-0 = <&buzzer_pins>;
+};

@@ -1,0 +1,22 @@
+# this file is a copy for ${systemd_unitdir}/system/
+
+[Unit]
+Description=TPS PHP SqLite3 Admin demo
+After=network-online.target
+
+[Service]
+Type=forking
+Restart=on-failure
+User=node-apps
+Environment=PFX=/opt/node-apps/demo-phpliteadmin/
+ExecStart=/usr/sbin/php-fpm -D -p ${PFX} -y ${PFX}/conf/php-fpm.conf -R
+
+# do limitation
+CPUAccounting=true
+CPUQuota=10%
+MemoryAccounting=true
+MemoryLimit=50M
+
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,27 @@
+--- a/include/linux/usb/gadget.h	2017-09-20 09:25:38.000000000 +0300
++++ a/include/linux/usb/gadget.h	2018-11-12 06:42:56.000000000 +0300
+@@ -303,7 +303,7 @@
+ 	void	(*get_config_params)(struct usb_dcd_config_params *);
+ 	int	(*udc_start)(struct usb_gadget *,
+ 			struct usb_gadget_driver *);
+-	int	(*udc_stop)(struct usb_gadget *);
++	int	(*udc_stop)(struct usb_gadget_driver *);
+ 	struct usb_ep *(*match_ep)(struct usb_gadget *,
+ 			struct usb_endpoint_descriptor *,
+ 			struct usb_ss_ep_comp_descriptor *);
+@@ -494,7 +494,14 @@
+  */
+ static inline int gadget_is_dualspeed(struct usb_gadget *g)
+ {
+-	return g->max_speed >= USB_SPEED_HIGH;
++#ifdef CONFIG_USB_GADGET_DUALSPEED
++	/* runtime test would check "g->max_speed" ... that might be
++	 * useful to work around hardware bugs, but is mostly pointless
++	 */
++	return true;
++#else
++	return false;
++#endif
+ }
+ 
+ /**

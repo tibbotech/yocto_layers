@@ -1,0 +1,4 @@
+define KFEATURE_DESCRIPTION "Enable core options for USB support"
+define KFEATURE_COMPATIBILITY board
+
+kconf hardware usb-base.cfg

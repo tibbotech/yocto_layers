@@ -1,0 +1,145 @@
+diff -urN a/c.tppg2/conf/bblayers.conf a/c.tppg2/conf/bblayers.conf
+--- a/c.tppg2/conf/bblayers.conf	2018-12-07 20:59:49.445931400 +0300
++++ a/c.tppg2/conf/bblayers.conf	2018-11-08 09:36:38.536320715 +0300
+@@ -6,7 +6,19 @@
+ BBFILES ?= ""
+ 
+ BBLAYERS ?= " \
+-  /home/dv/workspace/tpp.22/poky/meta \
+-  /home/dv/workspace/tpp.22/poky/meta-poky \
+-  /home/dv/workspace/tpp.22/poky/meta-yocto-bsp \
++  ${TOPDIR}/../meta-tibbo \
++  ${TOPDIR}/../meta \
++  ${TOPDIR}/../meta-poky \
++  ${TOPDIR}/../meta-yocto-bsp \
++  ${TOPDIR}/../meta-nodejs \
++  ${TOPDIR}/../meta-qt5 \
++  "
++
++BBLAYERS += " \
++  ${TOPDIR}/../meta-openembedded/meta-multimedia \
++  ${TOPDIR}/../meta-openembedded/meta-networking \
++  ${TOPDIR}/../meta-openembedded/meta-oe \
++  ${TOPDIR}/../meta-openembedded/meta-perl \
++  ${TOPDIR}/../meta-openembedded/meta-python \
++  ${TOPDIR}/../meta-openembedded/meta-webserver \
+   "
+diff -urN a/c.tppg2/conf/local.conf a/c.tppg2/conf/local.conf
+--- a/c.tppg2/conf/local.conf	2018-12-07 20:59:49.444931459 +0300
++++ a/c.tppg2/conf/local.conf	2018-12-07 21:01:52.834685301 +0300
+@@ -36,6 +36,9 @@
+ #
+ # This sets the default machine to be qemux86 if no other machine is selected:
+ MACHINE ??= "qemux86"
++# by Dv
++MACHINE ?= "tppg2"
++KMACHINE = "pentagram"
+ 
+ #
+ # Where to place downloads
+@@ -49,6 +52,8 @@
+ # The default is a downloads directory under TOPDIR which is the build directory.
+ #
+ #DL_DIR ?= "${TOPDIR}/downloads"
++# by Dv
++DL_DIR ?= "${HOME}/archives/oe_sources/"
+ 
+ #
+ # Where to place shared-state files
+@@ -65,6 +70,8 @@
+ # The default is a sstate-cache directory under TOPDIR.
+ #
+ #SSTATE_DIR ?= "${TOPDIR}/sstate-cache"
++# by Dv
++SSTATE_DIR ?= "/home/dv/workspace/tpp.22/build/sstate-cache"
+ 
+ #
+ # Where to place the build output
+@@ -77,6 +84,8 @@
+ # The default is a tmp directory under TOPDIR.
+ #
+ #TMPDIR = "${TOPDIR}/tmp"
++# by Dv
++TMPDIR = "/home/dv/workspace/tpp.22/build/tmp"
+ 
+ #
+ # Default policy config
+@@ -86,7 +95,9 @@
+ # Ultimately when creating custom policy, people will likely end up subclassing 
+ # these defaults.
+ #
+-DISTRO ?= "poky"
++# by Dv
++#DISTRO ?= "poky"
++DISTRO ?= "tps"
+ # As an example of a subclass there is a "bleeding" edge policy configuration
+ # where many versions are set to the absolute latest code from the upstream 
+ # source control systems. This is just mentioned here as an example, its not
+@@ -115,6 +126,8 @@
+ # running the build on (i.e. building i686 packages on an x86_64 host).
+ # Supported values are i686 and x86_64
+ #SDKMACHINE ?= "i686"
++# by Dv
++SDKMACHINE ?= "x86_64"
+ 
+ #
+ # Extra image configuration defaults
+@@ -138,7 +151,8 @@
+ # There are other application targets that can be used here too, see
+ # meta/classes/image.bbclass and meta/classes/core-image.bbclass for more details.
+ # We default to enabling the debugging tweaks.
+-EXTRA_IMAGE_FEATURES ?= "debug-tweaks"
++# by Dv
++#EXTRA_IMAGE_FEATURES ?= "debug-tweaks"
+ 
+ #
+ # Additional image features
+@@ -190,15 +204,16 @@
+ # files and damages the build in ways which may not be easily recoverable.
+ # It's necesary to monitor /tmp, if there is no space left the build will fail
+ # with very exotic errors.
+-BB_DISKMON_DIRS ??= "\
+-    STOPTASKS,${TMPDIR},1G,100K \
+-    STOPTASKS,${DL_DIR},1G,100K \
+-    STOPTASKS,${SSTATE_DIR},1G,100K \
+-    STOPTASKS,/tmp,100M,100K \
+-    ABORT,${TMPDIR},100M,1K \
+-    ABORT,${DL_DIR},100M,1K \
+-    ABORT,${SSTATE_DIR},100M,1K \
+-    ABORT,/tmp,10M,1K"
++# by Dv
++#BB_DISKMON_DIRS ??= "\
++#    STOPTASKS,${TMPDIR},1G,100K \
++#    STOPTASKS,${DL_DIR},1G,100K \
++#    STOPTASKS,${SSTATE_DIR},1G,100K \
++#    STOPTASKS,/tmp,100M,100K \
++#    ABORT,${TMPDIR},100M,1K \
++#    ABORT,${DL_DIR},100M,1K \
++#    ABORT,${SSTATE_DIR},100M,1K \
++#    ABORT,/tmp,10M,1K"
+ 
+ #
+ # Shared-state files from other locations
+@@ -237,11 +252,20 @@
+ # seen. The two lines below enable the SDL backend too. By default libsdl-native will
+ # be built, if you want to use your host's libSDL instead of the minimal libsdl built
+ # by libsdl-native then uncomment the ASSUME_PROVIDED line below.
+-PACKAGECONFIG_append_pn-qemu-native = " sdl"
+-PACKAGECONFIG_append_pn-nativesdk-qemu = " sdl"
++#PACKAGECONFIG_append_pn-qemu-native = " sdl"
++#PACKAGECONFIG_append_pn-nativesdk-qemu = " sdl"
+ #ASSUME_PROVIDED += "libsdl-native"
+ 
+ # CONF_VERSION is increased each time build/conf/ changes incompatibly and is used to
+ # track the version of this file when it was generated. This can safely be ignored if
+ # this doesn't mean anything to you.
+ CONF_VERSION = "1"
++
++# by Dv
++LICENSE_FLAGS_WHITELIST += " commercial_ffmpeg"
++LICENSE_FLAGS_WHITELIST += " commercial_x264"
++LICENSE_FLAGS_WHITELIST += " commercial"
++
++# for initramfs
++#INITRAMFS_IMAGE = "img-spir"
++#INITRAMFS_IMAGE_BUNDLE = "1"

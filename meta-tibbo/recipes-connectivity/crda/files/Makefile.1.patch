@@ -1,0 +1,33 @@
+--- a/Makefile	2011-02-20 12:54:40.000000000 +0300
++++ a/Makefile	2011-02-20 22:59:18.055756409 +0300
+@@ -117,9 +117,9 @@
+ install: crda crda.8.gz regdbdump.8.gz
+ 	$(NQ) '  INSTALL  crda'
+ 	$(Q)$(MKDIR) $(DESTDIR)/$(SBINDIR)
+-	$(Q)$(INSTALL) -m 755 -t $(DESTDIR)/$(SBINDIR) crda
++	$(Q)$(INSTALL) -m 755 crda $(DESTDIR)/$(SBINDIR)
+ 	$(NQ) '  INSTALL  regdbdump'
+-	$(Q)$(INSTALL) -m 755 -t $(DESTDIR)/$(SBINDIR) regdbdump
++	$(Q)$(INSTALL) -m 755 regdbdump $(DESTDIR)/$(SBINDIR)
+ 	$(NQ) '  INSTALL  $(UDEV_LEVEL)regulatory.rules'
+ 	$(Q)$(MKDIR) $(DESTDIR)/$(UDEV_RULE_DIR)/
+ 	@# This removes the old rule you may have, we were not
+@@ -127,14 +127,13 @@
+ 	$(Q)rm -f $(DESTDIR)/etc/udev/rules.d/regulatory.rules
+ 	$(Q)sed 's:$$(SBINDIR):$(SBINDIR):' udev/regulatory.rules > udev/regulatory.rules.parsed
+ 	$(Q)ln -sf regulatory.rules.parsed udev/$(UDEV_LEVEL)regulatory.rules
+-	$(Q)$(INSTALL) -m 644 -t \
+-		$(DESTDIR)/$(UDEV_RULE_DIR)/ \
+-		udev/$(UDEV_LEVEL)regulatory.rules
++	$(Q)$(INSTALL) -m 644 udev/$(UDEV_LEVEL)regulatory.rules \
++		$(DESTDIR)/$(UDEV_RULE_DIR)/
+ 	$(NQ) '  INSTALL  crda.8.gz'
+ 	$(Q)$(MKDIR) $(DESTDIR)$(MANDIR)/man8/
+-	$(Q)$(INSTALL) -m 644 -t $(DESTDIR)/$(MANDIR)/man8/ crda.8.gz
++	$(Q)$(INSTALL) -m 644 crda.8.gz $(DESTDIR)/$(MANDIR)/man8/
+ 	$(NQ) '  INSTALL  regdbdump.8.gz'
+-	$(Q)$(INSTALL) -m 644 -t $(DESTDIR)/$(MANDIR)/man8/ regdbdump.8.gz
++	$(Q)$(INSTALL) -m 644 regdbdump.8.gz $(DESTDIR)/$(MANDIR)/man8/
+ 
+ clean:
+ 	$(Q)rm -f crda regdbdump intersect *.o *~ *.pyc keys-*.c *.gz \

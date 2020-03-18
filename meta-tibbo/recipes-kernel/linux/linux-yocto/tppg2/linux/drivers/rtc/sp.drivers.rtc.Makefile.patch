@@ -1,0 +1,10 @@
+--- a/drivers/rtc/Makefile	2017-09-20 09:25:38.000000000 +0300
++++ a/drivers/rtc/Makefile	2018-11-12 06:42:55.000000000 +0300
+@@ -151,6 +151,7 @@
+ obj-$(CONFIG_RTC_DRV_ST_LPC)	+= rtc-st-lpc.o
+ obj-$(CONFIG_RTC_DRV_SUN4V)	+= rtc-sun4v.o
+ obj-$(CONFIG_RTC_DRV_SUN6I)	+= rtc-sun6i.o
++obj-$(CONFIG_RTC_DRV_SUNPLUS)	+= rtc-sunplus.o
+ obj-$(CONFIG_RTC_DRV_SUNXI)	+= rtc-sunxi.o
+ obj-$(CONFIG_RTC_DRV_TEGRA)	+= rtc-tegra.o
+ obj-$(CONFIG_RTC_DRV_TEST)	+= rtc-test.o

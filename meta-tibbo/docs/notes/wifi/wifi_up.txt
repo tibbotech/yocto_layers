@@ -1,0 +1,4 @@
+ip link set wlan0 up
+
+wpa_supplicant - WPA crypto agent
+crda - for channels

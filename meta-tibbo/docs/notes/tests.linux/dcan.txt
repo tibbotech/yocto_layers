@@ -1,0 +1,18 @@
+
+in special DTS:
+
+&am33xx_pinmux {
+       dcan1_pins: dcan1_pins {
+               pinctrl-single,pins = <
+		0x100 (PIN_OUTPUT | MUX_MODE4)	/* gpio2.30 pin94  S19A */
+		0x104 (PIN_INPUT  | MUX_MODE4)	/* gpio2.31 pin95  S19B */
+               >;
+       };
+};
+
+
+&dcan1 {
+    pinctrl-names = "default";
+    pinctrl-0 = <&dcan1_pins>;
+    status = "okay";
+};

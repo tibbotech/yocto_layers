@@ -1,0 +1,11 @@
+[General]
+Name = Tibbo KLM
+FastConnectable = true
+Class = 0xC20108
+DiscoverableTimeout = 0
+#ControllerMode = dual # or "bredr" or "le" ?
+
+[Policy]
+AutoEnable=true
+ReconnectAttempts=7
+ReconnectIntervals=1,2,4,8,16,32,64

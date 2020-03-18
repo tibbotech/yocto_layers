@@ -1,0 +1,18 @@
+[Unit]
+Description=Node-RED IoT plathform
+After=syslog.target network.target
+Documentation=http://nodered.org/
+
+[Service]
+#Environment="NODE_OPTIONS=--max-old-space-size=128"
+Environment="NODE_RED_OPTIONS=-v"
+ExecStart=/usr/bin/node-red $NODE_OPTIONS $NODE_RED_OPTIONS
+WorkingDirectory=/opt/node-red/
+User=node-red
+Group=node-red
+Nice=10
+Restart=on-failure
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target

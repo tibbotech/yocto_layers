@@ -1,0 +1,16 @@
+[Service]
+#ExecStart=/usr/bin/mjpg_streamer -i "input_uvc.so -r 1024x768 -f 30 ex auto" -o "output_file.so -f /mnt/mmc0p1/video -m stream.mjpg" -o "output_http.so -p 10001 -w /usr/share/mjpg-streamer/www/"
+ExecStart=/usr/bin/mjpg_streamer -i "input_uvc.so -r 1024x768" -o "output_http.so -p 1000 -w /usr/share/mjpg-streamer/www/"
+Restart=no
+CPUAccounting=true
+CPUQuota=10%
+MemoryAccounting=true
+MemoryLimit=50M
+
+[Unit]
+Description=Camera 0
+BindsTo=dev-video0.device
+After=network-online.target dev-video0.device
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,26 @@
+--- a/drivers/tty/serial/omap-serial.c	2016-07-14 18:34:43.000000000 +0300
++++ a/drivers/tty/serial/omap-serial.c	2016-07-14 21:30:57.186151085 +0300
+@@ -306,6 +306,7 @@
+ 
+ 	/* Handle RS-485 */
+ 	if (port->rs485.flags & SER_RS485_ENABLED) {
++dev_warn(up->dev, "%s (0)\n", __FUNCTION__);
+ 		if (up->scr & OMAP_UART_SCR_TX_EMPTY) {
+ 			/* THR interrupt is fired when both TX FIFO and TX
+ 			 * shift register are empty. This means there's nothing
+@@ -1611,6 +1612,7 @@
+ 		ret = devm_gpio_request(up->dev, up->rts_gpio, "omap-serial");
+ 		if (ret < 0)
+ 			return ret;
++dev_warn(up->dev, "%s: 485: out:%d\n", __FUNCTION__, flags & SER_RS485_RTS_AFTER_SEND);
+ 		ret = gpio_direction_output(up->rts_gpio,
+ 					    flags & SER_RS485_RTS_AFTER_SEND);
+ 		if (ret < 0)
+@@ -1742,6 +1744,7 @@
+ 			 up->port.line);
+ 
+ 	ret = serial_omap_probe_rs485(up, pdev->dev.of_node);
++dev_warn(up->dev, "%s: 485 probe:%d\n", __FUNCTION__, ret);
+ 	if (ret < 0)
+ 		goto err_rs485;
+ 

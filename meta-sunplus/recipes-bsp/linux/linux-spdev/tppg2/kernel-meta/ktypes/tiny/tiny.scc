@@ -1,0 +1,8 @@
+#include ktypes/standard/standard.scc nocfg inherit
+branch tiny
+
+# Minimal Yocto Kernel Policy
+kconf required yocto.cfg
+
+# Make it a bit smaller
+kconf required tiny.cfg

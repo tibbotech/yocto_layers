@@ -1,0 +1,2 @@
+# keytroller
+SUBSYSTEM=="tty", ENV{DEVNAME}=="/dev/ttyO5", ACTION=="add", TAG+="systemd", ENV{SYSTEMD_WANTS}="rtk_hciattach@$name.service"

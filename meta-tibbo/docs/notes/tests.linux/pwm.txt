@@ -1,0 +1,19 @@
+root@tpb:~# echo "1" > /sys/class/pwm/pwmchip1/export 
+root@tpb:~# echo "0" > /sys/class/pwm/pwmchip1/export 
+root@tpb:~# echo "100" > /sys/class/pwm/pwmchip1/pwm0/period 
+root@tpb:~# echo "100" > /sys/class/pwm/pwmchip1/pwm1/period 
+root@tpb:~# echo "10" > /sys/class/pwm/pwmchip1/pwm0/duty_cycle 
+root@tpb:~# echo "10" > /sys/class/pwm/pwmchip1/pwm1/duty_cycle 
+root@tpb:~# echo "1" > /sys/class/pwm/pwmchip1/pwm0/enable 
+root@tpb:~# echo "1" > /sys/class/pwm/pwmchip1/pwm1/enable 
+root@tpb:~# echo "20" > /sys/class/pwm/pwmchip1/pwm0/duty_cycle 
+root@tpb:~# echo "20" > /sys/class/pwm/pwmchip1/pwm1/duty_cycle 
+root@tpb:~# echo "30" > /sys/class/pwm/pwmchip1/pwm1/duty_cycle 
+root@tpb:~# echo "0" > /sys/class/pwm/pwmchip1/pwm0/enable 
+root@tpb:~# echo "0" > /sys/class/pwm/pwmchip1/pwm1/enable 
+root@tpb:~# echo "1" > /sys/class/pwm/pwmchip1/pwm1/enable 
+root@tpb:~# echo "50" > /sys/class/pwm/pwmchip1/pwm1/duty_cycle 
+root@tpb:~# echo "0" > /sys/class/pwm/pwmchip1/pwm1/enable 
+root@tpb:~# echo "1" > /sys/class/pwm/pwmchip1/pwm1/enable 
+
+0x154 (PIN_OUTPUT | MUX_MODE3) /* gpio0.03, wireless topright pin */

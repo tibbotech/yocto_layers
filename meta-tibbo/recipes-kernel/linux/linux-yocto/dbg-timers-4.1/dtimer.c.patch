@@ -1,0 +1,333 @@
+--- linux/arch/arm/plat-omap/dmtimer.c	2015-09-24 08:57:12.014890116 +0800
++++ linux/arch/arm/plat-omap/dmtimer.c	2015-09-24 10:25:43.705641856 +0800
+@@ -71,6 +71,7 @@
+ static inline u32 omap_dm_timer_read_reg(struct omap_dm_timer *timer, u32 reg)
+ {
+ 	WARN_ON((reg & 0xff) < _OMAP_TIMER_WAKEUP_EN_OFFSET);
++pr_warn("%s(reg:%X)\n", __FUNCTION__, reg);
+ 	return __omap_dm_timer_read(timer, reg, timer->posted);
+ }
+ 
+@@ -88,6 +89,7 @@
+ 						u32 value)
+ {
+ 	WARN_ON((reg & 0xff) < _OMAP_TIMER_WAKEUP_EN_OFFSET);
++pr_warn("%s(reg:%X,val:%X)\n", __FUNCTION__, reg, value);
+ 	__omap_dm_timer_write(timer, reg, value, timer->posted);
+ }
+ 
+@@ -112,6 +114,7 @@
+ {
+ 	u32 l, timeout = 100000;
+ 
++pr_warn("%s() 0 id:%d\n", __FUNCTION__, timer->id);
+ 	if (timer->revision != 1)
+ 		return -EINVAL;
+ 
+@@ -145,6 +148,7 @@
+ 	 * FIXME: OMAP1 devices do not use the clock framework for dmtimers so
+ 	 * do not call clk_get() for these devices.
+ 	 */
++pr_warn("%s() 0 id:%d\n", __FUNCTION__, timer->id);
+ 	if (!(timer->capability & OMAP_TIMER_NEEDS_RESET)) {
+ 		timer->fclk = clk_get(&timer->pdev->dev, "fck");
+ 		if (WARN_ON_ONCE(IS_ERR(timer->fclk))) {
+@@ -153,6 +157,7 @@
+ 		}
+ 	}
+ 
++pr_warn("%s() 1\n", __FUNCTION__);
+ 	omap_dm_timer_enable(timer);
+ 
+ 	if (timer->capability & OMAP_TIMER_NEEDS_RESET) {
+@@ -171,11 +176,13 @@
+ 
+ static inline u32 omap_dm_timer_reserved_systimer(int id)
+ {
++pr_warn("%s() 0 id:%X\n", __FUNCTION__, id);
+ 	return (omap_reserved_systimers & (1 << (id - 1))) ? 1 : 0;
+ }
+ 
+ int omap_dm_timer_reserve_systimer(int id)
+ {
++pr_warn("%s() 0\n", __FUNCTION__);
+ 	if (omap_dm_timer_reserved_systimer(id))
+ 		return -ENODEV;
+ 
+@@ -192,6 +199,7 @@
+ 	u32 cap = 0;
+ 	int id = 0;
+ 
++pr_warn("%s() 0\n", __FUNCTION__);
+ 	switch (req_type) {
+ 	case REQUEST_BY_ID:
+ 		id = *(int *)data;
+@@ -320,6 +328,7 @@
+ 
+ int omap_dm_timer_free(struct omap_dm_timer *timer)
+ {
++pr_warn("%s() 0 id:%d\n", __FUNCTION__, timer->id);
+ 	if (unlikely(!timer))
+ 		return -EINVAL;
+ 
+@@ -335,6 +344,7 @@
+ {
+ 	int c;
+ 
++pr_warn("%s() 0 id:%d\n", __FUNCTION__, timer->id);
+ 	pm_runtime_get_sync(&timer->pdev->dev);
+ 
+ 	if (!(timer->capability & OMAP_TIMER_ALWON)) {
+@@ -353,6 +363,7 @@
+ 
+ void omap_dm_timer_disable(struct omap_dm_timer *timer)
+ {
++pr_warn("%s() 0 id:%d\n", __FUNCTION__, timer->id);
+ 	pm_runtime_put_sync(&timer->pdev->dev);
+ }
+ EXPORT_SYMBOL_GPL(omap_dm_timer_disable);
+@@ -377,6 +388,7 @@
+ 	struct omap_dm_timer *timer = NULL;
+ 	unsigned long flags;
+ 
++pr_warn("%s() 0\n", __FUNCTION__);
+ 	/* If ARMXOR cannot be idled this function call is unnecessary */
+ 	if (!(inputmask & (1 << 1)))
+ 		return inputmask;
+@@ -428,6 +440,7 @@
+ 		return -EINVAL;
+ 	}
+ 
++pr_warn("%s() 0 id:%d\n", __FUNCTION__, timer->id);
+ 	omap_dm_timer_write_reg(timer, OMAP_TIMER_TRIGGER_REG, 0);
+ 	return 0;
+ }
+@@ -440,6 +453,7 @@
+ 	if (unlikely(!timer))
+ 		return -EINVAL;
+ 
++pr_warn("%s() 0 id:%d\n", __FUNCTION__, timer->id);
+ 	omap_dm_timer_enable(timer);
+ 
+ 	l = omap_dm_timer_read_reg(timer, OMAP_TIMER_CTRL_REG);
+@@ -461,6 +475,7 @@
+ 	if (unlikely(!timer))
+ 		return -EINVAL;
+ 
++pr_warn("%s() 0 id:%d\n", __FUNCTION__, timer->id);
+ 	if (!(timer->capability & OMAP_TIMER_NEEDS_RESET))
+ 		rate = clk_get_rate(timer->fclk);
+ 
+@@ -488,6 +503,7 @@
+ 	if (unlikely(!timer))
+ 		return -EINVAL;
+ 
++pr_warn("%s() 0 id:%d source:%d\n", __FUNCTION__, timer->id, source);
+ 	pdata = timer->pdev->dev.platform_data;
+ 
+ 	if (source < 0 || source >= 3)
+@@ -518,6 +534,7 @@
+ 		break;
+ 	}
+ 
++pr_warn("%s() 1 parent_name:%d\n", __FUNCTION__, parent_name);
+ 	parent = clk_get(&timer->pdev->dev, parent_name);
+ 	if (IS_ERR(parent)) {
+ 		pr_err("%s: %s not found\n", __func__, parent_name);
+@@ -543,6 +560,7 @@
+ 	if (unlikely(!timer))
+ 		return -EINVAL;
+ 
++pr_warn("%s() 0 id:%d\n", __FUNCTION__, timer->id);
+ 	omap_dm_timer_enable(timer);
+ 	l = omap_dm_timer_read_reg(timer, OMAP_TIMER_CTRL_REG);
+ 	if (autoreload)
+@@ -570,6 +588,7 @@
+ 	if (unlikely(!timer))
+ 		return -EINVAL;
+ 
++pr_warn("%s() 0 id:%d\n", __FUNCTION__, timer->id);
+ 	omap_dm_timer_enable(timer);
+ 
+ 	l = omap_dm_timer_read_reg(timer, OMAP_TIMER_CTRL_REG);
+@@ -599,6 +618,7 @@
+ 	if (unlikely(!timer))
+ 		return -EINVAL;
+ 
++pr_warn("%s() 0 id:%d\n", __FUNCTION__, timer->id);
+ 	omap_dm_timer_enable(timer);
+ 	l = omap_dm_timer_read_reg(timer, OMAP_TIMER_CTRL_REG);
+ 	if (enable)
+@@ -624,6 +644,7 @@
+ 	if (unlikely(!timer))
+ 		return -EINVAL;
+ 
++pr_warn("%s() 0 id:%d\n", __FUNCTION__, timer->id);
+ 	omap_dm_timer_enable(timer);
+ 	l = omap_dm_timer_read_reg(timer, OMAP_TIMER_CTRL_REG);
+ 	l &= ~(OMAP_TIMER_CTRL_GPOCFG | OMAP_TIMER_CTRL_SCPWM |
+@@ -649,6 +670,7 @@
+ 	if (unlikely(!timer))
+ 		return -EINVAL;
+ 
++pr_warn("%s() 0 id:%d\n", __FUNCTION__, timer->id);
+ 	omap_dm_timer_enable(timer);
+ 	l = omap_dm_timer_read_reg(timer, OMAP_TIMER_CTRL_REG);
+ 	l &= ~(OMAP_TIMER_CTRL_PRE | (0x07 << 2));
+@@ -671,6 +693,7 @@
+ 	if (unlikely(!timer))
+ 		return -EINVAL;
+ 
++pr_warn("%s() 0 id:%d value:%d\n", __FUNCTION__, timer->id, value);
+ 	omap_dm_timer_enable(timer);
+ 	__omap_dm_timer_int_enable(timer, value);
+ 
+@@ -696,6 +719,7 @@
+ 	if (unlikely(!timer))
+ 		return -EINVAL;
+ 
++pr_warn("%s() 0 id:%d\n", __FUNCTION__, timer->id);
+ 	omap_dm_timer_enable(timer);
+ 
+ 	if (timer->revision == 1)
+@@ -717,12 +741,14 @@
+ {
+ 	unsigned int l;
+ 
++pr_warn("%s() 0 id:%d\n", __FUNCTION__, timer->id);
+ 	if (unlikely(!timer || pm_runtime_suspended(&timer->pdev->dev))) {
+ 		pr_err("%s: timer not available or enabled.\n", __func__);
+ 		return 0;
+ 	}
+ 
+ 	l = readl_relaxed(timer->irq_stat);
++pr_warn("%s() 1 l:%d\n", __FUNCTION__, l);
+ 
+ 	return l;
+ }
+@@ -730,6 +756,7 @@
+ 
+ int omap_dm_timer_write_status(struct omap_dm_timer *timer, unsigned int value)
+ {
++pr_warn("%s() 0 id:%d value:%d\n", __FUNCTION__, timer->id, value);
+ 	if (unlikely(!timer || pm_runtime_suspended(&timer->pdev->dev)))
+ 		return -EINVAL;
+ 
+@@ -741,6 +768,7 @@
+ 
+ unsigned int omap_dm_timer_read_counter(struct omap_dm_timer *timer)
+ {
++pr_warn("%s() 0 id:%d\n", __FUNCTION__, timer->id);
+ 	if (unlikely(!timer || pm_runtime_suspended(&timer->pdev->dev))) {
+ 		pr_err("%s: timer not iavailable or enabled.\n", __func__);
+ 		return 0;
+@@ -752,6 +780,7 @@
+ 
+ int omap_dm_timer_write_counter(struct omap_dm_timer *timer, unsigned int value)
+ {
++pr_warn("%s() 0 id:%d value:%d\n", __FUNCTION__, timer->id, value);
+ 	if (unlikely(!timer || pm_runtime_suspended(&timer->pdev->dev))) {
+ 		pr_err("%s: timer not available or enabled.\n", __func__);
+ 		return -EINVAL;
+@@ -769,14 +798,18 @@
+ {
+ 	struct omap_dm_timer *timer;
+ 
++pr_warn("%s() 0\n", __FUNCTION__);
+ 	list_for_each_entry(timer, &omap_timer_list, node) {
++pr_warn("%s() 1 id:%d\n", __FUNCTION__, timer->id);
+ 		if (!timer->reserved)
+ 			continue;
+ 
++pr_warn("%s() 2 id:%d\n", __FUNCTION__, timer->id);
+ 		if (omap_dm_timer_read_reg(timer, OMAP_TIMER_CTRL_REG) &
+ 		    OMAP_TIMER_CTRL_ST) {
+ 			return 1;
+ 		}
++pr_warn("%s() 3 id:%d\n", __FUNCTION__, timer->id);
+ 	}
+ 	return 0;
+ }
+@@ -804,35 +837,41 @@
+ 	match = of_match_device(of_match_ptr(omap_timer_match), dev);
+ 	pdata = match ? match->data : dev->platform_data;
+ 
++pr_warn("%s() 0\n", __FUNCTION__);
+ 	if (!pdata && !dev->of_node) {
+ 		dev_err(dev, "%s: no platform data.\n", __func__);
+ 		return -ENODEV;
+ 	}
+ 
++pr_warn("%s() 1\n", __FUNCTION__);
+ 	irq = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
+ 	if (unlikely(!irq)) {
+ 		dev_err(dev, "%s: no IRQ resource.\n", __func__);
+ 		return -ENODEV;
+ 	}
+ 
++pr_warn("%s() 2\n", __FUNCTION__);
+ 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	if (unlikely(!mem)) {
+ 		dev_err(dev, "%s: no memory resource.\n", __func__);
+ 		return -ENODEV;
+ 	}
+ 
++pr_warn("%s() 3\n", __FUNCTION__);
+ 	timer = devm_kzalloc(dev, sizeof(struct omap_dm_timer), GFP_KERNEL);
+ 	if (!timer) {
+ 		dev_err(dev, "%s: memory alloc failed!\n", __func__);
+ 		return  -ENOMEM;
+ 	}
+ 
++pr_warn("%s() 4\n", __FUNCTION__);
+ 	timer->fclk = ERR_PTR(-ENODEV);
+ 	timer->io_base = devm_ioremap_resource(dev, mem);
+ 	if (IS_ERR(timer->io_base))
+ 		return PTR_ERR(timer->io_base);
+ 
+ 	if (dev->of_node) {
++pr_warn("%s() 50\n", __FUNCTION__);
+ 		if (of_find_property(dev->of_node, "ti,timer-alwon", NULL))
+ 			timer->capability |= OMAP_TIMER_ALWON;
+ 		if (of_find_property(dev->of_node, "ti,timer-dsp", NULL))
+@@ -845,6 +884,7 @@
+ 		timer->id = pdev->id;
+ 		timer->capability = pdata->timer_capability;
+ 		timer->reserved = omap_dm_timer_reserved_systimer(timer->id);
++pr_warn("%s() 51 id:%X reserved:%X\n", __FUNCTION__, timer->id, timer->reserved);
+ 		timer->get_context_loss_count = pdata->get_context_loss_count;
+ 	}
+ 
+@@ -854,13 +894,16 @@
+ 	timer->irq = irq->start;
+ 	timer->pdev = pdev;
+ 
++pr_warn("%s() 6 id:%X reserved:%X\n", __FUNCTION__, timer->id, timer->reserved);
+ 	/* Skip pm_runtime_enable for OMAP1 */
+ 	if (!(timer->capability & OMAP_TIMER_NEEDS_RESET)) {
+ 		pm_runtime_enable(dev);
+ 		pm_runtime_irq_safe(dev);
+ 	}
+ 
++pr_warn("%s() 7\n", __FUNCTION__);
+ 	if (!timer->reserved) {
++pr_warn("%s() 70\n", __FUNCTION__);
+ 		ret = pm_runtime_get_sync(dev);
+ 		if (ret < 0) {
+ 			dev_err(dev, "%s: pm_runtime_get_sync failed!\n",
+@@ -869,6 +912,7 @@
+ 		}
+ 		__omap_dm_timer_init_regs(timer);
+ 		pm_runtime_put(dev);
++pr_warn("%s() 71 rev:%X base:%p\n", __FUNCTION__, timer->revision, timer->io_base);
+ 	}
+ 
+ 	/* add the timer element to the list */
+@@ -900,6 +944,7 @@
+ 	unsigned long flags;
+ 	int ret = -EINVAL;
+ 
++pr_warn("%s() 0\n", __FUNCTION__);
+ 	spin_lock_irqsave(&dm_timer_lock, flags);
+ 	list_for_each_entry(timer, &omap_timer_list, node)
+ 		if (!strcmp(dev_name(&timer->pdev->dev),

@@ -1,0 +1,14 @@
+--- linux/drivers/of/Kconfig	2018-10-10 21:36:03.983908093 +0300
++++ linux/drivers/of/Kconfig	2018-10-11 11:44:38.505139045 +0300
+@@ -112,4 +112,11 @@
+ config OF_NUMA
+ 	bool
+ 
++config OF_CONFIGFS
++	bool "Device Tree Overlay ConfigFS interface"
++	select CONFIGFS_FS
++	select OF_OVERLAY
++	help
++	  Enable a simple user-space driven DT overlay interface.
++
+ endif # OF

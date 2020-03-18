@@ -1,0 +1,3 @@
+#patch initramfs-add-wrapper.patch
+
+kconf required initramfs.cfg

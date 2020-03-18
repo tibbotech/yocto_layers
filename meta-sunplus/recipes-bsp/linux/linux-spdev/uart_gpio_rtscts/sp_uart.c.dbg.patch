@@ -1,0 +1,220 @@
+--- a/drivers/tty/serial/sp_uart.c	2019-10-30 09:42:13.915098737 +0800
++++ a/drivers/tty/serial/sp_uart.c	2019-10-30 19:06:00.240426117 +0800
+@@ -6,6 +6,8 @@
+ #include <linux/tty.h>
+ #include <linux/tty_flip.h>
+ #include <linux/of_platform.h>
++#include <linux/gpio.h>
++#include <linux/of_gpio.h>
+ #include <asm/irq.h>
+ #if defined(CONFIG_MAGIC_SYSRQ)
+ #define SUPPORT_SYSRQ
+@@ -70,6 +72,10 @@
+ 	
+ 	struct clk *clk;
+ 	struct reset_control *rstc;
++	s8 gpio_rts;
++	s8 gpio_cts;
++	u8 auto_rts;
++	u8 auto_cts;
+ 		
+ };
+ struct sunplus_uart_port sunplus_uart_ports[NUM_UART];
+@@ -203,14 +209,38 @@
+ 	writel_relaxed(val, &((struct regs_uart *)base)->uart_rx_residue);
+ }
+ 
+-static inline void sp_uart_set_modem_ctrl(unsigned char __iomem *base, unsigned val)
++static inline void sp_uart_set_modem_ctrl( struct sunplus_uart_port *_spp, unsigned char __iomem *base, unsigned val)
+ {
++// by Dv
++_spp->auto_rts = ( val & SP_UART_MCR_AR);
++_spp->auto_cts = ( val & SP_UART_MCR_AC);
++if ( _spp->gpio_rts >= 0) gpio_set_value( _spp->gpio_rts, ( val & SP_UART_MCR_RTS ? 1 : 0));
++// do not enable RTS
++if ( _spp->gpio_rts >= 0) val &= ~( SP_UART_MCR_RTS | SP_UART_MCR_AR);
++// do not enable CTS
++if ( _spp->gpio_cts >= 0) val &= ~( SP_UART_MCR_AC);
++// by Dv /
+ 	writel_relaxed(val, &((struct regs_uart *)base)->uart_mcr);
+ }
+ 
+-static inline unsigned sp_uart_get_modem_ctrl(unsigned char __iomem *base)
++static inline unsigned sp_uart_get_modem_ctrl( struct sunplus_uart_port *_spp, unsigned char __iomem *base)
+ {
+-	return readl_relaxed(&((struct regs_uart *)base)->uart_mcr);
++ unsigned r = readl_relaxed(&((struct regs_uart *)base)->uart_mcr);
++// by Dv
++ if ( _spp->gpio_rts >= 0) {
++   // really needed to read RTS there?
++   if ( gpio_get_value( _spp->gpio_rts)) r |= SP_UART_MCR_RTS;
++   else r &= ~SP_UART_MCR_RTS;
++   if ( _spp->auto_rts) r |= SP_UART_MCR_AR;
++   else r &= ~SP_UART_MCR_AR;
++ }
++ if ( _spp->gpio_cts >= 0) {
++   if ( _spp->auto_cts) r |= SP_UART_MCR_AC;
++   else r &= ~SP_UART_MCR_AC;
++ }
++ if ( _spp->uport.line > 0) DBG_ERR( "dev%d %s() rts==%d ar==%d ac==%d", _spp->uport.line, __FUNCTION__, r & SP_UART_MCR_RTS, r & SP_UART_MCR_AR, r & SP_UART_MCR_AC);
++// by Dv /
++ return( r);
+ }
+ 
+ static inline void sp_uart_set_clk_src(unsigned char __iomem *base, unsigned val)
+@@ -418,7 +448,8 @@
+  */
+ static void sunplus_uart_ops_set_mctrl(struct uart_port *port, unsigned int mctrl)
+ {
+-	unsigned char mcr = sp_uart_get_modem_ctrl(port->membase);
++	struct sunplus_uart_port *spp = (struct sunplus_uart_port *)(port->private_data);
++	unsigned char mcr = sp_uart_get_modem_ctrl( spp, port->membase);
+ 
+ 	if (mctrl & TIOCM_DTR) {
+ 		mcr |= SP_UART_MCR_DTS;
+@@ -450,7 +481,7 @@
+ 		mcr &= ~SP_UART_MCR_LB;
+ 	}
+ 
+-	sp_uart_set_modem_ctrl(port->membase, mcr);
++	sp_uart_set_modem_ctrl( spp, port->membase, mcr);
+ }
+ 
+ /*
+@@ -474,10 +505,11 @@
+  */
+ static unsigned int sunplus_uart_ops_get_mctrl(struct uart_port *port)
+ {
++	struct sunplus_uart_port *spp = (struct sunplus_uart_port *)(port->private_data);
+ 	unsigned char status;
+ 	unsigned int ret = 0;
+ 
+-	status = sp_uart_get_modem_ctrl(port->membase);
++	status = sp_uart_get_modem_ctrl( spp, port->membase);
+ 
+ 	if (status & SP_UART_MCR_DTS) {
+ 		ret |= TIOCM_DTR;
+@@ -524,7 +556,7 @@
+ {
+ 	unsigned int isc = sp_uart_get_int_en(port->membase);
+ 
+-	/* Even if (uartdma_tx != NULL), "BUF_NOT_FULL" interrupt is used for getting into ISR */
++    /* Even if (uartdma_tx != NULL), "BUF_NOT_FULL" interrupt is used for getting into ISR */
+ 	isc &= ~SP_UART_ISC_TXM;
+ 	sp_uart_set_int_en(port->membase, isc);
+ }
+@@ -542,7 +574,7 @@
+ {
+ 	unsigned int isc;
+ 
+-	/* Even if (uartdma_tx != NULL), "BUF_NOT_FULL" interrupt is used for getting into ISR */
++    /* Even if (uartdma_tx != NULL), "BUF_NOT_FULL" interrupt is used for getting into ISR */
+ 	isc = sp_uart_get_int_en(port->membase) | SP_UART_ISC_TXM;
+ 	sp_uart_set_int_en(port->membase, isc);
+ }
+@@ -578,7 +610,13 @@
+ static void sunplus_uart_ops_stop_rx(struct uart_port *port)
+ {
+ 	unsigned int isc;
+-
++    // by Dv
++	struct sunplus_uart_port *spp = (struct sunplus_uart_port *)(port->private_data);
++    if ( spp->gpio_rts >= 0) {
++      gpio_set_value( spp->gpio_rts, 0);
++      DBG_ERR( "dev%d %s()", port->line, __FUNCTION__);
++    }
++    // by Dv /
+ 	isc = sp_uart_get_int_en(port->membase);
+ 	isc &= ~SP_UART_ISC_RXM;
+ 	sp_uart_set_int_en(port->membase, isc);
+@@ -781,13 +819,14 @@
+ static irqreturn_t sunplus_uart_irq(int irq, void *args)
+ {
+ 	struct uart_port *port = (struct uart_port *)args;
++	struct sunplus_uart_port *spp = (struct sunplus_uart_port *)(port->private_data);
+ 	unsigned long flags;
+ 
+ 	spin_lock_irqsave(&port->lock, flags);
+ 
+ #if 0	/* force Tx data loopbacks to Rx except UART0 */
+ 	if (((u32)(port->membase)) != LOGI_ADDR_UART0_REG) {
+-		sp_uart_set_modem_ctrl(port->membase, (sp_uart_get_modem_ctrl(port->membase)) | (1 << 4));
++		sp_uart_set_modem_ctrl(spp, port->membase, (sp_uart_get_modem_ctrl(spp, port->membase)) | (1 << 4));
+ 	}
+ #endif
+ 
+@@ -1096,7 +1135,9 @@
+ 	/* Disable flow control of Tx, so that queued data can be sent out */
+ 	/* There is no way for s/w to let h/w abort in the middle of transaction. */
+ 	/* Don't reset module except it's in idle state. Otherwise, it might cause bus to hang. */
+-	sp_uart_set_modem_ctrl(port->membase, sp_uart_get_modem_ctrl(port->membase) & (~(SP_UART_MCR_AC)));
++// by Dv
++if ( port->line > 0) DBG_ERR( "dev%d %s() crtscts no", port->line, __FUNCTION__);
++	sp_uart_set_modem_ctrl(sp_port, port->membase, sp_uart_get_modem_ctrl(sp_port, port->membase) & (~(SP_UART_MCR_AC)));
+ #if 0
+ 	uartdma_tx = sp_port->uartdma_tx;
+ 	if (uartdma_tx) {
+@@ -1289,11 +1330,15 @@
+ #endif
+ 
+ 	if (termios->c_cflag & CRTSCTS) {
+-		sp_uart_set_modem_ctrl(port->membase,
+-				       sp_uart_get_modem_ctrl(port->membase) | (SP_UART_MCR_AC | SP_UART_MCR_AR));
+-	} else {
+-		sp_uart_set_modem_ctrl(port->membase,
+-				       sp_uart_get_modem_ctrl(port->membase) & (~(SP_UART_MCR_AC | SP_UART_MCR_AR)));
++// by Dv
++if ( port->line > 0) DBG_ERR( "dev%d %s() crtscts", port->line, __FUNCTION__);
++		sp_uart_set_modem_ctrl(sp_port, port->membase,
++				       sp_uart_get_modem_ctrl(sp_port, port->membase) | (SP_UART_MCR_AC | SP_UART_MCR_AR));
++	} else {
++// by Dv
++if ( port->line > 0) DBG_ERR( "dev%d %s() crtscts NO", port->line, __FUNCTION__);
++		sp_uart_set_modem_ctrl(sp_port, port->membase,
++				       sp_uart_get_modem_ctrl(sp_port, port->membase) & (~(SP_UART_MCR_AC | SP_UART_MCR_AR)));
+ 	}
+ 
+ 	/* do not set these in emulation */
+@@ -1593,6 +1638,20 @@
+ 
+ struct platform_device *sunpluse_uart_platform_device;
+ 
++static int sunplus_get_gpio_p( struct platform_device *_pd, char *_name) {
++ int npin = -1;
++ char tname[ 64];
++ if ( !_pd->dev.of_node) return( -1);
++ memset( tname, 0, 64);
++ sprintf( tname, "gpio-%s", _name);
++ npin = of_get_named_gpio( _pd->dev.of_node, tname, 0);  DBG_ERR( "dts req %s npin:%d\n", tname, npin);
++ if ( !gpio_is_valid( npin)) return( -1);
++ if ( devm_gpio_request( &( _pd->dev), npin, _name)) {
++   DBG_ERR( "Can't request %s pin#%d\n", _name, npin);
++   return( -1);  }
++ DBG_INFO( "gpio%d is %s\n", npin, _name);
++ return( npin);  }
++
+ static int sunplus_uart_platform_driver_probe_of(struct platform_device *pdev)
+ {
+ 	struct resource *res_mem;
+@@ -1602,6 +1661,7 @@
+ 	int idx_offset, idx;
+ 	int idx_which_uart;
+ 	char peri_name[16];
++	struct sunplus_uart_port *spp;
+ 
+   //    DBG_INFO("sunplus_uart_platform_driver_probe_of");
+ 	if (pdev->dev.of_node) {
+@@ -1802,6 +1862,13 @@
+ 		DBG_INFO("%s's Tx is in PIO mode.\n", sunplus_uart_ports[pdev->id].name);
+ 	}
+ 
++	spp = (struct sunplus_uart_port *)(port->private_data);
++
++        spp->gpio_rts = sunplus_get_gpio_p( pdev, "rts");
++        if ( spp->gpio_rts >= 0) gpio_direction_output( spp->gpio_rts, 0);
++        spp->gpio_cts = sunplus_get_gpio_p( pdev, "cts");
++        if ( spp->gpio_cts >= 0) gpio_direction_input( spp->gpio_cts);
++
+ 	ret = uart_add_one_port(&sunplus_uart_driver, port);
+ 	if (ret) {
+ 		port->membase = NULL;

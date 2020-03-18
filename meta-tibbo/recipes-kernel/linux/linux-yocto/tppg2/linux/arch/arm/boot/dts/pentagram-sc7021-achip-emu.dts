@@ -1,0 +1,18 @@
+/dts-v1/;
+
+#include "pentagram-sc7021-achip.dtsi"
+
+#include <dt-bindings/interrupt-controller/arm-gic.h>
+
+/ {
+	model = "Sunplus SC7021 EMU (CA7)";
+	compatible = "sunplus,sc7021-achip";
+
+	chosen {
+		bootargs = "console=ttyS0,115200 root=/dev/ram rw loglevel=8 earlyprintk";
+	};
+
+	memory {
+		reg = <0x00000000 0x20000000>; /* 512MB */
+	};
+};

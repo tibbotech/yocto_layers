@@ -1,0 +1,33 @@
+--- linux/arch/arm/boot/dts/am33xx.dtsi	2014-10-31 00:31:06.000000000 +0300
++++ linux/arch/arm/boot/dts/am33xx.dtsi	2014-10-31 01:08:02.830422112 +0300
+@@ -34,7 +34,6 @@
+ 		phy0 = &usb0_phy;
+ 		phy1 = &usb1_phy;
+ 		ethernet0 = &cpsw_emac0;
+-		ethernet1 = &cpsw_emac1;
+ 	};
+ 
+ 	cpus {
+@@ -660,7 +659,7 @@
+ 			no_bd_ram = <0>;
+ 			rx_descs = <64>;
+ 			mac_control = <0x20>;
+-			slaves = <2>;
++			slaves = <1>;
+ 			active_slave = <0>;
+ 			cpts_clock_mult = <0x80000000>;
+ 			cpts_clock_shift = <29>;
+@@ -687,12 +686,7 @@
+ 				reg = <0x4a101000 0x100>;
+ 			};
+ 
+-			cpsw_emac0: slave@4a100300 {
+-				/* Filled in by U-Boot */
+-				mac-address = [ 00 00 00 00 00 00 ];
+-			};
+-
+-			cpsw_emac1: slave@4a100200 {
++			cpsw_emac0: slave@4a100200 {
+ 				/* Filled in by U-Boot */
+ 				mac-address = [ 00 00 00 00 00 00 ];
+ 			};

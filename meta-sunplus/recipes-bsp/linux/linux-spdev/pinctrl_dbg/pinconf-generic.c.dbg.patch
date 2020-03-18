@@ -1,0 +1,49 @@
+--- a/drivers/pinctrl/pinconf-generic.c	2019-02-12 11:50:38.345875734 +0300
++++ a/drivers/pinctrl/pinconf-generic.c	2019-02-12 14:05:42.872008408 +0300
+@@ -295,6 +295,7 @@
+ 	const char *subnode_target_type = "pins";
+ 
+ 	ret = of_property_count_strings(np, "pins");
++printk( KERN_INFO "%s() %d: ret:%d\n", __FUNCTION__, __LINE__, ret);
+ 	if (ret < 0) {
+ 		ret = of_property_count_strings(np, "groups");
+ 		if (ret < 0)
+@@ -310,6 +311,7 @@
+ 	strings_count = ret;
+ 
+ 	ret = of_property_read_string(np, "function", &function);
++printk( KERN_INFO "%s() %d: ret:%d\n", __FUNCTION__, __LINE__, ret);
+ 	if (ret < 0) {
+ 		/* EINVAL=missing, which is fine since it's optional */
+ 		if (ret != -EINVAL)
+@@ -320,6 +322,7 @@
+ 
+ 	ret = pinconf_generic_parse_dt_config(np, pctldev, &configs,
+ 					      &num_configs);
++printk( KERN_INFO "%s() %d: ret:%d nc:%d\n", __FUNCTION__, __LINE__, ret, num_configs);
+ 	if (ret < 0) {
+ 		dev_err(dev, "%s: could not parse node property\n",
+ 			of_node_full_name(np));
+@@ -336,6 +339,7 @@
+ 
+ 	ret = pinctrl_utils_reserve_map(pctldev, map, reserved_maps,
+ 			num_maps, reserve);
++printk( KERN_INFO "%s() %d: ret:%d\n", __FUNCTION__, __LINE__, ret);
+ 	if (ret < 0)
+ 		goto exit;
+ 
+@@ -378,12 +382,14 @@
+ 
+ 	ret = pinconf_generic_dt_subnode_to_map(pctldev, np_config, map,
+ 						&reserved_maps, num_maps, type);
++printk( KERN_INFO "%s() %d: ret:%d\n", __FUNCTION__, __LINE__, ret);
+ 	if (ret < 0)
+ 		goto exit;
+ 
+ 	for_each_available_child_of_node(np_config, np) {
+ 		ret = pinconf_generic_dt_subnode_to_map(pctldev, np, map,
+ 					&reserved_maps, num_maps, type);
++printk( KERN_INFO "%s() %d: ret:%d\n", __FUNCTION__, __LINE__, ret);
+ 		if (ret < 0)
+ 			goto exit;
+ 	}

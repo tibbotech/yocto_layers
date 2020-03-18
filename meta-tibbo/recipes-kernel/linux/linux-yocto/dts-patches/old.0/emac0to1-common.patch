@@ -1,0 +1,14 @@
+--- linux/arch/arm/boot/dts/am335x-bone-common.dtsi	2014-10-31 00:31:05.000000000 +0300
++++ linux/arch/arm/boot/dts/am335x-bone-common.dtsi	2014-10-31 01:09:37.078326755 +0300
+@@ -271,11 +271,6 @@
+ };
+ 
+ &cpsw_emac0 {
+-	phy_id = <&davinci_mdio>, <0>;
+-	phy-mode = "mii";
+-};
+-
+-&cpsw_emac1 {
+ 	phy_id = <&davinci_mdio>, <1>;
+ 	phy-mode = "mii";
+ };

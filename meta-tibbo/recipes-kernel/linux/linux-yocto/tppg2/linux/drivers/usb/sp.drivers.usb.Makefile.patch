@@ -1,0 +1,10 @@
+--- a/drivers/usb/Makefile	2017-09-20 09:25:38.000000000 +0300
++++ a/drivers/usb/Makefile	2018-11-12 06:42:55.000000000 +0300
+@@ -60,6 +60,7 @@
+ obj-$(CONFIG_USB_GADGET)	+= gadget/
+ 
+ obj-$(CONFIG_USB_COMMON)	+= common/
++obj-y				+= bc/
+ 
+ obj-$(CONFIG_USBIP_CORE)	+= usbip/
+ 

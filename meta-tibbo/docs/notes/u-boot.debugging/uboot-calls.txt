@@ -1,0 +1,292 @@
+U-Boot SPL 2014.07-rc3 (Nov 13 2014 - 15:07:35)
+
+
+U-Boot 2014.07-rc3 (Nov 15 2014 - 04:58:51)
+
+I2C:   ready
+DRAM:  512 MiB
+common/board_r.c board_init_r():949
+common/board_r.c board_init_r():955
+NAND:  512 MiB
+*** Warning - bad CRC, using default environment
+
+Net:   board/ti/am335x/board.c board_eth_init():731 /
+cpsw
+common/board_r.c initr_net():622
+common/board_r.c initr_net():629
+common/board_r.c run_main_loop():713
+common/board_r.c run_main_loop():718
+common/main.c main_loop():61
+common/main.c main_loop():70
+common/main.c main_loop():72
+common/main.c main_loop():74
+common/main.c main_loop():78
+common/main.c main_loop():81
+common/main.c main_loop():84
+common/main.c main_loop():90
+common/autoboot.c bootdelay_process():237
+common/autoboot.c bootdelay_process():246
+common/autoboot.c bootdelay_process():250
+common/autoboot.c bootdelay_process():256
+common/autoboot.c bootdelay_process():262
+common/autoboot.c bootdelay_process():265
+common/autoboot.c bootdelay_process():279
+common/autoboot.c bootdelay_process():282
+common/autoboot.c bootdelay_process():285
+common/main.c main_loop():92
+common/main.c main_loop():96
+Hit any key to stop autoboot:  0 
+Booting from nand ...
+
+NAND read: device 0 offset 0x240000, size 0x20000
+ 131072 bytes read: OK
+
+NAND read: device 0 offset 0x280000, size 0x500000
+ 5242880 bytes read: OK
+## Booting kernel from Legacy Image at 82000000 ...
+   Image Name:   Linux-3.14.17-yocto-standard
+   Created:      2014-11-13  21:36:02 UTC
+   Image Type:   ARM Linux Kernel Image (uncompressed)
+   Data Size:    4590504 Bytes = 4.4 MiB
+   Load Address: 80008000
+   Entry Point:  80008000
+   Verifying Checksum ... OK
+## Flattened Device Tree blob at 88000000
+   Booting using the fdt blob at 0x88000000
+   Loading Kernel Image ... OK
+   Loading Device Tree to 8fff5000, end 8ffff7ac ... OK
+
+Starting kernel ...
+
+[    0.000000] Booting Linux on physical CPU 0x0
+[    0.000000] Initializing cgroup subsys cpuset
+[    0.000000] Initializing cgroup subsys cpu
+[    0.000000] Initializing cgroup subsys cpuacct
+[    0.000000] Linux version 3.14.17-yocto-standard (dv@dvhome.kansstel.ru) (gc4
+[    0.000000] CPU: ARMv7 Processor [413fc082] revision 2 (ARMv7), cr=10c53c7d
+[    0.000000] CPU: PIPT / VIPT nonaliasing data cache, VIPT aliasing instructie
+[    0.000000] Machine model: AM335x TPBs3
+[    0.000000] cma: CMA: reserved 16 MiB at 9e800000
+[    0.000000] Memory policy: Data cache writeback
+[    0.000000] CPU: All CPU(s) started in SVC mode.
+[    0.000000] AM335X ES2.1 (sgx neon )
+[    0.000000] Built 1 zonelists in Zone order, mobility grouping on.  Total pa2
+[    0.000000] Kernel command line: console=ttyO0,115200n8 root=ubi0:rootfs rw 1
+[    0.000000] PID hash table entries: 2048 (order: 1, 8192 bytes)
+[    0.000000] Dentry cache hash table entries: 65536 (order: 6, 262144 bytes)
+[    0.000000] Inode-cache hash table entries: 32768 (order: 5, 131072 bytes)
+[    0.000000] allocated 1048576 bytes of page_cgroup
+[    0.000000] please try 'cgroup_disable=memory' option if you don't want memos
+[    0.000000] Memory: 490204K/523264K available (6804K kernel code, 512K rwdat)
+[    0.000000] Virtual kernel memory layout:
+[    0.000000]     vector  : 0xffff0000 - 0xffff1000   (   4 kB)
+[    0.000000]     fixmap  : 0xfff00000 - 0xfffe0000   ( 896 kB)
+[    0.000000]     vmalloc : 0xe0800000 - 0xff000000   ( 488 MB)
+[    0.000000]     lowmem  : 0xc0000000 - 0xe0000000   ( 512 MB)
+[    0.000000]     pkmap   : 0xbfe00000 - 0xc0000000   (   2 MB)
+[    0.000000]     modules : 0xbf000000 - 0xbfe00000   (  14 MB)
+[    0.000000]       .text : 0xc0008000 - 0xc09005a4   (9186 kB)
+[    0.000000]       .init : 0xc0901000 - 0xc097811c   ( 477 kB)
+[    0.000000]       .data : 0xc097a000 - 0xc09fa238   ( 513 kB)
+[    0.000000]        .bss : 0xc09fa238 - 0xc0abc458   ( 777 kB)
+[    0.000000] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=1, Nodes=1
+[    0.000000] NR_IRQS:16 nr_irqs:16 16
+[    0.000000] IRQ: Found an INTC at 0xfa200000 (revision 5.0) with 128 interrus
+[    0.000000] Total of 128 interrupts on 1 active controller
+[    0.000000] OMAP clockevent source: timer2 at 24000000 Hz
+[    0.000028] sched_clock: 32 bits at 24MHz, resolution 41ns, wraps every 1789s
+[    0.000078] OMAP clocksource: timer1 at 24000000 Hz
+[    0.000577] Console: colour dummy device 80x30
+[    0.000640] Calibrating delay loop... 298.59 BogoMIPS (lpj=1492992)
+[    0.068082] pid_max: default: 32768 minimum: 301
+[    0.068450] Security Framework initialized
+[    0.069024] Mount-cache hash table entries: 1024 (order: 0, 4096 bytes)
+[    0.069060] Mountpoint-cache hash table entries: 1024 (order: 0, 4096 bytes)
+[    0.088635] Initializing cgroup subsys debug
+[    0.088697] Initializing cgroup subsys memory
+[    0.088777] Initializing cgroup subsys devices
+[    0.088802] Initializing cgroup subsys freezer
+[    0.088828] Initializing cgroup subsys net_cls
+[    0.088852] Initializing cgroup subsys blkio
+[    0.088980] CPU: Testing write buffer coherency: ok
+[    0.089113] ftrace: allocating 24624 entries in 73 pages
+[    0.286726] Setting up static identity map for 0x8061b3d8 - 0x8061b430
+[    0.301609] devtmpfs: initialized
+[    0.306794] VFP support v0.3: implementor 41 architecture 3 part 30 variant 3
+[    0.326439] omap_hwmod: tptc0 using broken dt data from edma
+[    0.326653] omap_hwmod: tptc1 using broken dt data from edma
+[    0.326849] omap_hwmod: tptc2 using broken dt data from edma
+[    0.333493] omap_hwmod: debugss: _wait_target_disable failed
+[    0.337438] omap_hwmod: rtc: cannot be enabled for reset (3)
+[    0.426096] pinctrl core: initialized pinctrl subsystem
+[    0.427132] regulator-dummy: no parameters
+[    0.430728] NET: Registered protocol family 16
+[    0.436041] DMA: preallocated 256 KiB pool for atomic coherent allocations
+[    0.437461] cpuidle: using governor ladder
+[    0.437493] cpuidle: using governor menu
+[    0.453990] platform 49000000.edma: alias fck already exists
+[    0.454052] platform 49000000.edma: alias fck already exists
+[    0.454092] platform 49000000.edma: alias fck already exists
+[    0.455998] OMAP GPIO hardware version 0.1
+[    0.468618] omap-gpmc 50000000.gpmc: could not find pctldev for node /pinmuxe
+[    0.468684] platform 50000000.gpmc: Driver omap-gpmc requests probe deferral
+[    0.470569] hw-breakpoint: debug architecture 0x4 unsupported.
+[    0.489160] bio: create slab <bio-0> at 0
+[    0.508794] edma-dma-engine edma-dma-engine.0: TI EDMA DMA engine driver
+[    0.509930] vbat: 3300 mV 
+[    0.514143] SCSI subsystem initialized
+[    0.514907] usbcore: registered new interface driver usbfs
+[    0.515085] usbcore: registered new interface driver hub
+[    0.515851] usbcore: registered new device driver usb
+[    0.517184] omap_i2c 44e0b000.i2c: could not find pctldev for node /pinmux@4e
+[    0.517244] platform 44e0b000.i2c: Driver omap_i2c requests probe deferral
+[    0.520599] cfg80211: Calling CRDA to update world regulatory domain
+[    0.521800] Switched to clocksource timer1
+[    0.674391] NET: Registered protocol family 2
+[    0.676692] TCP established hash table entries: 4096 (order: 2, 16384 bytes)
+[    0.676831] TCP bind hash table entries: 4096 (order: 2, 16384 bytes)
+[    0.676954] TCP: Hash tables configured (established 4096 bind 4096)
+[    0.677140] TCP: reno registered
+[    0.677177] UDP hash table entries: 256 (order: 0, 4096 bytes)
+[    0.677227] UDP-Lite hash table entries: 256 (order: 0, 4096 bytes)
+[    0.677861] NET: Registered protocol family 1
+[    0.678777] RPC: Registered named UNIX socket transport module.
+[    0.678810] RPC: Registered udp transport module.
+[    0.678827] RPC: Registered tcp transport module.
+[    0.678844] RPC: Registered tcp NFSv4.1 backchannel transport module.
+[    0.680469] hw perfevents: enabled with ARMv7 Cortex-A8 PMU driver, 5 countee
+[    0.684159] futex hash table entries: 256 (order: -1, 3072 bytes)
+[    1.139446] NFS: Registering the id_resolver key type
+[    1.139603] Key type id_resolver registered
+[    1.139626] Key type id_legacy registered
+[    1.139719] ROMFS MTD (C) 2007 Red Hat, Inc.
+[    1.142558] aufs 3.x-rcN-20140113
+[    1.142633] msgmni has been set to 989
+[    1.147042] Block layer SCSI generic (bsg) driver version 0.4 loaded (major )
+[    1.147081] io scheduler noop registered
+[    1.147103] io scheduler deadline registered
+[    1.148091] io scheduler cfq registered (default)
+[    1.149940] pinctrl-single 44e10800.pinmux: 142 pins at pa f9e10800 size 568
+[    1.319726] omap_uart 44e09000.serial: no wakeirq for uart0
+[    1.320548] 44e09000.serial: ttyO0 at MMIO 0x44e09000 (irq = 88, base_baud =0
+[    1.980539] console [ttyO0] enabled
+[    1.985660] [drm] Initialized drm 1.1.0 20060810
+[    2.010481] brd: module loaded
+[    2.015944] mtdoops: mtd device (mtddev=name/number) must be supplied
+[    2.024929] usbcore: registered new interface driver kaweth
+[    2.030801] pegasus: v0.9.3 (2013/04/25), Pegasus/Pegasus II USB Ethernet drr
+[    2.038782] usbcore: registered new interface driver pegasus
+[    2.044896] usbcore: registered new interface driver rtl8150
+[    2.051040] usbcore: registered new interface driver asix
+[    2.056884] usbcore: registered new interface driver ax88179_178a
+[    2.063465] usbcore: registered new interface driver cdc_ether
+[    2.069711] usbcore: registered new interface driver dm9601
+[    2.075795] usbcore: registered new interface driver smsc75xx
+[    2.082050] usbcore: registered new interface driver smsc95xx
+[    2.088201] usbcore: registered new interface driver net1080
+[    2.094319] usbcore: registered new interface driver cdc_subset
+[    2.100652] usbcore: registered new interface driver zaurus
+[    2.106676] usbcore: registered new interface driver MOSCHIP usb-ethernet drr
+[    2.114702] usbcore: registered new interface driver int51x1
+[    2.120836] usbcore: registered new interface driver cdc_ncm
+[    2.126832] ehci_hcd: USB 2.0 'Enhanced' Host Controller (EHCI) Driver
+[    2.133723] ehci-omap: OMAP-EHCI Host Controller driver
+[    2.139621] usbcore: registered new interface driver usb-storage
+[    2.147416] mousedev: PS/2 mouse device common for all mice
+[    2.155018] i2c /dev entries driver
+[    2.160392] omap_wdt: OMAP Watchdog Timer Rev 0x01: initial timeout 60 sec
+[    2.169386] usbcore: registered new interface driver usbhid
+[    2.175328] usbhid: USB HID core driver
+[    2.180355] oprofile: using arm/armv7
+[    2.185050] u32 classifier
+[    2.187902]     Actions configured
+[    2.192050] TCP: cubic registered
+[    2.197535] NET: Registered protocol family 10
+[    2.204684] sit: IPv6 over IPv4 tunneling driver
+[    2.211516] NET: Registered protocol family 17
+[    2.216583] Key type dns_resolver registered
+[    2.222390] ThumbEE CPU extension supported.
+[    2.230148] vbat: disabling
+[    2.233225] regulator-dummy: disabling
+[    2.239309] omap-gpmc 50000000.gpmc: GPMC revision 6.0
+[    2.246162] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xbc
+[    2.252938] nand: Micron NAND 512MiB 1,8V 16-bit
+[    2.257801] nand: 512MiB, SLC, page size: 2048, OOB size: 64
+[    2.263778] nand: using OMAP_ECC_BCH8_CODE_HW ECC scheme
+[    2.269569] 9 ofpart partitions found on MTD device omap2-nand.0
+[    2.275924] Creating 9 MTD partitions on "omap2-nand.0":
+[    2.281557] 0x000000000000-0x000000020000 : "SPL"
+[    2.289587] 0x000000020000-0x000000040000 : "SPL.backup1"
+[    2.298043] 0x000000040000-0x000000060000 : "SPL.backup2"
+[    2.306269] 0x000000060000-0x000000080000 : "SPL.backup3"
+[    2.314436] 0x000000080000-0x000000240000 : "U-Boot"
+[    2.323594] 0x000000240000-0x000000260000 : "DTS"
+[    2.331015] 0x000000260000-0x000000280000 : "U-Boot-ENV"
+[    2.339190] 0x000000280000-0x000000780000 : "Kernel"
+[    2.351230] 0x000000780000-0x000020000000 : "File-System"
+[    2.793352] tps65910 0-0024: No interrupt support, no core IRQ
+[    2.801157] tps65910 0-0024: Error in configuring external control EN1
+[    2.808120] tps65910 0-0024: Failed to initialise ext control config
+[    2.815299] vrtc: failed to enable
+[    2.819113] tps65910 0-0024: failed to register tps65910-pmic regulator
+[    2.826146] tps65910-pmic: probe of tps65910-pmic failed with error -121
+[    2.833858] tps65910-rtc: probe of tps65910-rtc failed with error -121
+[    2.841105] omap_i2c 44e0b000.i2c: bus 0 rev0.11 at 400 kHz
+[    2.847930] UBI: attaching mtd8 to ubi0
+[    6.006279] UBI: scanning is finished
+[    6.036841] UBI: attached mtd8 (name "File-System", size 504 MiB) to ubi0
+[    6.044146] UBI: PEB size: 131072 bytes (128 KiB), LEB size: 126976 bytes
+[    6.051279] UBI: min./max. I/O unit sizes: 2048/2048, sub-page size 512
+[    6.058262] UBI: VID header offset: 2048 (aligned 2048), data offset: 4096
+[    6.065513] UBI: good PEBs: 4036, bad PEBs: 0, corrupted PEBs: 0
+[    6.071856] UBI: user volume: 1, internal volumes: 1, max. volumes count: 128
+[    6.079352] UBI: max/mean erase counter: 2/0, WL threshold: 4096, image sequ9
+[    6.088878] UBI: available PEBs: 0, total reserved PEBs: 4036, PEBs reserved0
+[    6.098680] console [netcon0] enabled
+[    6.102570] netconsole: network logging started
+[    6.127413] UBI: background thread "ubi_bgt0d" started, PID 41
+[    6.171915] davinci_mdio 4a101000.mdio: davinci mdio revision 1.6
+[    6.178333] davinci_mdio 4a101000.mdio: detected phy mask fffffffd
+[    6.186476] libphy: 4a101000.mdio: probed
+[    6.190730] davinci_mdio 4a101000.mdio: phy[1]: device 4a101000.mdio:01, driG
+[    6.201020] Detected MACID = 00:24:77:4a:18:2c
+[    6.208591] /home/dv/workspace/oe_beagleboard.0/poky/beaglebone/tmp/work/bea)
+[    6.261699] UBIFS: background thread "ubifs_bgt0_0" started, PID 44
+[    6.291923] UBIFS: recovery needed
+[    6.408754] UBIFS: recovery completed
+[    6.413002] UBIFS: mounted UBI device 0, volume 0, name "rootfs"
+[    6.419326] UBIFS: LEB size: 126976 bytes (124 KiB), min./max. I/O unit sizes
+[    6.428978] UBIFS: FS size: 500412416 bytes (477 MiB, 3941 LEBs), journal si)
+[    6.439420] UBIFS: reserved for root: 0 bytes (0 KiB)
+[    6.444780] UBIFS: media format: w4/r0 (latest is w4/r0), UUID 1C1D5BCE-8DDEl
+[    6.456871] VFS: Mounted root (ubifs filesystem) on device 0:13.
+[    6.464970] devtmpfs: mounted
+[    6.470022] Freeing unused kernel memory: 476K (c0901000 - c0978000)
+INIT: version 2.88 booting
+Starting udev
+[    7.605853] udevd[69]: starting version 182
+[    9.652997] random: dd urandom read with 1 bits of entropy available
+hwclock: can't open '/dev/misc/rtc': No such file or directory
+Sat Nov 15 02:14:05 UTC 2014
+hwclock: can't open '/dev/misc/rtc': No such file or directory
+INIT: Entering runlevel: 5
+Configuring network interfaces... [   11.564371] net eth0: initializing cpsw ve)
+[   11.652917] net eth0: phy found : id is : 0x2430c54
+[   11.674761] IPv6: ADDRCONF(NETDEV_UP): eth0: link is not ready
+udhcpc (v1.22.1) started
+Sending discover...
+[   14.653026] libphy: 4a101000.mdio:01 - Link is Up - 100/Full
+[   14.659114] IPv6: ADDRCONF(NETDEV_CHANGE): eth0: link becomes ready
+Sending discover...
+Sending select for 10.1.1.100...
+Lease of 10.1.1.100 obtained, lease time 21600
+/etc/udhcpc.d/50default: Adding DNS 79.171.8.66
+done.
+Starting system message bus: dbus.
+Starting OpenBSD Secure Shell server: sshd
+done.
+hwclock: can't open '/dev/misc/rtc': No such file or directory
+Starting syslogd/klogd: done
+
+Tibbo Project Box (tpb)
+tpb login:

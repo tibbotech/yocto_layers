@@ -1,0 +1,20 @@
+# wait for sim900 to find the operator network
+
+TIMEOUT		1
+ECHO		OFF
+ABORT		'BUSY'
+ABORT		'ERROR'
+ABORT		'NO ANSWER'
+ABORT		'NO CARRIER'
+ABORT		'NO DIALTONE'
+ABORT		'RINGING\r\n\r\nRINGING'
+ABORT		'Call Ready'
+ABORT		'CREG: 0'
+TIMEOUT		10
+'' 'AT+CPAS'
+'CPAS: 0' 'AT+CREG?'
+'CREG: ' \c
+ECHO		ON
+OK 'AT+GSN'
+OK 'AT+CSQ'
+OK

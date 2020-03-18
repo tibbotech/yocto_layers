@@ -1,0 +1,16 @@
+--- a/drivers/rtc/Kconfig	2017-09-20 09:25:38.000000000 +0300
++++ a/drivers/rtc/Kconfig	2018-11-12 06:42:55.000000000 +0300
+@@ -846,6 +846,13 @@
+ 	  This driver can also be built as a module. If so, the module
+ 	  will be called rtc-cmos.
+ 
++config RTC_DRV_SUNPLUS
++	bool "RTC for Sunplus Pentagram Platform"
++	depends on ARCH_PENTAGRAM
++	default y
++	help
++	  RTC for Sunplus Pentagram platform.
++
+ config RTC_DRV_ALPHA
+ 	bool "Alpha PC-style CMOS"
+ 	depends on ALPHA

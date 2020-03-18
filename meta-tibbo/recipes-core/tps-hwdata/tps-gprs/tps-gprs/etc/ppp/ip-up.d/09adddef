@@ -1,0 +1,12 @@
+#!/bin/sh
+
+logger "def: ${PPP_IFACE} p:${PPP_IPPARAM}"
+
+if [ ! -z "${PPP_IPPARAM}" ]; then
+  x=`echo "${PPP_IPPARAM}" | /bin/sed -e 's/unit //'`
+  /sbin/ip route add default via ${PPP_REMOTE} dev ${PPP_IFACE} ${x}
+fi;
+
+echo 1 > /proc/sys/net/ipv4/conf/${PPP_IFACE}/forwarding
+echo 0 > /proc/sys/net/ipv4/conf/${PPP_IFACE}/rp_filter
+echo 0 > /proc/sys/net/ipv4/conf/all/rp_filter

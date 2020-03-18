@@ -1,0 +1,7 @@
+define KFEATURE_DESCRIPTION "Enable Various USB Webcam Drivers"
+define KFEATURE_COMPATIBILITY all
+
+include ../usb/usb-base.cfg
+include media.scc
+
+kconf hardware media-usb-webcams.cfg

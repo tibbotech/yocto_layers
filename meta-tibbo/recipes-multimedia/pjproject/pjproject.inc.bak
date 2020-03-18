@@ -1,0 +1,48 @@
+SUMMARY = "Bluetooth Audio ALSA Backend"
+DESCRIPTION = "Is a rebirth of a direct integration between Bluez and ALSA."
+HOMEPAGE = "https://github.com/Arkq/bluez-alsa"
+SECTION = "libs/multimedia"
+LICENSE = "MIT"
+
+#DEPENDS  = "ortp libbsd bluez5 sbc"
+#DEPENDS += "fdk-aac"
+
+SRCREV = "${AUTOREV}"
+
+SRC_URI  = "http://www.pjsip.org/release/${PV}/pjproject-${PV}.tar.bz2"
+SRC_URI += "file://config_site.h"
+SRC_URI += "file://configure"
+
+#S = "${WORKDIR}/${PN}-${PV}"
+
+inherit autotools systemd
+
+EXTRA_OECONF += "--enable-epoll --disable-libwebrtc --enable-shared STAGING_DIR=${STAGING_DIR_NATIVE}"
+
+FILES_${PN} += "/usr/share/*"
+
+#FILES_${PN}-staticdev += "/usr/lib/alsa-lib/libasound_*.a"
+#FILES_${PN}-dev += "/usr/lib/*"
+
+do_configure() {
+ install -m 0644 ${WORKDIR}/config_site.h ${S}/pjlib/include/pj/
+# install -m 0755 ${WORKDIR}/configure ${S}/
+ cd ${S}
+# export LD="arm-tps-linux-gnueabi-g++"
+# oe_runconf LD="arm-tps-linux-gnueabi-g++" LDFLAGS=""
+ export LDFLAGS=""
+ oe_runconf LDFLAGS="-Wl,--hash-style=gnu -Wl,--as-needed"
+}
+
+do_compile() {
+ cd ${S}
+ oe_runmake LDFLAGS="-Wl,--hash-style=gnu -Wl,--as-needed" dep
+ oe_runmake LDFLAGS="-Wl,--hash-style=gnu -Wl,--as-needed"
+}
+
+#do_install_append() {
+# install -d ${D}${systemd_unitdir}/system
+# install -m 0644 ${WORKDIR}/${PN}.service ${D}${systemd_unitdir}/system
+#}
+
+LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/GPL-2.0;md5=801f80980d171dd6425610833a22dbe6"

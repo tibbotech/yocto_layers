@@ -1,0 +1,14 @@
+EXTRA_CFLAGS += -DLINUX -DSPPCTL_DEBUG
+obj-m := sppctl.o
+sppctl-objs := sppctl_main.o sppctl_sysfs.o sppctl_pinctrl.o
+
+SRC := $(shell pwd)
+
+all:
+	$(MAKE) -C $(KERNEL_SRC) M=$(SRC)
+
+modules_install:
+	$(MAKE) -C $(KERNEL_SRC) M=$(SRC) modules_install
+
+clean:
+	$(MAKE) -C $(KERNEL_SRC) M=$(SRC) clean

@@ -1,0 +1,5 @@
+define KFEATURE_DESCRIPTION "Enable SunPlus I2C"
+define KFEATURE_COMPATIBILITY board
+
+#include features/i2c/i2cdev.scc
+kconf hardware hw_i2c.cfg

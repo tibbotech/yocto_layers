@@ -1,0 +1,19 @@
+# this file is a copy for ${systemd_unitdir}/system/
+
+[Unit]
+Description=TPS NodeJS test Test Application 1 service
+After=network-online.target
+
+[Service]
+Restart=on-failure
+ExecStart=/usr/bin/node /opt/node-apps/demo0/site/app.js
+
+# do limitation
+CPUAccounting=true
+CPUQuota=10%
+MemoryAccounting=true
+MemoryLimit=50M
+
+
+[Install]
+WantedBy=multi-user.target

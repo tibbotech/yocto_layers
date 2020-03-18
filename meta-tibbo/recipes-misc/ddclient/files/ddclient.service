@@ -1,0 +1,13 @@
+#/usr/lib/systemd/system/ddclient.service
+[Unit]
+Description=ddclient Service
+After=network.target
+
+[Service]
+Type=forking
+PIDFile=/var/run/ddclient.pid
+ExecStart=/usr/sbin/ddclient -pid /var/run/ddclient.pid -file /etc/ddclient.conf -daemon 300
+ExecStop=/usr/bin/pkill -SIGKILL -P /var/run/ddclient.pid
+
+[Install]
+WantedBy=multi-user.target

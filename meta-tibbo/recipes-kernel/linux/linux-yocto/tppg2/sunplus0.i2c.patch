@@ -1,0 +1,3732 @@
+--- a/drivers/i2c/busses/Kconfig	2018-11-23 10:16:14.635897691 +0300
++++ a/drivers/i2c/busses/Kconfig	2018-11-23 10:31:03.768052774 +0300
+@@ -1249,6 +1249,25 @@
+ 	  This support is also available as a module.  If so, the module
+ 	  will be called scx200_acb.
+ 
++config SP_I2C
++	tristate "SP I2C support"
++	help
++	  This driver supports the I2C device on the Sunplus processor chip.
++
++config SDDC_I2C
++	tristate "SDDC I2C support"
++	depends on SP_I2C
++	default n
++	help
++	  This driver supports the SDDC I2C device.
++
++config TI_SERDES_I2C
++	tristate "TI SERDES I2C support"
++	depends on SP_I2C
++	default n
++	help
++	  This driver supports the TI SERDES I2C device.
++
+ config I2C_OPAL
+ 	tristate "IBM OPAL I2C driver"
+ 	depends on PPC_POWERNV
+--- a/drivers/i2c/busses/Makefile	2018-11-23 10:16:14.635897691 +0300
++++ a/drivers/i2c/busses/Makefile	2018-11-23 10:31:03.767052834 +0300
+@@ -125,5 +125,8 @@
+ obj-$(CONFIG_I2C_SIBYTE)	+= i2c-sibyte.o
+ obj-$(CONFIG_I2C_XGENE_SLIMPRO) += i2c-xgene-slimpro.o
+ obj-$(CONFIG_SCx200_ACB)	+= scx200_acb.o
++obj-$(CONFIG_SP_I2C)		+= sp_i2c/
++obj-$(CONFIG_SDDC_I2C)		+= sddc_i2c/
++obj-$(CONFIG_TI_SERDES_I2C)		+= ti_serdes_i2c/
+ 
+ ccflags-$(CONFIG_I2C_DEBUG_BUS) := -DDEBUG
+--- a/drivers/i2c/busses/sddc_i2c/Makefile	1970-01-01 03:00:00.000000000 +0300
++++ a/drivers/i2c/busses/sddc_i2c/Makefile	2018-11-12 06:42:53.000000000 +0300
+@@ -0,0 +1,4 @@
++obj-y += sddc_i2c.o
++
++clean:
++	rm -rf *.o *~ core .depend .*.cmd *.ko *.mod.c .tmp_versions
+--- a/drivers/i2c/busses/sddc_i2c/sddc_i2c.c	1970-01-01 03:00:00.000000000 +0300
++++ a/drivers/i2c/busses/sddc_i2c/sddc_i2c.c	2018-11-12 06:42:53.000000000 +0300
+@@ -0,0 +1,438 @@
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/types.h>
++#include <linux/fs.h>
++#include <linux/proc_fs.h>
++#include <linux/device.h>
++#include <linux/uaccess.h>
++#include <linux/i2c.h>
++#include <linux/delay.h>
++#include <linux/slab.h>
++#include "sddc_i2c.h"
++
++#define SDDC_ADDR       0x50
++#define MAX_DATA_LEN    1024
++
++//#define SDDC_I2C_DEBUG
++
++#define SDDC_USE_I2C_MASTER0
++#ifdef SDDC_USE_I2C_MASTER0
++#define SDDC_USE_I2CM_NUM    0
++#else
++#define SDDC_USE_I2CM_NUM    1
++#endif
++
++static int sddc_i2c_major = 0;
++static int sddc_i2c_minor = 0;
++
++static struct class *sddc_i2c_class = NULL;
++static struct st_sddc_dev *sddc_dev = NULL;
++static struct i2c_client *g_sddc_i2c_client = NULL;
++
++
++/* char devices */
++
++static int sddc_open(struct inode *inode, struct file *filp);
++static int sddc_release(struct inode *inode, struct file *filp);
++static long sddc_ioctl(struct file *filp, unsigned int cmd, unsigned long arg);
++static int sddc_write(u8 addr, u8 *data, uint16_t len);
++static int sddc_read(u8 addr, u8 *data, uint16_t len);
++static int sddc_register(void);
++static ssize_t sddc_nor_read(struct file *file, char __user *buffer, size_t count, loff_t *ppos);
++static ssize_t sddc_nor_write(struct file *file, const char __user *buffer, size_t count, loff_t *ppos);
++
++static const struct file_operations sddc_fops = {
++	.owner		= THIS_MODULE,
++	.open		= sddc_open,
++	.release	= sddc_release,
++	.unlocked_ioctl	= sddc_ioctl,
++	.read		= sddc_nor_read,
++	.write		= sddc_nor_write,
++};
++
++static int sddc_open(struct inode *inode, struct file *filp)
++{
++	filp->private_data = &g_sddc_dev;
++	printk(KERN_INFO "open sddc\n");
++	return 0;
++}
++
++static int sddc_release(struct inode *inode, struct file *filp)
++{
++	printk(KERN_INFO "release sddc\n");
++	return 0;
++}
++
++static ssize_t sddc_nor_read(struct file *file, char __user *buffer, size_t count, loff_t *ppos)
++{
++	uint8_t reg = 0;
++	i2c_param *userdata;
++	uint8_t *data;
++	int ret = 0;
++	uint16_t len = 0;
++#ifdef SDDC_I2C_DEBUG
++	int i;
++#endif
++
++	printk(KERN_INFO "read ..................\n");
++#if 0
++	userdata = (i2c_param *)buffer;
++	if (!userdata) {
++		printk(KERN_ERR "user space data error!!\n");
++		return -1;
++	}
++	printk(KERN_INFO "reg:%d\n", *(userdata->reg));
++	printk(KERN_INFO "len:%d\n", *(userdata->len));
++
++	reg = *(userdata->reg);
++	len = *(userdata->len);
++
++	data = kmalloc(MAX_DATA_LEN, GFP_KERNEL);
++	if (!data) {
++		printk(KERN_ERR "Failed to alloc memory.\n");
++		return -ENOMEM;
++	}
++	memset(data, 0, MAX_DATA_LEN);
++
++	ret = sddc_read(reg, data, len);
++	memcpy(userdata->value, data, len);
++#ifdef SDDC_I2C_DEBUG
++	for (i = 0; i < len; i++)
++		printk(KERN_INFO "data:0x%3x\n", data[i]);
++#endif
++
++	kfree(data);
++#endif
++	return ret;
++}
++
++static ssize_t sddc_nor_write(struct file *file, const char __user *buffer, size_t count, loff_t *ppos)
++{
++	uint8_t reg = 0;
++	i2c_param *userdata;
++	uint8_t *data;
++	int ret = 0;
++	uint16_t len = 0;
++#ifdef SDDC_I2C_DEBUG
++	int i;
++#endif
++
++	printk(KERN_INFO "write ..................\n");
++#if 0
++	userdata = (i2c_param *)buffer;
++	if (!userdata) {
++		printk(KERN_ERR "user space data error!!\n");
++		return -1;
++	}
++	printk(KERN_INFO "reg:%d\n", *(userdata->reg));
++	printk(KERN_INFO "len:%d\n", *(userdata->len));
++
++	reg = *(userdata->reg);
++	len = *(userdata->len);
++
++	data = kmalloc(MAX_DATA_LEN, GFP_KERNEL);
++	if (!data) {
++		printk(KERN_ERR "Failed to alloc memory.\n");
++		return -ENOMEM;
++	}
++
++	memset(data, 0, MAX_DATA_LEN);
++	memcpy(data, userdata->value, len);
++#ifdef SDDC_I2C_DEBUG
++	for (i = 0; i < len; i++)
++		printk(KERN_INFO "data:0x%3x\n", data[i]);
++#endif
++
++	ret = sddc_write(reg, data, len);
++	kfree(data);
++#endif
++	return ret;
++}
++
++static long sddc_ioctl(struct file *filp, unsigned int cmd, unsigned long __user arg)
++{
++	i2c_param userdata;
++	unsigned char *tmp;
++	int ret = 0;
++#ifdef SDDC_I2C_DEBUG
++	int i;
++#endif
++
++	printk(KERN_INFO "ioctl sddc\n");
++
++	if(copy_from_user((void *)&userdata, (const void __user *)arg, sizeof(i2c_param))){
++		ret = -EFAULT;
++		printk(KERN_ERR "user space i2c_param error!!\n");
++	}
++	//printk(KERN_INFO "reg: %d\n", userdata.reg);
++	//printk(KERN_INFO "len: %d\n", userdata.len);
++	//printk(KERN_INFO "data addr: 0x%x\n", (unsigned int)userdata.data);
++
++	tmp = kmalloc(MAX_DATA_LEN, GFP_KERNEL);
++	if (!tmp) {
++		printk(KERN_INFO "Failed to alloc memory.\n");
++		return -ENOMEM;
++	}
++	memset(tmp, 0, MAX_DATA_LEN);
++
++	if(copy_from_user((void *)tmp, (void *)userdata.data, userdata.len)){
++		ret = -EFAULT;
++		printk(KERN_ERR "user space data error!!\n");
++	}
++	//printk(KERN_INFO "tmp addr: 0x%x\n", (unsigned int)tmp);
++
++	printk(KERN_INFO "ioctl cmd: %d\n", cmd);
++	switch (cmd) {
++		case I2C_SDDC_CMD_READ:
++			printk(KERN_INFO "sddc read\n");
++			ret = sddc_read(userdata.reg, tmp, (uint16_t)userdata.len);
++
++			if(copy_to_user((void *)userdata.data, (void *)tmp, userdata.len)){
++				ret = -EFAULT;
++				break;
++			}
++			
++			#ifdef SDDC_I2C_DEBUG
++			for (i = 0; i < userdata.len; i++)
++				printk(KERN_INFO "read data:0x%3x\n", tmp[i]);
++			#endif
++			break;
++
++		case I2C_SDDC_CMD_WRITE:
++			printk(KERN_INFO "sddc write\n");
++			#ifdef SDDC_I2C_DEBUG
++			for (i = 0; i < userdata.len; i++)
++				printk(KERN_INFO "write data:0x%3x\n", tmp[i]);
++			#endif
++			ret = sddc_write(userdata.reg, tmp, (uint16_t)userdata.len);
++			break;
++
++		default:
++			break;
++	}
++
++	kfree(tmp);
++	return ret;
++}
++
++static int sddc_write(u8 addr, u8 *data, uint16_t len)
++{
++	struct i2c_adapter *adap = g_sddc_i2c_client->adapter;
++	struct i2c_msg msg;
++	int retry = 0;
++	int i;
++	u8 temp[512] = {0};
++
++	temp[0] = addr;
++	for (i = 0; i < len; i++)
++		temp[i + 1] = data[i];
++
++	len += 1;
++	msg.addr = g_sddc_i2c_client->addr;
++	msg.flags = 0;
++	msg.len = len;
++	msg.buf = (u8 *)temp;
++
++	while ((1 != i2c_transfer(adap, &msg, 1)) && (retry < 10)) {
++		retry++;
++		printk(KERN_ERR "sddc_write fail! retry = %d\n", retry);
++	}
++
++	if (retry >= 10)
++		return -1;
++
++	return 0;
++}
++
++static int sddc_read(u8 addr, u8 *data, uint16_t len)
++{
++	struct i2c_adapter *adap = g_sddc_i2c_client->adapter;
++	struct i2c_msg msg;
++	int retry = 0;
++
++	msg.addr = g_sddc_i2c_client->addr;
++	msg.flags = 0;
++	/* for test restart mode */
++	/* msg.flags = 0|I2C_M_NOSTART; */
++	msg.len = 1;
++	msg.buf = (u8 *)&addr;
++
++	while ((1 != i2c_transfer(adap, &msg, 1)) && (retry < 10)) {
++		retry++;
++		printk(KERN_ERR "sddc_read write addr fail! retry = %d\n", retry);
++	}
++	if (retry >= 10)
++		return -1;
++
++	/* read */
++	msg.flags |= I2C_M_RD;
++	msg.len = len;
++	msg.buf = (u8 *)data;
++	mdelay(20);
++
++	while ((1 != i2c_transfer(adap, &msg, 1)) && (retry < 10)) {
++		retry++;
++		printk(KERN_ERR "sddc_read read addr fail! retry = %d\n", retry);
++	}
++
++	if (retry >= 10)
++		return -1;
++
++	return 0;
++}
++
++static int __sddc_setup_dev(struct st_sddc_dev *dev)
++{
++	int err;
++	dev_t devno = MKDEV(sddc_i2c_major, sddc_i2c_minor);
++
++	cdev_init(&(dev->dev), &sddc_fops);
++	dev->dev.owner = THIS_MODULE;
++	dev->dev.ops = &sddc_fops;
++
++	err = cdev_add(&(dev->dev), devno, 1);
++	if (err)
++		return err;
++
++	return 0;
++}
++
++/* i2c driver............................. */
++static const struct i2c_device_id sddc_id[] = {
++	{ "sddc", 0, },
++};
++
++static int __devinit sddc_i2c_probe(struct i2c_client *client, const struct i2c_device_id *id)
++{
++	int err;
++	dev_t devno = MKDEV(sddc_i2c_major, sddc_i2c_minor);
++	struct device *temp = NULL;
++
++	err = alloc_chrdev_region(&devno, 0, 1, SDDC_DEVICE_NODE_NAME);
++	if (err < 0) {
++		printk(KERN_ERR "Failed to alloc char dev region.\n");
++		goto fail;
++	}
++	sddc_i2c_major = MAJOR(devno);
++	sddc_i2c_minor = MINOR(devno);
++
++	sddc_dev = kmalloc(sizeof(struct st_sddc_dev), GFP_KERNEL);
++	if (!sddc_dev) {
++		err = -ENOMEM;
++		printk(KERN_ERR "Failed to alloc sddc device.\n");
++		goto unregister;
++	}
++
++	memset(sddc_dev, 0, sizeof(struct st_sddc_dev));
++	err = __sddc_setup_dev(sddc_dev);
++	if (err) {
++		printk(KERN_ERR "Failed to setup sddc device: %d.\n", err);
++		goto cleanup;
++	}
++
++	sddc_i2c_class = class_create(THIS_MODULE, SDDC_DEVICE_CLASS_NAME);
++	if (IS_ERR(sddc_i2c_class)) {
++		err = PTR_ERR(sddc_i2c_class);
++		printk(KERN_ERR "Failed to create sddc device class.\n");
++		goto destroy_cdev;
++	}
++
++	temp = device_create(sddc_i2c_class, NULL, devno, "%s", SDDC_DEVICE_FILE_NAME);
++	if (IS_ERR(temp)) {
++		err = PTR_ERR(temp);
++		printk(KERN_ERR "Failed to create sddc device.\n");
++		goto destroy_class;
++	}
++
++	printk(KERN_INFO "Succedded to initialize sddc device.\n");
++	return 0;
++
++destroy_class:
++	class_destroy(sddc_i2c_class);
++destroy_cdev:
++	cdev_del(&(sddc_dev->dev));
++cleanup:
++	kfree(sddc_dev);
++unregister:
++	unregister_chrdev_region(MKDEV(sddc_i2c_major, sddc_i2c_minor), 1);
++fail:
++	return err;
++}
++
++static int __devinit sddc_i2c_remove(struct i2c_client *client)
++{
++	dev_t devno = MKDEV(sddc_i2c_major, sddc_i2c_minor);
++
++	class_destroy(sddc_i2c_class);
++	cdev_del(&(sddc_dev->dev));
++	kfree(sddc_dev);
++
++	unregister_chrdev_region(devno, 1);
++	return 0;
++}
++
++static struct i2c_driver sddc_i2c_driver = {
++	.driver = {
++		.name	= "sddc",
++		.owner	= THIS_MODULE,
++	},
++	.probe		= sddc_i2c_probe,
++	.remove		= sddc_i2c_remove,
++	.id_table	= sddc_id,
++};
++
++static int sddc_register(void)
++{
++	struct i2c_board_info info;
++	struct i2c_adapter *adapter;
++	struct i2c_client *client;
++
++	memset(&info, 0, sizeof(struct i2c_board_info));
++	info.addr = SDDC_ADDR;
++	strlcpy(info.type, "sddc", I2C_NAME_SIZE);
++
++	adapter = i2c_get_adapter(SDDC_USE_I2CM_NUM);	/* 0 is m0, 1 is m1*/
++	if (!adapter) {
++		printk(KERN_ERR "[SDDC] get adapter err!!\n");
++		return -ENODEV;
++	}
++	printk(KERN_INFO "[SDDC] Succeeded to get adapter 0\n");
++
++	client = i2c_new_device(adapter, &info);
++	if (!client) {
++		printk(KERN_ERR "Unable to add I2C device\n");
++		return -ENOMEM;
++	}
++
++	g_sddc_i2c_client = client;
++	//g_sddc_i2c_client->driver = &sddc_i2c_driver;
++
++	return 0;
++}
++
++/* init the driver */
++static int __init sddc_init(void)
++{
++	int ret = 0;
++
++	ret = sddc_register();
++	if (ret < 0)
++		printk(KERN_ERR "sddc register fail\n");
++
++	ret = i2c_add_driver(&sddc_i2c_driver);
++
++	return ret;
++}
++
++/* cleanup the driver */
++static void __exit sddc_exit(void)
++{
++	i2c_del_driver(&sddc_i2c_driver);
++}
++
++MODULE_AUTHOR("Sunplus");
++MODULE_DESCRIPTION("Sunplus I2C DDC slave driver");
++MODULE_LICENSE("GPL");
++
++module_init(sddc_init);
++module_exit(sddc_exit);
+--- a/drivers/i2c/busses/sddc_i2c/sddc_i2c.h	1970-01-01 03:00:00.000000000 +0300
++++ a/drivers/i2c/busses/sddc_i2c/sddc_i2c.h	2018-11-12 06:42:53.000000000 +0300
+@@ -0,0 +1,33 @@
++#ifndef _SDDC_I2C_H_
++#define _SDDC_I2C_H_
++
++#include <linux/cdev.h>
++#include <linux/semaphore.h>
++
++#define SDDC_DEVICE_NODE_NAME     "sddc"
++#define SDDC_DEVICE_FILE_NAME     "sddc"
++#define SDDC_DEVICE_CLASS_NAME    "sddc"
++
++#define SDDC_IOCTL_BASE       'I'
++#define I2C_SDDC_CMD_READ     _IOR(SDDC_IOCTL_BASE, 1, i2c_param)
++#define I2C_SDDC_CMD_WRITE    _IOW(SDDC_IOCTL_BASE, 2, i2c_param)
++
++struct st_sddc_dev {
++	struct cdev dev;
++	int major;
++	unsigned char mem[1024];
++	struct semaphore semLock;
++};
++
++typedef struct i2c_param_s
++{
++	unsigned char reg;  //sub address
++	unsigned char len;
++	unsigned char *data;
++} i2c_param;
++
++
++/* global dev object */
++struct st_sddc_dev g_sddc_dev;
++
++#endif  /* _SDDC_I2C_H_ */
+--- a/drivers/i2c/busses/sp_i2c/hal_i2c.c	1970-01-01 03:00:00.000000000 +0300
++++ a/drivers/i2c/busses/sp_i2c/hal_i2c.c	2018-11-12 06:42:53.000000000 +0300
+@@ -0,0 +1,635 @@
++#include <linux/delay.h>
++#include <linux/io.h>
++#include "hal_i2c.h"
++
++#define I2C_CLK_SOURCE_FREQ         27000  // KHz(27MHz)
++
++#define I2C_RESET(id, val)          ((1 << (16 + id)) | (val << id))
++#define I2C_CLKEN(id, val)          ((1 << (16 + id)) | (val << id))
++#define I2C_GCLKEN(id, val)         ((1 << (16 + id)) | (val << id))
++#define I2C_PINMUX_SET(scl, sda)    (0x7F7F0000 | (scl << 0) | (sda << 8))
++
++#define I2C_CTL0_FREQ_MASK                  (0x7)     // 3 bit
++#define I2C_CTL0_SLAVE_ADDR_MASK            (0x7F)    // 7 bit
++#define I2C_CTL2_FREQ_CUSTOM_MASK           (0x7FF)   // 11 bit
++#define I2C_CTL2_SCL_DELAY_MASK             (0x3)     // 2 bit
++#define I2C_CTL7_RW_COUNT_MASK              (0xFFFF)  // 16 bit
++#define I2C_EN0_CTL_EMPTY_THRESHOLD_MASK    (0x7)     // 3 bit
++#define I2C_SG_DMA_LLI_INDEX_MASK           (0x1F)    // 5 bit
++
++
++static regs_i2cm_t *pI2cMReg[I2C_MASTER_NUM];
++#ifdef SUPPORT_I2C_GDMA
++static regs_i2cm_gdma_t *pI2cMGdmaReg[I2C_MASTER_NUM];
++#endif
++
++#ifdef SUPPORT_I2C_GDMA
++void hal_i2cm_sg_dma_go_set(unsigned int device_id)
++{
++	unsigned int val;
++
++	if(device_id < I2C_MASTER_NUM)
++	{
++		val = readl(&(pI2cMGdmaReg[device_id]->sg_setting));
++		val |= I2C_SG_DMA_SET_DMA_GO;
++		writel(val, &(pI2cMGdmaReg[device_id]->sg_setting));
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_sg_dma_go_set);
++
++void hal_i2cm_sg_dma_rw_mode_set(unsigned int device_id, I2C_DMA_RW_Mode_e rw_mode)
++{
++	unsigned int val;
++
++	if(device_id < I2C_MASTER_NUM)
++	{
++		val = readl(&(pI2cMGdmaReg[device_id]->sg_dma_config));
++		switch(rw_mode){
++			default:
++			case I2C_DMA_WRITE_MODE:
++				val |= I2C_SG_DMA_CFG_DMA_MODE;
++				break;
++
++			case I2C_DMA_READ_MODE:
++				val &= (~I2C_SG_DMA_CFG_DMA_MODE);
++				break;
++		}
++		writel(val, &(pI2cMGdmaReg[device_id]->sg_dma_config));
++		printk("%s(%d) sg_dma_config = 0x%x\n", __FUNCTION__, __LINE__, pI2cMGdmaReg[device_id]->sg_dma_config);
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_sg_dma_rw_mode_set);
++
++void hal_i2cm_sg_dma_length_set(unsigned int device_id, unsigned int length)
++{
++	if(device_id < I2C_MASTER_NUM)
++	{
++		length &= (0xFFFF);  //only support 16 bit
++		writel(length, &(pI2cMGdmaReg[device_id]->sg_dma_length));
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_sg_dma_length_set);
++
++void hal_i2cm_sg_dma_addr_set(unsigned int device_id, unsigned int addr)
++{
++	if(device_id < I2C_MASTER_NUM)
++	{
++		writel(addr, &(pI2cMGdmaReg[device_id]->sg_dma_addr));
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_sg_dma_addr_set);
++
++void hal_i2cm_sg_dma_last_lli_set(unsigned int device_id)
++{
++	unsigned int val;
++
++	if(device_id < I2C_MASTER_NUM)
++	{
++		val = readl(&(pI2cMGdmaReg[device_id]->sg_dma_config));
++		val |= I2C_SG_DMA_CFG_LAST_LLI;
++		writel(val, &(pI2cMGdmaReg[device_id]->sg_dma_config));
++		printk("%s(%d) sg_dma_config = 0x%x\n", __FUNCTION__, __LINE__, pI2cMGdmaReg[device_id]->sg_dma_config);
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_sg_dma_last_lli_set);
++
++void hal_i2cm_sg_dma_access_lli_set(unsigned int device_id, unsigned int access_index)
++{
++	unsigned int val;
++
++	if(device_id < I2C_MASTER_NUM)
++	{
++		access_index &= (I2C_SG_DMA_LLI_INDEX_MASK);  //only support 5 bit
++		val = readl(&(pI2cMGdmaReg[device_id]->sg_dma_index));
++		val &= (~I2C_SG_DMA_LLI_ACCESS_INDEX(I2C_SG_DMA_LLI_INDEX_MASK));
++		val |= I2C_SG_DMA_LLI_ACCESS_INDEX(access_index);
++		writel(val, &(pI2cMGdmaReg[device_id]->sg_dma_index));
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_sg_dma_access_lli_set);
++
++void hal_i2cm_sg_dma_start_lli_set(unsigned int device_id, unsigned int start_index)
++{
++	unsigned int val;
++
++	if(device_id < I2C_MASTER_NUM)
++	{
++		start_index &= (I2C_SG_DMA_LLI_INDEX_MASK);   //only support 5 bit
++		val = readl(&(pI2cMGdmaReg[device_id]->sg_dma_index));
++		val &= (~I2C_SG_DMA_LLI_RUN_INDEX(I2C_SG_DMA_LLI_INDEX_MASK));
++		val |= I2C_SG_DMA_LLI_RUN_INDEX(start_index);
++		writel(val, &(pI2cMGdmaReg[device_id]->sg_dma_index));
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_sg_dma_start_lli_set);
++
++void hal_i2cm_sg_dma_enable(unsigned int device_id)
++{
++	unsigned int val;
++
++	if(device_id < I2C_MASTER_NUM)
++	{
++		val = readl(&(pI2cMGdmaReg[device_id]->sg_setting));
++		val |= I2C_SG_DMA_SET_DMA_ENABLE;
++		writel(val, &(pI2cMGdmaReg[device_id]->sg_setting));
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_sg_dma_enable);
++
++void hal_i2cm_dma_int_flag_clear(unsigned int device_id, unsigned int flag)
++{
++	unsigned int val;
++
++	if(device_id < I2C_MASTER_NUM){
++		val = readl(&(pI2cMGdmaReg[device_id]->int_flag));
++		val |= flag;
++		writel(val, &(pI2cMGdmaReg[device_id]->int_flag));
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_dma_int_flag_clear);
++
++void hal_i2cm_dma_int_flag_get(unsigned int device_id, unsigned int *flag)
++{
++	if(device_id < I2C_MASTER_NUM)
++	{
++		*flag = readl(&(pI2cMGdmaReg[device_id]->int_flag));
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_dma_int_flag_get);
++
++void hal_i2cm_dma_int_en_set(unsigned int device_id, unsigned int dma_int)
++{
++	if(device_id < I2C_MASTER_NUM)
++	{
++		writel(dma_int, &(pI2cMGdmaReg[device_id]->int_en));
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_dma_int_en_set);
++
++void hal_i2cm_dma_go_set(unsigned int device_id)
++{
++	unsigned int val;
++
++	if(device_id < I2C_MASTER_NUM)
++	{
++		val = readl(&(pI2cMGdmaReg[device_id]->dma_config));
++		val |= I2C_DMA_CFG_DMA_GO;
++		writel(val, &(pI2cMGdmaReg[device_id]->dma_config));
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_dma_go_set);
++
++void hal_i2cm_dma_rw_mode_set(unsigned int device_id, I2C_DMA_RW_Mode_e rw_mode)
++{
++	unsigned int val;
++
++	if(device_id < I2C_MASTER_NUM)
++	{
++		val = readl(&(pI2cMGdmaReg[device_id]->dma_config));
++		switch(rw_mode){
++			default:
++			case I2C_DMA_WRITE_MODE:
++				val |= I2C_DMA_CFG_DMA_MODE;
++				break;
++
++			case I2C_DMA_READ_MODE:
++				val &= (~I2C_DMA_CFG_DMA_MODE);
++				break;
++		}
++		writel(val, &(pI2cMGdmaReg[device_id]->dma_config));
++		printk("%s(%d) dma_config = 0x%x\n", __FUNCTION__, __LINE__, pI2cMGdmaReg[device_id]->dma_config);
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_dma_rw_mode_set);
++
++void hal_i2cm_dma_length_set(unsigned int device_id, unsigned int length)
++{
++	if(device_id < I2C_MASTER_NUM)
++	{
++		length &= (0xFFFF);  //only support 16 bit
++		writel(length, &(pI2cMGdmaReg[device_id]->dma_length));
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_dma_length_set);
++
++void hal_i2cm_dma_addr_set(unsigned int device_id, unsigned int addr)
++{
++	if(device_id < I2C_MASTER_NUM)
++	{
++		writel(addr, &(pI2cMGdmaReg[device_id]->dma_addr));
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_dma_addr_set);
++
++void hal_i2cm_dma_base_set(unsigned int device_id, void __iomem *membase)
++{
++	if (device_id < I2C_MASTER_NUM) {
++		pI2cMGdmaReg[device_id] = (regs_i2cm_gdma_t *)membase;
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_dma_base_set);
++
++void hal_i2cm_dma_mode_disable(unsigned int device_id)
++{
++	unsigned int val;
++
++	if(device_id < I2C_MASTER_NUM)
++	{
++		val = readl(&(pI2cMReg[device_id]->i2cm_mode));
++		val &= (~I2C_MODE_DMA_MODE);
++		writel(val, &(pI2cMReg[device_id]->i2cm_mode));
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_dma_mode_disable);
++
++void hal_i2cm_dma_mode_enable(unsigned int device_id)
++{
++	unsigned int val;
++
++	if(device_id < I2C_MASTER_NUM)
++	{
++		val = readl(&(pI2cMReg[device_id]->i2cm_mode));
++		val |= I2C_MODE_DMA_MODE;
++		writel(val, &(pI2cMReg[device_id]->i2cm_mode));
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_dma_mode_enable);
++#endif
++
++void hal_i2cm_scl_delay_set(unsigned int device_id, unsigned int delay)
++{
++	unsigned int ctl2;
++
++	if (device_id < I2C_MASTER_NUM) {
++		ctl2 = readl(&(pI2cMReg[device_id]->control2));
++		ctl2 &= (~I2C_CTL2_SCL_DELAY(I2C_CTL2_SCL_DELAY_MASK));
++		ctl2 |= I2C_CTL2_SCL_DELAY(delay);
++		writel(ctl2, &(pI2cMReg[device_id]->control2));
++		//printk("hal_i2cm_scl_delay_set control2: 0x%x\n", readl(&(pI2cMReg[device_id]->control2)));
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_scl_delay_set);
++
++void hal_i2cm_roverflow_flag_get(unsigned int device_id, unsigned int *flag)
++{
++	if (device_id < I2C_MASTER_NUM) {
++		*flag = readl(&(pI2cMReg[device_id]->i2cm_status4));
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_roverflow_flag_get);
++
++void hal_i2cm_rdata_flag_clear(unsigned int device_id, unsigned int flag)
++{
++	if (device_id < I2C_MASTER_NUM) {
++		writel(flag, &(pI2cMReg[device_id]->control6));
++		writel(0, &(pI2cMReg[device_id]->control6));
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_rdata_flag_clear);
++
++void hal_i2cm_rdata_flag_get(unsigned int device_id, unsigned int *flag)
++{
++	if (device_id < I2C_MASTER_NUM) {
++		*flag = readl(&(pI2cMReg[device_id]->i2cm_status3));
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_rdata_flag_get);
++
++void hal_i2cm_status_clear(unsigned int device_id, unsigned int flag)
++{
++	unsigned int ctl1;
++
++	if (device_id < I2C_MASTER_NUM) {
++		ctl1 = readl(&(pI2cMReg[device_id]->control1));
++		ctl1 |= flag;
++		writel(ctl1, &(pI2cMReg[device_id]->control1));
++
++		ctl1 = readl(&(pI2cMReg[device_id]->control1));
++		ctl1 &= (~flag);
++		writel(ctl1, &(pI2cMReg[device_id]->control1));
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_status_clear);
++
++void hal_i2cm_status_get(unsigned int device_id, unsigned int *flag)
++{
++	if (device_id < I2C_MASTER_NUM) {
++		*flag = readl(&(pI2cMReg[device_id]->interrupt));
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_status_get);
++
++void hal_i2cm_int_en2_set(unsigned int device_id, unsigned int overflow_en)
++{
++	if (device_id < I2C_MASTER_NUM) {
++		writel(overflow_en, &(pI2cMReg[device_id]->int_en2));
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_int_en2_set);
++
++void hal_i2cm_int_en1_set(unsigned int device_id, unsigned int rdata_en)
++{
++	if (device_id < I2C_MASTER_NUM) {
++		writel(rdata_en, &(pI2cMReg[device_id]->int_en1));
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_int_en1_set);
++
++void hal_i2cm_int_en0_set(unsigned int device_id, unsigned int int0)
++{
++	if (device_id < I2C_MASTER_NUM) {
++		writel(int0, &(pI2cMReg[device_id]->int_en0));
++		//printk("hal_i2cm_int_en0_set int_en0: 0x%x\n", readl(&(pI2cMReg[device_id]->int_en0)));
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_int_en0_set);
++
++void hal_i2cm_int_en0_disable(unsigned int device_id, unsigned int int0)
++{
++	unsigned int val;
++
++	if (device_id < I2C_MASTER_NUM) {
++		val = readl(&(pI2cMReg[device_id]->int_en0));
++		val &= (~int0);
++		writel(val, &(pI2cMReg[device_id]->int_en0));
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_int_en0_disable);
++
++void hal_i2cm_int_en0_with_thershold_set(unsigned int device_id, unsigned int int0, unsigned char threshold)
++{
++	unsigned int val;
++
++	if (device_id < I2C_MASTER_NUM) {
++		val = (int0 | I2C_EN0_CTL_EMPTY_THRESHOLD(threshold));
++		writel(val, &(pI2cMReg[device_id]->int_en0));
++		//printk("hal_i2cm_int_en0_with_thershold_set int_en0: 0x%x\n", readl(&(pI2cMReg[device_id]->int_en0)));
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_int_en0_with_thershold_set);
++
++void hal_i2cm_data_get(unsigned int device_id, unsigned int index, unsigned int *rdata)
++{
++	if (device_id < I2C_MASTER_NUM) {
++		switch (index) {
++			case 0:
++				*rdata = readl(&(pI2cMReg[device_id]->data00_03));
++				break;
++
++			case 1:
++				*rdata = readl(&(pI2cMReg[device_id]->data04_07));
++				break;
++
++			case 2:
++				*rdata = readl(&(pI2cMReg[device_id]->data08_11));
++				break;
++
++			case 3:
++				*rdata = readl(&(pI2cMReg[device_id]->data12_15));
++				break;
++
++			case 4:
++				*rdata = readl(&(pI2cMReg[device_id]->data16_19));
++				break;
++
++			case 5:
++				*rdata = readl(&(pI2cMReg[device_id]->data20_23));
++				break;
++
++			case 6:
++				*rdata = readl(&(pI2cMReg[device_id]->data24_27));
++				break;
++
++			case 7:
++				*rdata = readl(&(pI2cMReg[device_id]->data28_31));
++				break;
++
++			default:
++				break;
++		}
++		//printk("hal_i2cm_data_get index: %d, data 0x%x\n", index, *rdata);
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_data_get);
++
++void hal_i2cm_data_set(unsigned int device_id, unsigned int *wdata)
++{
++	if (device_id < I2C_MASTER_NUM) {
++		writel(wdata[0], &(pI2cMReg[device_id]->data00_03));
++		writel(wdata[1], &(pI2cMReg[device_id]->data04_07));
++		writel(wdata[2], &(pI2cMReg[device_id]->data08_11));
++		writel(wdata[3], &(pI2cMReg[device_id]->data12_15));
++		writel(wdata[4], &(pI2cMReg[device_id]->data16_19));
++		writel(wdata[5], &(pI2cMReg[device_id]->data20_23));
++		writel(wdata[6], &(pI2cMReg[device_id]->data24_27));
++		writel(wdata[7], &(pI2cMReg[device_id]->data28_31));
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_data_set);
++
++void hal_i2cm_data0_set(unsigned int device_id, unsigned int *wdata)
++{
++	if (device_id < I2C_MASTER_NUM) {
++		writel(*wdata, &(pI2cMReg[device_id]->data00_03));
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_data0_set);
++
++void hal_i2cm_rw_mode_set(unsigned int device_id, I2C_RW_Mode_e rw_mode)
++{
++	unsigned int ctl0;
++
++	if (device_id < I2C_MASTER_NUM) {
++		ctl0 = readl(&(pI2cMReg[device_id]->control0));
++		switch(rw_mode) {
++			default:
++			case I2C_WRITE_MODE:
++				ctl0 &= (~(I2C_CTL0_PREFETCH | I2C_CTL0_RESTART_EN | I2C_CTL0_SUBADDR_EN));
++				break;
++
++			case I2C_READ_MODE:
++				ctl0 &= (~(I2C_CTL0_RESTART_EN | I2C_CTL0_SUBADDR_EN));
++				ctl0 |= I2C_CTL0_PREFETCH;
++				break;
++
++			case I2C_RESTART_MODE:
++				ctl0 |= (I2C_CTL0_PREFETCH | I2C_CTL0_RESTART_EN | I2C_CTL0_SUBADDR_EN);
++				break;
++		}
++		writel(ctl0, &(pI2cMReg[device_id]->control0));
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_rw_mode_set);
++
++void hal_i2cm_manual_trigger(unsigned int device_id)
++{
++	unsigned int val;
++
++	if (device_id < I2C_MASTER_NUM) {
++		val = readl(&(pI2cMReg[device_id]->i2cm_mode));
++		val |= I2C_MODE_MANUAL_TRIG;
++		writel(val, &(pI2cMReg[device_id]->i2cm_mode));
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_manual_trigger);
++
++void hal_i2cm_active_mode_set(unsigned int device_id, I2C_Active_Mode_e mode)
++{
++	unsigned int val;
++
++	if (device_id < I2C_MASTER_NUM) {
++		val = readl(&(pI2cMReg[device_id]->i2cm_mode));
++		val &= (~(I2C_MODE_MANUAL_MODE | I2C_MODE_MANUAL_TRIG));
++		switch (mode) {
++			default:
++			case I2C_TRIGGER:
++				break;
++
++			case I2C_AUTO:
++				val |= I2C_MODE_MANUAL_MODE;
++				break;
++		}
++		writel(val, &(pI2cMReg[device_id]->i2cm_mode));
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_active_mode_set);
++
++void hal_i2cm_trans_cnt_set(unsigned int device_id, unsigned int write_cnt, unsigned int read_cnt)
++{
++	unsigned int t_write = write_cnt & I2C_CTL7_RW_COUNT_MASK;
++	unsigned int t_read = read_cnt & I2C_CTL7_RW_COUNT_MASK;
++	unsigned int ctl7;
++
++	if (device_id < I2C_MASTER_NUM) {
++		ctl7 = I2C_CTL7_WRCOUNT(t_write) | I2C_CTL7_RDCOUNT(t_read);
++		writel(ctl7, &(pI2cMReg[device_id]->control7));
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_trans_cnt_set);
++
++void hal_i2cm_slave_addr_set(unsigned int device_id, unsigned int addr)
++{
++	unsigned int t_addr = addr & I2C_CTL0_SLAVE_ADDR_MASK;
++	unsigned int ctl0;
++
++	if (device_id < I2C_MASTER_NUM) {
++		ctl0 = readl(&(pI2cMReg[device_id]->control0));
++		ctl0 &= (~I2C_CTL0_SLAVE_ADDR(I2C_CTL0_SLAVE_ADDR_MASK));
++		ctl0 |= I2C_CTL0_SLAVE_ADDR(t_addr);
++		writel(ctl0, &(pI2cMReg[device_id]->control0));
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_slave_addr_set);
++
++void hal_i2cm_clock_freq_set(unsigned int device_id, unsigned int freq)
++{
++	unsigned int div;
++	unsigned int ctl0, ctl2;
++
++	if (device_id < I2C_MASTER_NUM) {
++		div = I2C_CLK_SOURCE_FREQ / freq;
++		div -= 1;
++		if (0 != I2C_CLK_SOURCE_FREQ % freq) {
++			div += 1;
++		}
++
++		if (div > I2C_CTL2_FREQ_CUSTOM_MASK) {
++			div = I2C_CTL2_FREQ_CUSTOM_MASK;
++		}
++
++		ctl0 = readl(&(pI2cMReg[device_id]->control0));
++		ctl0 &= (~I2C_CTL0_FREQ(I2C_CTL0_FREQ_MASK));
++		writel(ctl0, &(pI2cMReg[device_id]->control0));
++
++		ctl2 = readl(&(pI2cMReg[device_id]->control2));
++		ctl2 &= (~I2C_CTL2_FREQ_CUSTOM(I2C_CTL2_FREQ_CUSTOM_MASK));
++		ctl2 |= I2C_CTL2_FREQ_CUSTOM(div);
++		writel(ctl2, &(pI2cMReg[device_id]->control2));
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_clock_freq_set);
++
++void hal_i2cm_reset(unsigned int device_id)
++{
++	unsigned int ctl0;
++
++	if (device_id < I2C_MASTER_NUM) {
++		ctl0 = readl(&(pI2cMReg[device_id]->control0));
++		ctl0 |= I2C_CTL0_SW_RESET;
++		writel(ctl0, &(pI2cMReg[device_id]->control0));
++
++		udelay(2);
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_reset);
++
++void hal_i2cm_base_set(unsigned int device_id, void __iomem *membase)
++{
++	if (device_id < I2C_MASTER_NUM) {
++		pI2cMReg[device_id] = (regs_i2cm_t *)membase;
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_base_set);
++
++void hal_i2cm_disable(unsigned int device_id, void __iomem *membase)
++{
++	regs_moon0_t *pMoon0Reg = (regs_moon0_t *)membase;
++	unsigned int reset;
++
++	if (device_id < I2C_MASTER_NUM) {
++		writel(I2C_RESET(device_id, 1), &(pMoon0Reg->reset[3]));
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_disable);
++
++void hal_i2cm_enable(unsigned int device_id, void __iomem *membase)
++{
++	regs_moon0_t *pMoon0Reg = (regs_moon0_t *)membase;
++	unsigned int reset, clken, gclken;
++
++	if (device_id < I2C_MASTER_NUM) {
++		writel(I2C_RESET(device_id, 0), &(pMoon0Reg->reset[3]));
++		writel(I2C_CLKEN(device_id, 1), &(pMoon0Reg->clken[3]));
++		writel(I2C_GCLKEN(device_id, 0), &(pMoon0Reg->gclken[3]));
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_enable);
++
++void hal_i2cm_pinmux_set(unsigned int device_id, void __iomem *membase)
++{
++	regs_moon3_t *pMoon3Reg = (regs_moon3_t *)membase;
++	unsigned int scl_cfg;
++	unsigned int sda_cfg;
++
++	if (device_id < I2C_MASTER_NUM) {
++		switch (device_id) {
++			case 0:
++				scl_cfg = 1;
++				sda_cfg = 2; //G3.10
++				writel(I2C_PINMUX_SET(scl_cfg, sda_cfg), &(pMoon3Reg->sft_cfg_42));
++				break;
++
++			case 1:
++				scl_cfg = 3;
++				sda_cfg = 4; //G3.11
++				writel(I2C_PINMUX_SET(scl_cfg, sda_cfg), &(pMoon3Reg->sft_cfg_43));
++				break;
++
++			case 2:
++				scl_cfg = 5;
++				sda_cfg = 6; //G3.12
++				writel(I2C_PINMUX_SET(scl_cfg, sda_cfg), &(pMoon3Reg->sft_cfg_44));
++				break;
++
++			case 3:
++				scl_cfg = 7;
++				sda_cfg = 8; //G3.13
++				writel(I2C_PINMUX_SET(scl_cfg, sda_cfg), &(pMoon3Reg->sft_cfg_45));
++				break;
++
++			default:
++				break;
++		}
++	}
++}
++EXPORT_SYMBOL(hal_i2cm_pinmux_set);
+\ В конце файла нет новой строки
+--- a/drivers/i2c/busses/sp_i2c/hal_i2c.h	1970-01-01 03:00:00.000000000 +0300
++++ a/drivers/i2c/busses/sp_i2c/hal_i2c.h	2018-11-12 06:42:53.000000000 +0300
+@@ -0,0 +1,81 @@
++#ifndef __I2C_HAL_H__
++#define __I2C_HAL_H__
++
++#include <linux/types.h>
++#include <linux/module.h>
++#include "reg_i2c.h"
++
++
++#define I2C_MASTER_NUM    (4)
++
++#define SUPPORT_I2C_GDMA
++
++#ifdef SUPPORT_I2C_GDMA
++typedef enum
++{	
++	I2C_DMA_WRITE_MODE,
++	I2C_DMA_READ_MODE,
++}I2C_DMA_RW_Mode_e;
++#endif
++
++typedef enum I2C_RW_Mode_e_ {
++	I2C_WRITE_MODE,
++	I2C_READ_MODE,
++	I2C_RESTART_MODE,
++} I2C_RW_Mode_e;
++
++typedef enum I2C_Active_Mode_e_ {
++	I2C_TRIGGER,
++	I2C_AUTO,
++} I2C_Active_Mode_e;
++
++
++#ifdef SUPPORT_I2C_GDMA
++void hal_i2cm_sg_dma_go_set(unsigned int device_id);
++void hal_i2cm_sg_dma_rw_mode_set(unsigned int device_id, I2C_DMA_RW_Mode_e rw_mode);
++void hal_i2cm_sg_dma_length_set(unsigned int device_id, unsigned int length);
++void hal_i2cm_sg_dma_addr_set(unsigned int device_id, unsigned int addr);
++void hal_i2cm_sg_dma_last_lli_set(unsigned int device_id);
++void hal_i2cm_sg_dma_access_lli_set(unsigned int device_id, unsigned int access_index);
++void hal_i2cm_sg_dma_start_lli_set(unsigned int device_id, unsigned int start_index);
++void hal_i2cm_sg_dma_enable(unsigned int device_id);
++
++void hal_i2cm_dma_int_flag_clear(unsigned int device_id, unsigned int flag);
++void hal_i2cm_dma_int_flag_get(unsigned int device_id, unsigned int *flag);
++void hal_i2cm_dma_int_en_set(unsigned int device_id, unsigned int dma_int);
++void hal_i2cm_dma_go_set(unsigned int device_id);
++void hal_i2cm_dma_rw_mode_set(unsigned int device_id, I2C_DMA_RW_Mode_e rw_mode);
++void hal_i2cm_dma_length_set(unsigned int device_id, unsigned int length);
++void hal_i2cm_dma_addr_set(unsigned int device_id, unsigned int addr);
++void hal_i2cm_dma_base_set(unsigned int device_id, void __iomem *membase);
++void hal_i2cm_dma_mode_disable(unsigned int device_id);
++void hal_i2cm_dma_mode_enable(unsigned int device_id);
++#endif
++
++void hal_i2cm_scl_delay_set(unsigned int device_id, unsigned int delay);
++void hal_i2cm_roverflow_flag_get(unsigned int device_id, unsigned int *flag);
++void hal_i2cm_rdata_flag_clear(unsigned int device_id, unsigned int flag);
++void hal_i2cm_rdata_flag_get(unsigned int device_id, unsigned int *flag);
++void hal_i2cm_status_clear(unsigned int device_id, unsigned int flag);
++void hal_i2cm_status_get(unsigned int device_id, unsigned int *flag);
++void hal_i2cm_int_en2_set(unsigned int device_id, unsigned int overflow_en);
++void hal_i2cm_int_en1_set(unsigned int device_id, unsigned int rdata_en);
++void hal_i2cm_int_en0_set(unsigned int device_id, unsigned int int0);
++void hal_i2cm_int_en0_disable(unsigned int device_id, unsigned int int0);
++void hal_i2cm_int_en0_with_thershold_set(unsigned int device_id, unsigned int int0, unsigned char threshold);
++void hal_i2cm_data_get(unsigned int device_id, unsigned int index, unsigned int *rdata);
++void hal_i2cm_data_set(unsigned int device_id, unsigned int *wdata);
++void hal_i2cm_data0_set(unsigned int device_id, unsigned int *wdata);
++void hal_i2cm_rw_mode_set(unsigned int device_id, I2C_RW_Mode_e rw_mode);
++void hal_i2cm_manual_trigger(unsigned int device_id);
++void hal_i2cm_active_mode_set(unsigned int device_id, I2C_Active_Mode_e mode);
++void hal_i2cm_trans_cnt_set(unsigned int device_id, unsigned int write_cnt, unsigned int read_cnt);
++void hal_i2cm_slave_addr_set(unsigned int device_id, unsigned int addr);
++void hal_i2cm_clock_freq_set(unsigned int device_id, unsigned int freq);
++void hal_i2cm_reset(unsigned int device_id);
++void hal_i2cm_base_set(unsigned int device_id, void __iomem *membase);
++void hal_i2cm_disable(unsigned int device_id, void __iomem *membase);
++void hal_i2cm_enable(unsigned int device_id, void __iomem *membase);
++void hal_i2cm_pinmux_set(unsigned int device_id, void __iomem *membase);
++
++#endif /* __I2C_HAL_H__ */
+--- a/drivers/i2c/busses/sp_i2c/Makefile	1970-01-01 03:00:00.000000000 +0300
++++ a/drivers/i2c/busses/sp_i2c/Makefile	2018-11-12 06:42:53.000000000 +0300
+@@ -0,0 +1,18 @@
++#
++# Makefile for the i2c subsystem
++#
++# i2c main file: <sp_i2cm0.c> <sp_i2cm1.c>
++# - register platform device, platform driver (suspend/resume)
++#	- register misc device (ioctl)
++# - Should be build as module driver
++#
++# i2c sub modules:
++#  <HAL: hal/hal_i2c.c>
++#
++
++obj-y += sp_i2cm.o
++obj-y += hal_i2c.o
++
++clean:
++	rm -rf *.o *~ core .depend .*.cmd *.ko *.mod.c .tmp_versions
++
+--- a/drivers/i2c/busses/sp_i2c/reg_i2c.h	1970-01-01 03:00:00.000000000 +0300
++++ a/drivers/i2c/busses/sp_i2c/reg_i2c.h	2018-11-12 06:42:53.000000000 +0300
+@@ -0,0 +1,234 @@
++#ifndef __REG_I2C_H__
++#define __REG_I2C_H__
++
++#include <mach/io_map.h>
++
++/****************************************
++* I2C Master
++****************************************/
++
++//control0
++#define I2C_CTL0_FREQ(x)                  (x<<24)  //bit[26:24]
++#define I2C_CTL0_PREFETCH                 (1<<18)  //Now as read mode need to set high, otherwise don��t care
++#define I2C_CTL0_RESTART_EN               (1<<17)  //0:disable 1:enable
++#define I2C_CTL0_SUBADDR_EN               (1<<16)  //For restart mode need to set high
++#define I2C_CTL0_SW_RESET                 (1<<15)
++#define I2C_CTL0_SLAVE_ADDR(x)            (x<<1)   //bit[7:1]
++
++//control1
++#define I2C_CTL1_ALL_CLR                  (0x3FF)
++#define I2C_CTL1_EMPTY_CLR                (1<<9)
++#define I2C_CTL1_SCL_HOLD_TOO_LONG_CLR    (1<<8)
++#define I2C_CTL1_SCL_WAIT_CLR             (1<<7)
++#define I2C_CTL1_EMPTY_THRESHOLD_CLR      (1<<6)
++#define I2C_CTL1_DATA_NACK_CLR            (1<<5)
++#define I2C_CTL1_ADDRESS_NACK_CLR         (1<<4)
++#define I2C_CTL1_BUSY_CLR                 (1<<3)
++#define I2C_CTL1_CLKERR_CLR               (1<<2)
++#define I2C_CTL1_DONE_CLR                 (1<<1)
++#define I2C_CTL1_SIFBUSY_CLR              (1<<0)
++
++//control2
++#define I2C_CTL2_FREQ_CUSTOM(x)           (x<<0)   //bit[10:0]
++#define I2C_CTL2_SCL_DELAY(x)             (x<<24)  //bit[25:24]
++
++//control6
++#define I2C_CTL6_BURST_RDATA_CLR          I2C_EN1_BURST_RDATA_INT
++
++//control7
++#define I2C_CTL7_RDCOUNT(x)               (x<<16)  //bit[31:16]
++#define I2C_CTL7_WRCOUNT(x)               (x<<0)   //bit[15:0]
++
++//interrupt
++#define I2C_INT_RINC_INDEX(x)             (x<<18)  //bit[20:18]
++#define I2C_INT_WINC_INDEX(x)             (x<<15)  //bit[17:15]
++#define I2C_INT_SCL_HOLD_TOO_LONG_FLAG    (1<<11)
++#define I2C_INT_WFIFO_ENABLE              (1<<10)
++#define I2C_INT_FULL_FLAG                 (1<<9)
++#define I2C_INT_EMPTY_FLAG                (1<<8)
++#define I2C_INT_SCL_WAIT_FLAG             (1<<7)
++#define I2C_INT_EMPTY_THRESHOLD_FLAG      (1<<6)
++#define I2C_INT_DATA_NACK_FLAG            (1<<5)
++#define I2C_INT_ADDRESS_NACK_FLAG         (1<<4)
++#define I2C_INT_BUSY_FLAG                 (1<<3)
++#define I2C_INT_CLKERR_FLAG               (1<<2)
++#define I2C_INT_DONE_FLAG                 (1<<1)
++#define I2C_INT_SIFBUSY_FLAG              (1<<0)
++
++//interrupt enable0
++#define I2C_EN0_SCL_HOLD_TOO_LONG_INT     (1<<13)
++#define I2C_EN0_NACK_INT                  (1<<12)
++#define I2C_EN0_CTL_EMPTY_THRESHOLD(x)    (x<<9)  //bit[11:9]
++#define I2C_EN0_EMPTY_INT                 (1<<8)
++#define I2C_EN0_SCL_WAIT_INT              (1<<7)
++#define I2C_EN0_EMPTY_THRESHOLD_INT       (1<<6)
++#define I2C_EN0_DATA_NACK_INT             (1<<5)
++#define I2C_EN0_ADDRESS_NACK_INT          (1<<4)
++#define I2C_EN0_BUSY_INT                  (1<<3)
++#define I2C_EN0_CLKERR_INT                (1<<2)
++#define I2C_EN0_DONE_INT                  (1<<1)
++#define I2C_EN0_SIFBUSY_INT               (1<<0)
++
++//interrupt enable1
++#define I2C_EN1_BURST_RDATA_INT           (0x80008000)  //must sync with GET_BYTES_EACHTIME
++
++//interrupt enable2
++#define I2C_EN2_BURST_RDATA_OVERFLOW_INT  (0xFFFFFFFF)
++
++//i2c master mode
++#define I2C_MODE_DMA_MODE                 (1<<2)
++#define I2C_MODE_MANUAL_MODE              (1<<1)  //0:trigger mode 1:auto mode
++#define I2C_MODE_MANUAL_TRIG              (1<<0)
++
++//i2c master status2
++#define I2C_SW_RESET_DONE                 (1<<0)
++
++
++/****************************************
++* GDMA
++****************************************/
++
++//dma config
++#define I2C_DMA_CFG_DMA_GO                (1<<8)
++#define I2C_DMA_CFG_NON_BUF_MODE          (1<<2)
++#define I2C_DMA_CFG_SAME_SLAVE            (1<<1)
++#define I2C_DMA_CFG_DMA_MODE              (1<<0)
++
++//dma interrupt flag
++#define I2C_DMA_INT_LENGTH0_FLAG          (1<<6)
++#define I2C_DMA_INT_THRESHOLD_FLAG        (1<<5)
++#define I2C_DMA_INT_IP_TIMEOUT_FLAG       (1<<4)
++#define I2C_DMA_INT_GDMA_TIMEOUT_FLAG     (1<<3)
++#define I2C_DMA_INT_WB_EN_ERROR_FLAG      (1<<2)
++#define I2C_DMA_INT_WCNT_ERROR_FLAG       (1<<1)
++#define I2C_DMA_INT_DMA_DONE_FLAG         (1<<0)
++
++//dma interrupt enable
++#define I2C_DMA_EN_LENGTH0_INT            (1<<6)
++#define I2C_DMA_EN_THRESHOLD_INT          (1<<5)
++#define I2C_DMA_EN_IP_TIMEOUT_INT         (1<<4)
++#define I2C_DMA_EN_GDMA_TIMEOUT_INT       (1<<3)
++#define I2C_DMA_EN_WB_EN_ERROR_INT        (1<<2)
++#define I2C_DMA_EN_WCNT_ERROR_INT         (1<<1)
++#define I2C_DMA_EN_DMA_DONE_INT           (1<<0)
++
++
++/****************************************
++* SG GDMA
++****************************************/
++
++//sg dma index
++#define I2C_SG_DMA_LLI_RUN_INDEX(x)       (x<<8)  //bit[12:8]
++#define I2C_SG_DMA_LLI_ACCESS_INDEX(x)    (x<<0)  //bit[4:0]
++
++//sg dma config
++#define I2C_SG_DMA_CFG_LAST_LLI           (1<<2)
++#define I2C_SG_DMA_CFG_DMA_MODE           (1<<0)
++
++//sg dma setting
++#define I2C_SG_DMA_SET_DMA_ENABLE         (1<<31)
++#define I2C_SG_DMA_SET_DMA_GO             (1<<0)
++
++
++typedef struct regs_moon0_t_ {
++	volatile unsigned int stamp;         /* 00 */
++	volatile unsigned int clken[10];     /* 01~10 */
++	volatile unsigned int gclken[10];    /* 11~20 */
++	volatile unsigned int reset[10];     /* 21~30 */
++	volatile unsigned int sfg_cfg_mode;  /* 31 */
++} regs_moon0_t;
++
++typedef struct regs_moon3_t_ {
++	volatile unsigned int sft_cfg_32;    /* 00 */
++	volatile unsigned int sft_cfg_33;    /* 01 */
++	volatile unsigned int sft_cfg_34;    /* 02 */
++	volatile unsigned int sft_cfg_35;    /* 03 */
++	volatile unsigned int sft_cfg_36;    /* 04 */
++	volatile unsigned int sft_cfg_37;    /* 05 */
++	volatile unsigned int sft_cfg_38;    /* 06 */
++	volatile unsigned int sft_cfg_39;    /* 07 */
++	volatile unsigned int sft_cfg_40;    /* 08 */
++	volatile unsigned int sft_cfg_41;    /* 09 */
++	volatile unsigned int sft_cfg_42;    /* 10 */
++	volatile unsigned int sft_cfg_43;    /* 11 */
++	volatile unsigned int sft_cfg_44;    /* 12 */
++	volatile unsigned int sft_cfg_45;    /* 13 */
++	volatile unsigned int sft_cfg_46;    /* 14 */
++	volatile unsigned int sft_cfg_47;    /* 15 */
++	volatile unsigned int sft_cfg_48;    /* 16 */
++	volatile unsigned int sft_cfg_49;    /* 17 */
++	volatile unsigned int sft_cfg_50;    /* 18 */
++	volatile unsigned int sft_cfg_51;    /* 19 */
++	volatile unsigned int sft_cfg_52;    /* 20 */
++	volatile unsigned int sft_cfg_53;    /* 21 */
++	volatile unsigned int sft_cfg_54;    /* 22 */
++	volatile unsigned int sft_cfg_55;    /* 23 */
++	volatile unsigned int sft_cfg_56;    /* 24 */
++	volatile unsigned int sft_cfg_57;    /* 25 */
++	volatile unsigned int sft_cfg_58;    /* 26 */
++	volatile unsigned int sft_cfg_59;    /* 27 */
++	volatile unsigned int reserved[4];   /* 28~31 */
++} regs_moon3_t;
++
++typedef struct regs_i2cm_t_ {
++	volatile unsigned int control0;      /* 00 */
++	volatile unsigned int control1;      /* 01 */
++	volatile unsigned int control2;      /* 02 */
++	volatile unsigned int control3;      /* 03 */
++	volatile unsigned int control4;      /* 04 */
++	volatile unsigned int control5;      /* 05 */
++	volatile unsigned int i2cm_status0;  /* 06 */
++	volatile unsigned int interrupt;     /* 07 */
++	volatile unsigned int int_en0;       /* 08 */
++	volatile unsigned int i2cm_mode;     /* 09 */
++	volatile unsigned int i2cm_status1;  /* 10 */
++	volatile unsigned int i2cm_status2;  /* 11 */
++	volatile unsigned int control6;      /* 12 */
++	volatile unsigned int int_en1;       /* 13 */
++	volatile unsigned int i2cm_status3;  /* 14 */
++	volatile unsigned int i2cm_status4;  /* 15 */
++	volatile unsigned int int_en2;       /* 16 */
++	volatile unsigned int control7;      /* 17 */
++	volatile unsigned int control8;      /* 18 */
++	volatile unsigned int control9;      /* 19 */
++	volatile unsigned int reserved[3];   /* 20~22 */
++	volatile unsigned int version;       /* 23 */
++	volatile unsigned int data00_03;     /* 24 */
++	volatile unsigned int data04_07;     /* 25 */
++	volatile unsigned int data08_11;     /* 26 */
++	volatile unsigned int data12_15;     /* 27 */
++	volatile unsigned int data16_19;     /* 28 */
++	volatile unsigned int data20_23;     /* 29 */
++	volatile unsigned int data24_27;     /* 30 */
++	volatile unsigned int data28_31;     /* 31 */
++} regs_i2cm_t;
++
++typedef	struct regs_i2cm_gdma_s{
++	volatile unsigned int hw_version;                /* 00 */
++	volatile unsigned int dma_config;                /* 01 */
++	volatile unsigned int dma_length;                /* 02 */
++	volatile unsigned int dma_addr;                  /* 03 */
++	volatile unsigned int port_mux;                  /* 04 */
++	volatile unsigned int int_flag;                  /* 05 */
++	volatile unsigned int int_en;                    /* 06 */
++	volatile unsigned int sw_reset_state;            /* 07 */
++	volatile unsigned int reserved[2];               /* 08~09 */
++	volatile unsigned int sg_dma_index;              /* 10 */
++	volatile unsigned int sg_dma_config;             /* 11 */
++	volatile unsigned int sg_dma_length;             /* 12 */
++	volatile unsigned int sg_dma_addr;               /* 13 */
++	volatile unsigned int reserved2;                 /* 14 */
++	volatile unsigned int sg_setting;                /* 15 */
++	volatile unsigned int threshold;                 /* 16 */
++	volatile unsigned int reserved3;                 /* 17 */
++	volatile unsigned int gdma_read_timeout;         /* 18 */
++	volatile unsigned int gdma_write_timeout;        /* 19 */
++	volatile unsigned int ip_read_timeout;           /* 20 */
++	volatile unsigned int ip_write_timeout;          /* 21 */
++	volatile unsigned int write_cnt_debug;           /* 22 */
++	volatile unsigned int w_byte_en_debug;           /* 23 */
++	volatile unsigned int sw_reset_write_cnt_debug;  /* 24 */
++	volatile unsigned int reserved4[7];              /* 25~31 */
++}regs_i2cm_gdma_t;
++
++#endif /* __REG_I2C_H__ */
+--- a/drivers/i2c/busses/sp_i2c/sp_i2c.h	1970-01-01 03:00:00.000000000 +0300
++++ a/drivers/i2c/busses/sp_i2c/sp_i2c.h	2018-11-12 06:42:53.000000000 +0300
+@@ -0,0 +1,74 @@
++#ifndef __SP_I2C_H__
++#define __SP_I2C_H__
++
++#include "hal_i2c.h"
++
++typedef enum I2C_Status_e_ {
++	I2C_SUCCESS,                /* successful */
++	I2C_ERR_I2C_BUSY,           /* I2C is busy */
++	I2C_ERR_INVALID_DEVID,      /* device id is invalid */
++	I2C_ERR_INVALID_CNT,        /* read or write count is invalid */
++	I2C_ERR_TIMEOUT_OUT,        /* wait timeout */
++	I2C_ERR_RECEIVE_NACK,       /* receive NACK */
++	I2C_ERR_FIFO_EMPTY,         /* FIFO empty */
++	I2C_ERR_SCL_HOLD_TOO_LONG,  /* SCL hlod too long */
++	I2C_ERR_RDATA_OVERFLOW,     /* rdata overflow */
++	I2C_ERR_INVALID_STATE,      /* read write state is invalid */
++	I2C_ERR_REQUESET_IRQ,       /* request irq failed */
++} I2C_Status_e;
++
++typedef enum I2C_State_e_ {
++	I2C_WRITE_STATE,  /* i2c is write */
++	I2C_READ_STATE,   /* i2c is read */
++	I2C_IDLE_STATE,   /* i2c is idle */
++} I2C_State_e;
++
++typedef struct I2C_Cmd_t_ {
++	unsigned int dDevId;
++	unsigned int dFreq;
++	unsigned int dSlaveAddr;
++	unsigned int dRestartEn;
++	unsigned int dWrDataCnt;
++	unsigned int dRdDataCnt;
++	unsigned char *pWrData;
++	unsigned char *pRdData;
++} I2C_Cmd_t;
++
++typedef struct I2C_Irq_Dma_Flag_t_
++{
++	unsigned char bDmaDone;
++	unsigned char bWCntError;
++	unsigned char bWBEnError;
++	unsigned char bGDmaTimeout;
++	unsigned char bIPTimeout;
++	unsigned char bThreshold;
++	unsigned char bLength0;
++}I2C_Irq_Dma_Flag_t;
++
++typedef struct I2C_Irq_Flag_t_ {
++	unsigned char bActiveDone;
++	unsigned char bAddrNack;
++	unsigned char bDataNack;
++	unsigned char bEmptyThreshold;
++	unsigned char bFiFoEmpty;
++	unsigned char bFiFoFull;
++	unsigned char bSCLHoldTooLong;
++	unsigned char bRdOverflow;
++} I2C_Irq_Flag_t;
++
++typedef struct I2C_Irq_Event_t_ {
++	I2C_State_e eRWState;
++	I2C_Irq_Flag_t stIrqFlag;
++	I2C_Irq_Dma_Flag_t stIrqDmaFlag;
++	unsigned int dDevId;
++	unsigned int dBurstCount;
++	unsigned int dBurstRemainder;
++	unsigned int dDataIndex;
++	unsigned int dDataTotalLen;
++	unsigned int dRegDataIndex;
++	unsigned char bI2CBusy;
++	unsigned char bRet;
++	unsigned char *pDataBuf;
++} I2C_Irq_Event_t;
++
++#endif /* __SP_I2C_H__ */
+--- a/drivers/i2c/busses/sp_i2c/sp_i2cm.c	1970-01-01 03:00:00.000000000 +0300
++++ a/drivers/i2c/busses/sp_i2c/sp_i2cm.c	2018-11-12 06:42:53.000000000 +0300
+@@ -0,0 +1,821 @@
++#include <linux/delay.h>
++#include <linux/device.h>
++#include <linux/slab.h>
++#include <linux/kthread.h>
++#include <linux/rtc.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/miscdevice.h>
++#include <linux/kernel.h>
++#include <linux/interrupt.h>
++#include <linux/i2c.h>
++#include "hal_i2c.h"
++#include "sp_i2c.h"
++
++
++//#define I2C_FUNC_DEBUG
++#define I2C_DBG_INFO
++#define I2C_DBG_ERR
++
++#ifdef I2C_FUNC_DEBUG
++	#define FUNC_DEBUG()    printk(KERN_INFO "[I2C] Debug: %s(%d)\n", __FUNCTION__, __LINE__)
++#else
++	#define FUNC_DEBUG()
++#endif
++
++#ifdef I2C_DBG_INFO
++	#define DBG_INFO(fmt, args ...)    printk(KERN_INFO "[I2C] Info: " fmt, ## args)
++#else
++	#define DBG_INFO(fmt, args ...)
++#endif
++
++#ifdef I2C_DBG_ERR
++	#define DBG_ERR(fmt, args ...)    printk(KERN_ERR "[I2C] Error: " fmt, ## args)
++#else
++	#define DBG_ERR(fmt, args ...)
++#endif
++
++#define I2C_FREQ             100
++#define I2C_SLEEP_TIMEOUT    200
++#define I2C_SCL_DELAY        0  //SCl dalay xT
++
++#define I2CM_REG_NAME        "i2cm"
++#define MOON0_REG_NAME       "moon0"
++#define MOON3_REG_NAME       "moon3"
++
++#define DEVICE_NAME          "sp_i2cm"
++
++//burst write use
++#define I2C_EMPTY_THRESHOLD_VALUE    4
++
++//burst read use
++#define I2C_IS_READ16BYTE
++
++#ifdef I2C_IS_READ16BYTE
++#define I2C_BURST_RDATA_BYTES        16
++#define I2C_BURST_RDATA_FLAG         0x80008000
++#else
++#define I2C_BURST_RDATA_BYTES        4
++#define I2C_BURST_RDATA_FLAG         0x88888888
++#endif
++
++#define I2C_BURST_RDATA_ALL_FLAG     0xFFFFFFFF
++
++
++typedef struct SpI2C_If_t_ {
++	struct i2c_msg *msgs;  /* messages currently handled */
++	struct i2c_adapter adap;
++	I2C_Cmd_t stCmdInfo;
++	void __iomem *i2c_regs;
++	int irq;
++} SpI2C_If_t;
++
++typedef struct Moon_RegBase_t_ {
++	void __iomem *moon0_regs;
++	void __iomem *moon3_regs;
++} Moon_RegBase_t;
++
++static Moon_RegBase_t stMoonRegBase;
++static SpI2C_If_t stSpI2CInfo[I2C_MASTER_NUM];
++static I2C_Irq_Event_t stIrqEvent[I2C_MASTER_NUM];
++wait_queue_head_t i2cm_event_wait[I2C_MASTER_NUM];
++
++
++static void _sp_i2cm_intflag_check(unsigned int device_id, I2C_Irq_Event_t *pstIrqEvent)
++{
++	unsigned int int_flag = 0;
++	unsigned int overflow_flag = 0;
++
++	hal_i2cm_status_get(device_id, &int_flag);
++	//printk("I2C int_flag = 0x%x !!\n", int_flag);
++	if (int_flag & I2C_INT_DONE_FLAG) {
++		DBG_INFO("I2C is done !!\n");
++		pstIrqEvent->stIrqFlag.bActiveDone = 1;
++	} else {
++		pstIrqEvent->stIrqFlag.bActiveDone = 0;
++	}
++
++	if (int_flag & I2C_INT_ADDRESS_NACK_FLAG) {
++		DBG_INFO("I2C slave address NACK !!\n");
++		pstIrqEvent->stIrqFlag.bAddrNack = 1;
++	} else {
++		pstIrqEvent->stIrqFlag.bAddrNack = 0;
++	}
++
++	if (int_flag & I2C_INT_DATA_NACK_FLAG) {
++		DBG_INFO("I2C slave data NACK !!\n");
++		pstIrqEvent->stIrqFlag.bDataNack = 1;
++	} else {
++		pstIrqEvent->stIrqFlag.bDataNack = 0;
++	}
++
++	// write use
++	if (int_flag & I2C_INT_EMPTY_THRESHOLD_FLAG) {
++		//DBG_INFO("I2C empty threshold occur !!\n");
++		pstIrqEvent->stIrqFlag.bEmptyThreshold = 1;
++	} else {
++		pstIrqEvent->stIrqFlag.bEmptyThreshold = 0;
++	}
++
++	// write use
++	if (int_flag & I2C_INT_EMPTY_FLAG) {
++		DBG_INFO("I2C FIFO empty occur !!\n");
++		pstIrqEvent->stIrqFlag.bFiFoEmpty = 1;
++	} else {
++		pstIrqEvent->stIrqFlag.bFiFoEmpty = 0;
++	}
++
++	// write use (for debug)
++	if (int_flag & I2C_INT_FULL_FLAG) {
++		DBG_INFO("I2C FIFO full occur !!\n");
++		pstIrqEvent->stIrqFlag.bFiFoFull = 1;
++	} else {
++		pstIrqEvent->stIrqFlag.bFiFoFull = 0;
++	}
++
++	if (int_flag & I2C_INT_SCL_HOLD_TOO_LONG_FLAG) {
++		DBG_INFO("I2C SCL hold too long occur !!\n");
++		pstIrqEvent->stIrqFlag.bSCLHoldTooLong = 1;
++	} else {
++		pstIrqEvent->stIrqFlag.bSCLHoldTooLong = 0;
++	}
++	hal_i2cm_status_clear(device_id, I2C_CTL1_ALL_CLR);
++
++	// read use
++	hal_i2cm_roverflow_flag_get(device_id, &overflow_flag);
++	if (overflow_flag) {
++		DBG_ERR("I2C burst read data overflow !! overflow_flag = 0x%x\n", overflow_flag);
++		pstIrqEvent->stIrqFlag.bRdOverflow = 1;
++	} else {
++		pstIrqEvent->stIrqFlag.bRdOverflow = 0;
++	}
++}
++
++static irqreturn_t _sp_i2cm_irqevent_handler(int irq, void *args)
++{
++	I2C_Irq_Event_t *pstIrqEvent = (I2C_Irq_Event_t *)args;
++	unsigned int device_id = 0;
++	unsigned char w_data[32] = {0};
++	unsigned char r_data[I2C_BURST_RDATA_BYTES] = {0};
++	unsigned int rdata_flag = 0;
++	unsigned int bit_index = 0;
++	int i = 0, j = 0, k = 0;
++
++	device_id = pstIrqEvent->dDevId;
++	_sp_i2cm_intflag_check(device_id, pstIrqEvent);
++
++	switch (pstIrqEvent->eRWState) {
++		case I2C_WRITE_STATE:
++			if (pstIrqEvent->stIrqFlag.bActiveDone) {
++				DBG_INFO("I2C write success !!\n");
++				pstIrqEvent->bRet = I2C_SUCCESS;
++				wake_up(&i2cm_event_wait[device_id]);
++			} else if (pstIrqEvent->stIrqFlag.bAddrNack || pstIrqEvent->stIrqFlag.bDataNack) {
++				DBG_ERR("I2C reveive NACK !!\n");
++				pstIrqEvent->bRet = I2C_ERR_RECEIVE_NACK;
++				pstIrqEvent->stIrqFlag.bActiveDone = 1;
++				wake_up(&i2cm_event_wait[device_id]);
++			} else if (pstIrqEvent->stIrqFlag.bSCLHoldTooLong) {
++				DBG_ERR("I2C SCL hold too long !!\n");
++				pstIrqEvent->bRet = I2C_ERR_SCL_HOLD_TOO_LONG;
++				pstIrqEvent->stIrqFlag.bActiveDone = 1;
++				wake_up(&i2cm_event_wait[device_id]);
++			} else if (pstIrqEvent->stIrqFlag.bFiFoEmpty) {
++				DBG_ERR("I2C FIFO empty !!\n");
++				pstIrqEvent->bRet = I2C_ERR_FIFO_EMPTY;
++				pstIrqEvent->stIrqFlag.bActiveDone = 1;
++				wake_up(&i2cm_event_wait[device_id]);
++			} else if (pstIrqEvent->dBurstCount > 0) {
++				if (pstIrqEvent->stIrqFlag.bEmptyThreshold) {
++					for (i = 0; i < I2C_EMPTY_THRESHOLD_VALUE; i++) {
++						for (j = 0; j < 4; j++) {
++							if (pstIrqEvent->dDataIndex >= pstIrqEvent->dDataTotalLen) {
++								w_data[j] = 0;
++							} else {
++								w_data[j] = pstIrqEvent->pDataBuf[pstIrqEvent->dDataIndex];
++							}
++							pstIrqEvent->dDataIndex++;
++						}
++						hal_i2cm_data0_set(device_id, (unsigned int *)w_data);
++						pstIrqEvent->dBurstCount--;
++						
++						if (pstIrqEvent->dBurstCount == 0) {
++							hal_i2cm_int_en0_disable(device_id, (I2C_EN0_EMPTY_THRESHOLD_INT | I2C_EN0_EMPTY_INT));
++							break;
++						}
++					}
++					hal_i2cm_status_clear(device_id, I2C_CTL1_EMPTY_THRESHOLD_CLR);
++				}
++			}
++			break;
++
++		case I2C_READ_STATE:
++			if (pstIrqEvent->stIrqFlag.bAddrNack || pstIrqEvent->stIrqFlag.bDataNack) {
++				DBG_ERR("I2C reveive NACK !!\n");
++				pstIrqEvent->bRet = I2C_ERR_RECEIVE_NACK;
++				pstIrqEvent->stIrqFlag.bActiveDone = 1;
++				wake_up(&i2cm_event_wait[device_id]);
++			} else if (pstIrqEvent->stIrqFlag.bSCLHoldTooLong) {
++				DBG_ERR("I2C SCL hold too long !!\n");
++				pstIrqEvent->bRet = I2C_ERR_SCL_HOLD_TOO_LONG;
++				pstIrqEvent->stIrqFlag.bActiveDone = 1;
++				wake_up(&i2cm_event_wait[device_id]);
++			} else if (pstIrqEvent->stIrqFlag.bRdOverflow) {
++				DBG_ERR("I2C read data overflow !!\n");
++				pstIrqEvent->bRet = I2C_ERR_RDATA_OVERFLOW;
++				pstIrqEvent->stIrqFlag.bActiveDone = 1;
++				wake_up(&i2cm_event_wait[device_id]);
++			} else {
++				if (pstIrqEvent->dBurstCount > 0) {
++					hal_i2cm_rdata_flag_get(device_id, &rdata_flag);
++					for (i = 0; i < (32 / I2C_BURST_RDATA_BYTES); i++) {
++						bit_index = (I2C_BURST_RDATA_BYTES - 1) + (I2C_BURST_RDATA_BYTES * i);
++						if (rdata_flag & (1 << bit_index)) {
++							for (j = 0; j < (I2C_BURST_RDATA_BYTES / 4); j++) {
++								k = pstIrqEvent->dRegDataIndex + j;
++								if (k >= 8) {
++									k -= 8;
++								}
++
++								hal_i2cm_data_get(device_id, k, (unsigned int *)(&pstIrqEvent->pDataBuf[pstIrqEvent->dDataIndex]));
++								pstIrqEvent->dDataIndex += 4;
++							}
++							hal_i2cm_rdata_flag_clear(device_id, (((1 << I2C_BURST_RDATA_BYTES) - 1) << (I2C_BURST_RDATA_BYTES * i)));
++							pstIrqEvent->dRegDataIndex += (I2C_BURST_RDATA_BYTES / 4);
++							if (pstIrqEvent->dRegDataIndex >= 8) {
++								pstIrqEvent->dRegDataIndex -= 8;
++							}
++							pstIrqEvent->dBurstCount --;
++						}
++					}
++				}
++
++				if (pstIrqEvent->stIrqFlag.bActiveDone) {
++					if (pstIrqEvent->dBurstRemainder) {
++						j = 0;
++						for (i = 0; i < (I2C_BURST_RDATA_BYTES / 4); i++) {
++							k = pstIrqEvent->dRegDataIndex + i;
++							if (k >= 8) {
++								k -= 8;
++							}
++
++							hal_i2cm_data_get(device_id, k, (unsigned int *)(&r_data[j]));
++							j += 4;
++						}
++
++						for (i = 0; i < pstIrqEvent->dBurstRemainder; i++) {
++							pstIrqEvent->pDataBuf[pstIrqEvent->dDataIndex + i] = r_data[i];
++						}
++					}
++
++					DBG_INFO("I2C read success !!\n");
++					pstIrqEvent->bRet = I2C_SUCCESS;
++					wake_up(&i2cm_event_wait[device_id]);
++				}
++			}
++			break;
++
++		default:
++			break;
++	}//switch case
++
++	return IRQ_HANDLED;
++}
++
++static void _sp_i2cm_init_irqevent(unsigned int device_id)
++{
++	I2C_Irq_Event_t *pstIrqEvent = NULL;
++
++	FUNC_DEBUG();
++
++	pstIrqEvent = &stIrqEvent[device_id];
++	memset(pstIrqEvent, 0, sizeof(I2C_Irq_Event_t));
++
++	switch(device_id) {
++		case 0:
++			pstIrqEvent->dDevId = 0;
++			break;
++
++		case 1:
++			pstIrqEvent->dDevId = 1;
++			break;
++
++		default:
++			break;
++	}
++}
++
++static int _sp_i2cm_init(unsigned int device_id, SpI2C_If_t *pstSpI2CInfo)
++{
++	Moon_RegBase_t *pstMoonRegBase = &stMoonRegBase;
++
++	FUNC_DEBUG();
++
++	if (device_id >= I2C_MASTER_NUM)
++	{
++		DBG_ERR("I2C device id is not correct !! device_id=%d\n", device_id);
++		return I2C_ERR_INVALID_DEVID;
++	}
++
++	hal_i2cm_pinmux_set(device_id, pstMoonRegBase->moon3_regs);
++	hal_i2cm_enable(device_id, pstMoonRegBase->moon0_regs);
++	hal_i2cm_base_set(device_id, pstSpI2CInfo->i2c_regs);
++	hal_i2cm_reset(device_id);
++
++	_sp_i2cm_init_irqevent(device_id);
++	init_waitqueue_head(&i2cm_event_wait[device_id]);
++
++	return I2C_SUCCESS;
++}
++
++static int _sp_i2cm_get_irq(struct platform_device *pdev, SpI2C_If_t *pstSpI2CInfo)
++{
++	int irq;
++
++	FUNC_DEBUG();
++
++	irq = platform_get_irq(pdev, 0);
++	if (irq < 0) {
++		DBG_ERR("[I2C adapter] get irq number fail, irq = %d\n", irq);
++		return -ENODEV;
++	}
++
++	pstSpI2CInfo->irq = irq;
++	return I2C_SUCCESS;
++}
++
++static int _sp_i2cm_get_register_base(struct platform_device *pdev, unsigned int *membase, const char *res_name)
++{
++	struct resource *r;
++	void __iomem *p;
++
++	FUNC_DEBUG();
++	DBG_INFO("[I2C adapter] register name  : %s!!\n", res_name);
++
++	r = platform_get_resource_byname(pdev, IORESOURCE_MEM, res_name);
++	if(r == NULL) {
++		DBG_INFO("[I2C adapter] platform_get_resource_byname fail\n");
++		return -ENODEV;
++	}
++
++	p = devm_ioremap_resource(&pdev->dev, r);
++	if (IS_ERR(p)) {
++		DBG_ERR("[I2C adapter] ioremap fail\n");
++		return PTR_ERR(p);
++	}
++
++	DBG_INFO("[I2C adapter] ioremap addr : 0x%x!!\n", (unsigned int)p);
++	*membase = (unsigned int)p;
++
++	return I2C_SUCCESS;
++}
++
++static int _sp_i2cm_get_moon_resources(struct platform_device *pdev, Moon_RegBase_t *pstMoonRegBase)
++{
++	int ret;
++	unsigned int membase = 0;
++
++	FUNC_DEBUG();
++
++	ret = _sp_i2cm_get_register_base(pdev, &membase, MOON0_REG_NAME);
++	if (ret) {
++		DBG_ERR("[I2C adapter] %s (%d) ret = %d\n", __FUNCTION__, __LINE__, ret);
++		return ret;
++	} else {
++		pstMoonRegBase->moon0_regs = (void __iomem *)membase;
++	}
++
++	ret = _sp_i2cm_get_register_base(pdev, &membase, MOON3_REG_NAME);
++	if (ret) {
++		DBG_ERR("[I2C adapter] %s (%d) ret = %d\n", __FUNCTION__, __LINE__, ret);
++		return ret;
++	} else {
++		pstMoonRegBase->moon3_regs = (void __iomem *)membase;
++	}
++
++	return I2C_SUCCESS;
++}
++
++static int _sp_i2cm_get_resources(struct platform_device *pdev, SpI2C_If_t *pstSpI2CInfo)
++{
++	int ret;
++	unsigned int membase = 0;
++
++	FUNC_DEBUG();
++
++	ret = _sp_i2cm_get_register_base(pdev, &membase, I2CM_REG_NAME);
++	if (ret) {
++		DBG_ERR("[I2C adapter] %s (%d) ret = %d\n", __FUNCTION__, __LINE__, ret);
++		return ret;
++	}
++	else {
++		pstSpI2CInfo->i2c_regs = (void __iomem *)membase;
++	}
++
++	ret = _sp_i2cm_get_irq(pdev, pstSpI2CInfo);
++	if (ret) {
++		DBG_ERR("[I2C adapter] %s (%d) ret = %d\n", __FUNCTION__, __LINE__, ret);
++		return ret;
++	}
++
++	return I2C_SUCCESS;
++}
++
++int sp_i2cm_read(I2C_Cmd_t *pstCmdInfo)
++{
++	I2C_Irq_Event_t *pstIrqEvent = NULL;
++	unsigned char w_data[32] = {0};
++	unsigned int read_cnt = 0;
++	unsigned int write_cnt = 0;
++	unsigned int burst_cnt = 0, burst_r = 0;
++	unsigned int int0 = 0, int1 = 0, int2 = 0;
++	int ret = I2C_SUCCESS;
++	int i = 0;
++
++	FUNC_DEBUG();
++
++	if (pstCmdInfo->dDevId < I2C_MASTER_NUM) {
++		pstIrqEvent = &stIrqEvent[pstCmdInfo->dDevId];
++	} else {
++		return I2C_ERR_INVALID_DEVID;
++	}
++
++	if (pstIrqEvent->bI2CBusy) {
++		DBG_ERR("I2C is busy !!\n");
++		return I2C_ERR_I2C_BUSY;
++	}
++	_sp_i2cm_init_irqevent(pstCmdInfo->dDevId);
++	pstIrqEvent->bI2CBusy = 1;
++
++	write_cnt = pstCmdInfo->dWrDataCnt;
++	read_cnt = pstCmdInfo->dRdDataCnt;
++
++	if (pstCmdInfo->dRestartEn)
++	{
++		if ((write_cnt > 32) || (write_cnt == 0)) {
++			pstIrqEvent->bI2CBusy = 0;
++			DBG_ERR("I2C write count is invalid !! write count=%d\n", write_cnt);
++			return I2C_ERR_INVALID_CNT;
++		}
++	}
++
++	if ((read_cnt > 0xFFFF)  || (read_cnt == 0)) {
++		pstIrqEvent->bI2CBusy = 0;
++		DBG_ERR("I2C read count is invalid !! read count=%d\n", read_cnt);
++		return I2C_ERR_INVALID_CNT;
++	}
++
++	burst_cnt = read_cnt / I2C_BURST_RDATA_BYTES;
++	burst_r = read_cnt % I2C_BURST_RDATA_BYTES;
++	DBG_INFO("write_cnt = %d, read_cnt = %d, burst_cnt = %d, burst_r = %d\n",
++			write_cnt, read_cnt, burst_cnt, burst_r);
++
++	int0 = (I2C_EN0_SCL_HOLD_TOO_LONG_INT | I2C_EN0_EMPTY_INT | I2C_EN0_DATA_NACK_INT
++			| I2C_EN0_ADDRESS_NACK_INT | I2C_EN0_DONE_INT );
++	if (burst_cnt) {
++		int1 = I2C_BURST_RDATA_FLAG;
++		int2 = I2C_BURST_RDATA_ALL_FLAG;
++	}
++
++	pstIrqEvent->eRWState = I2C_READ_STATE;
++	pstIrqEvent->dBurstCount = burst_cnt;
++	pstIrqEvent->dBurstRemainder = burst_r;
++	pstIrqEvent->dDataIndex = 0;
++	pstIrqEvent->dRegDataIndex = 0;
++	pstIrqEvent->dDataTotalLen = read_cnt;
++	pstIrqEvent->pDataBuf = pstCmdInfo->pRdData;
++
++	hal_i2cm_reset(pstCmdInfo->dDevId);
++	hal_i2cm_clock_freq_set(pstCmdInfo->dDevId, pstCmdInfo->dFreq);
++	hal_i2cm_slave_addr_set(pstCmdInfo->dDevId, pstCmdInfo->dSlaveAddr);
++	hal_i2cm_scl_delay_set(pstCmdInfo->dDevId, I2C_SCL_DELAY);
++	hal_i2cm_trans_cnt_set(pstCmdInfo->dDevId, write_cnt, read_cnt);
++	hal_i2cm_active_mode_set(pstCmdInfo->dDevId, I2C_TRIGGER);
++
++	if (pstCmdInfo->dRestartEn) {
++		DBG_INFO("I2C_RESTART_MODE\n");
++		for (i = 0; i < write_cnt; i++) {
++			w_data[i] = pstCmdInfo->pWrData[i];
++		}
++		hal_i2cm_data_set(pstCmdInfo->dDevId, (unsigned int *)w_data);
++		hal_i2cm_rw_mode_set(pstCmdInfo->dDevId, I2C_RESTART_MODE);
++	} else {
++		DBG_INFO("I2C_READ_MODE\n");
++		hal_i2cm_rw_mode_set(pstCmdInfo->dDevId, I2C_READ_MODE);
++	}
++
++	hal_i2cm_int_en0_set(pstCmdInfo->dDevId, int0);
++	hal_i2cm_int_en1_set(pstCmdInfo->dDevId, int1);
++	hal_i2cm_int_en2_set(pstCmdInfo->dDevId, int2);
++	hal_i2cm_manual_trigger(pstCmdInfo->dDevId);	//start send data
++
++	ret = wait_event_timeout(i2cm_event_wait[pstCmdInfo->dDevId], pstIrqEvent->stIrqFlag.bActiveDone, (I2C_SLEEP_TIMEOUT * HZ) / 1000);
++	if (ret == 0) {
++		DBG_ERR("I2C read timeout !!\n");
++		ret = I2C_ERR_TIMEOUT_OUT;
++	} else {
++		ret = pstIrqEvent->bRet;
++	}
++
++	pstIrqEvent->eRWState = I2C_IDLE_STATE;
++	pstIrqEvent->bI2CBusy = 0;
++
++	return ret;
++}
++
++int sp_i2cm_write(I2C_Cmd_t *pstCmdInfo)
++{
++	I2C_Irq_Event_t *pstIrqEvent = NULL;
++	unsigned char w_data[32] = {0};
++	unsigned int write_cnt = 0;
++	unsigned int burst_cnt = 0;
++	unsigned int int0 = 0;
++	int ret = I2C_SUCCESS;
++	int i = 0;
++
++	FUNC_DEBUG();
++
++	if (pstCmdInfo->dDevId < I2C_MASTER_NUM) {
++		pstIrqEvent = &stIrqEvent[pstCmdInfo->dDevId];
++	} else {
++		return I2C_ERR_INVALID_DEVID;
++	}
++
++	if (pstIrqEvent->bI2CBusy) {
++		DBG_ERR("I2C is busy !!\n");
++		return I2C_ERR_I2C_BUSY;
++	}
++	_sp_i2cm_init_irqevent(pstCmdInfo->dDevId);
++	pstIrqEvent->bI2CBusy = 1;
++
++	write_cnt = pstCmdInfo->dWrDataCnt;
++
++	if ((write_cnt > 0xFFFF) || (write_cnt == 0)) {
++		pstIrqEvent->bI2CBusy = 0;
++		DBG_ERR("I2C write count is invalid !! write count=%d\n", write_cnt);
++		return I2C_ERR_INVALID_CNT;
++	}
++
++	if (write_cnt > 32) {
++		burst_cnt = (write_cnt - 32) / 4;
++		if ((write_cnt - 32) % 4) {
++			burst_cnt += 1;
++		}
++
++		for (i = 0; i < 32; i++) {
++			w_data[i] = pstCmdInfo->pWrData[i];
++		}
++	} else {
++		for(i = 0; i < write_cnt; i++){
++			w_data[i] = pstCmdInfo->pWrData[i];
++		}
++	}
++	DBG_INFO("write_cnt = %d, burst_cnt = %d\n", write_cnt, burst_cnt);
++
++	int0 = (I2C_EN0_SCL_HOLD_TOO_LONG_INT | I2C_EN0_EMPTY_INT | I2C_EN0_DATA_NACK_INT
++			| I2C_EN0_ADDRESS_NACK_INT | I2C_EN0_DONE_INT );
++
++	if (burst_cnt)
++		int0 |= I2C_EN0_EMPTY_THRESHOLD_INT;
++
++	pstIrqEvent->eRWState = I2C_WRITE_STATE;
++	pstIrqEvent->dBurstCount = burst_cnt;
++	pstIrqEvent->dDataIndex = i;
++	pstIrqEvent->dDataTotalLen = write_cnt;
++	pstIrqEvent->pDataBuf = pstCmdInfo->pWrData;
++
++	hal_i2cm_reset(pstCmdInfo->dDevId);
++	hal_i2cm_clock_freq_set(pstCmdInfo->dDevId, pstCmdInfo->dFreq);
++	hal_i2cm_slave_addr_set(pstCmdInfo->dDevId, pstCmdInfo->dSlaveAddr);
++	hal_i2cm_scl_delay_set(pstCmdInfo->dDevId, I2C_SCL_DELAY);
++	hal_i2cm_trans_cnt_set(pstCmdInfo->dDevId, write_cnt, 0);
++	hal_i2cm_active_mode_set(pstCmdInfo->dDevId, I2C_TRIGGER);
++	hal_i2cm_rw_mode_set(pstCmdInfo->dDevId, I2C_WRITE_MODE);
++	hal_i2cm_data_set(pstCmdInfo->dDevId, (unsigned int *)w_data);
++
++	if (burst_cnt)
++		hal_i2cm_int_en0_with_thershold_set(pstCmdInfo->dDevId, int0, I2C_EMPTY_THRESHOLD_VALUE);
++	else
++	hal_i2cm_int_en0_set(pstCmdInfo->dDevId, int0);
++
++	hal_i2cm_manual_trigger(pstCmdInfo->dDevId);	//start send data
++
++	ret = wait_event_timeout(i2cm_event_wait[pstCmdInfo->dDevId], pstIrqEvent->stIrqFlag.bActiveDone, (I2C_SLEEP_TIMEOUT * HZ) / 20);
++	if (ret == 0) {
++		DBG_ERR("I2C write timeout !!\n");
++		ret = I2C_ERR_TIMEOUT_OUT;
++	} else {
++		ret = pstIrqEvent->bRet;
++	}
++
++	pstIrqEvent->eRWState = I2C_IDLE_STATE;
++	pstIrqEvent->bI2CBusy = 0;
++
++	return ret;
++}
++
++static int sp_master_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
++{
++	SpI2C_If_t *pstSpI2CInfo = (SpI2C_If_t *)adap->algo_data;
++	I2C_Cmd_t *pstCmdInfo = &(pstSpI2CInfo->stCmdInfo);
++	int ret = I2C_SUCCESS;
++	int i = 0;
++
++	FUNC_DEBUG();
++
++	if (num == 0) {
++		return -EINVAL;
++	}
++
++	memset(pstCmdInfo, 0, sizeof(I2C_Cmd_t));
++	pstCmdInfo->dDevId = adap->nr;
++	pstCmdInfo->dFreq = I2C_FREQ;
++
++	for (i = 0; i < num; i++) {
++		if(msgs[i].flags & I2C_M_TEN)
++			return -EINVAL;
++
++		pstCmdInfo->dSlaveAddr = msgs[i].addr;
++
++		if(msgs[i].flags & I2C_M_NOSTART){
++			pstCmdInfo->dWrDataCnt = msgs[i].len;
++			pstCmdInfo->pWrData = msgs[i].buf;
++			pstCmdInfo->dRestartEn = 1;
++			continue;
++		}
++
++		if ( msgs[i].flags & I2C_M_RD) {
++			pstCmdInfo->dRdDataCnt = msgs[i].len;
++			pstCmdInfo->pRdData = msgs[i].buf;
++			ret = sp_i2cm_read(pstCmdInfo);
++		} else {
++			pstCmdInfo->dWrDataCnt = msgs[i].len;
++			pstCmdInfo->pWrData = msgs[i].buf;
++			ret = sp_i2cm_write(pstCmdInfo);
++		}
++
++		if (ret != I2C_SUCCESS) {
++			return -EIO;
++		}
++	}
++
++	return num;
++}
++
++static u32 sp_functionality(struct i2c_adapter *adap)
++{
++	return I2C_FUNC_I2C | I2C_FUNC_SMBUS_EMUL;
++}
++
++static struct i2c_algorithm sp_algorithm = {
++	.master_xfer	= sp_master_xfer,
++	.functionality	= sp_functionality,
++};
++
++static int sp_i2c_probe(struct platform_device *pdev)
++{
++	Moon_RegBase_t *pstMoonRegBase = &stMoonRegBase;
++	SpI2C_If_t *pstSpI2CInfo = NULL;
++	I2C_Irq_Event_t *pstIrqEvent = NULL;
++	struct i2c_adapter *p_adap;
++	int device_id = 0;
++	int ret = I2C_SUCCESS;
++
++	FUNC_DEBUG();
++
++	if (pdev->dev.of_node) {
++		pdev->id = of_alias_get_id(pdev->dev.of_node, "i2c");
++		DBG_INFO("[I2C adapter] pdev->id=%d\n", pdev->id);
++		device_id = pdev->id;
++	}
++
++	if(pdev->id == 0) {
++		ret = _sp_i2cm_get_moon_resources(pdev, pstMoonRegBase);
++		if (ret) {
++			DBG_ERR("[I2C adapter] get moon resources fail !\n");
++			return ret;
++		}
++	}
++
++	pstSpI2CInfo = &stSpI2CInfo[device_id];
++	memset(pstSpI2CInfo, 0, sizeof(SpI2C_If_t));
++
++	ret = _sp_i2cm_get_resources(pdev, pstSpI2CInfo);
++	if (ret != I2C_SUCCESS) {
++		DBG_ERR("[I2C adapter] get resources fail !\n");
++		return ret;
++	}
++
++	ret = _sp_i2cm_init(device_id, pstSpI2CInfo);
++	if (ret != 0) {
++		DBG_ERR("[I2C adapter] i2c master %d init error\n", device_id);
++		return ret;
++	}
++
++	p_adap = &pstSpI2CInfo->adap;
++	sprintf(p_adap->name, "%s%d", DEVICE_NAME, device_id);
++	p_adap->algo = &sp_algorithm;
++	p_adap->algo_data = pstSpI2CInfo;
++	p_adap->nr = device_id;
++	p_adap->class = 0;
++	p_adap->retries = 5;
++	p_adap->dev.parent = &pdev->dev;
++
++	ret = i2c_add_numbered_adapter(p_adap);
++	if (ret < 0) {
++		DBG_ERR("[I2C adapter] error add adapter %s\n", p_adap->name);
++	} else {
++		DBG_INFO("[I2C adapter] add adapter %s success\n", p_adap->name);
++		platform_set_drvdata(pdev, pstSpI2CInfo);
++	}
++
++	pstIrqEvent = &stIrqEvent[device_id];
++	ret = request_irq(pstSpI2CInfo->irq, _sp_i2cm_irqevent_handler, IRQF_TRIGGER_HIGH, p_adap->name, pstIrqEvent);
++	if (ret) {
++		DBG_ERR("request irq fail !!\n");
++		return I2C_ERR_REQUESET_IRQ;
++	}
++
++	return ret;
++}
++
++static int sp_i2c_remove(struct platform_device *pdev)
++{
++	Moon_RegBase_t *pstMoonRegBase = &stMoonRegBase;
++	SpI2C_If_t *pstSpI2CInfo = platform_get_drvdata(pdev);
++	struct i2c_adapter *p_adap = &pstSpI2CInfo->adap;
++
++	FUNC_DEBUG();
++
++	i2c_del_adapter(p_adap);
++	if (p_adap->nr < I2C_MASTER_NUM) {
++		hal_i2cm_disable(p_adap->nr, pstMoonRegBase->moon0_regs);
++		free_irq(pstSpI2CInfo->irq, NULL);
++	}
++
++	return 0;
++}
++
++static int sp_i2c_suspend(struct platform_device *pdev, pm_message_t state)
++{
++	Moon_RegBase_t *pstMoonRegBase = &stMoonRegBase;
++	SpI2C_If_t *pstSpI2CInfo = platform_get_drvdata(pdev);
++	struct i2c_adapter *p_adap = &pstSpI2CInfo->adap;
++
++	FUNC_DEBUG();
++
++	if (p_adap->nr < I2C_MASTER_NUM) {
++		hal_i2cm_disable(p_adap->nr, pstMoonRegBase->moon0_regs);
++	}
++
++	return 0;
++}
++
++static int sp_i2c_resume(struct platform_device *pdev)
++{
++	Moon_RegBase_t *pstMoonRegBase = &stMoonRegBase;
++	SpI2C_If_t *pstSpI2CInfo = platform_get_drvdata(pdev);
++	struct i2c_adapter *p_adap = &pstSpI2CInfo->adap;
++
++	FUNC_DEBUG();
++
++	if (p_adap->nr < I2C_MASTER_NUM) {
++		hal_i2cm_enable(p_adap->nr, pstMoonRegBase->moon0_regs);
++	}
++
++	return 0;
++}
++
++static const struct of_device_id sp_i2c_of_match[] = {
++	{ .compatible = "sunplus,sp_i2cm" },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, sp_i2c_of_match);
++
++static struct platform_driver sp_i2c_driver = {
++	.probe		= sp_i2c_probe,
++	.remove		= sp_i2c_remove,
++	.suspend	= sp_i2c_suspend,
++	.resume		= sp_i2c_resume,
++	.driver		= {
++		.owner		= THIS_MODULE,
++		.name		= DEVICE_NAME,
++		.of_match_table = sp_i2c_of_match,
++	},
++};
++
++static int __init sp_i2c_adap_init(void)
++{
++	return platform_driver_register(&sp_i2c_driver);
++}
++module_init(sp_i2c_adap_init);
++
++static void __exit sp_i2c_adap_exit(void)
++{
++	platform_driver_unregister(&sp_i2c_driver);
++}
++module_exit(sp_i2c_adap_exit);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Sunplus Technology");
++MODULE_DESCRIPTION("Sunplus I2C Master Driver");
+--- a/drivers/i2c/busses/ti_serdes_i2c/Makefile	1970-01-01 03:00:00.000000000 +0300
++++ a/drivers/i2c/busses/ti_serdes_i2c/Makefile	2018-11-12 06:42:53.000000000 +0300
+@@ -0,0 +1,5 @@
++obj-y += sp_ti_serdes.o
++obj-y += tiserdes_setting.o
++
++clean:
++	rm -rf *.o *~ core .depend .*.cmd *.ko *.mod.c .tmp_versions
+--- a/drivers/i2c/busses/ti_serdes_i2c/sp_ti_serdes.c	1970-01-01 03:00:00.000000000 +0300
++++ a/drivers/i2c/busses/ti_serdes_i2c/sp_ti_serdes.c	2018-11-12 06:42:53.000000000 +0300
+@@ -0,0 +1,845 @@
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/types.h>
++#include <linux/cdev.h>
++#include <linux/fs.h>
++#include <linux/device.h>
++//#include <asm/uaccess.h>
++#include <linux/uaccess.h>
++#include <linux/delay.h>
++#include <linux/time.h>
++#include <asm/types.h>
++#include <linux/i2c.h>
++#include <linux/platform_device.h>
++
++//#include "tiserdes_setting.h"
++extern void tw8809_720p_init(void);
++extern void TW8824_720p_init(void);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("weiwuliu");
++MODULE_DESCRIPTION("TISERDES Serdes driver");
++
++
++
++#define DEVNUM_COUNT        1
++#define DEVNUM_NAME         ("tiserdes")
++#define DEVNUM_MINOR_START  0
++
++
++typedef enum
++{
++	NOT_USE0,                        //0x00
++	NOT_USE1,                        //0x01
++	NOT_USE2,                        //0x02
++	NOT_USE3,                        //0x03
++
++	NOT_USE4,                        //0x03
++	NOT_USE5,                        //0x03
++	NOT_USE6,                        //0x03
++	NOT_USE7,                        //0x03
++
++	TI914_READ_BYTE,                 //0x04
++	TI914_WRITE_BYTE,                //0x05
++	TI914_READ_BYTE_SMBUS,           //0x06
++	TI914_WRITE_BYTE_SMBUS,          //0x07
++	TI913_READ_BYTE,                 //0x08
++	TI913_WRITE_BYTE,                //0x09
++	TI913_READ_BYTE_SMBUS,           //0x0a
++	TI913_WRITE_BYTE_SMBUS,          //0x0b
++	TW8824_READ_BYTE,                //0x0c
++	TW8824_WRITE_BYTE,               //0x0d
++	TI9546A_READ_BYTE,               //0x0e
++	TI9546A_WRITE_BYTE,              //0x0f
++	APTINA_AP0100_READ,              //0x10
++	APTINA_AP0100_WRITE,             //0x11
++	APTINA_AP0100_READ_BYTE,         //0x12
++	APTINA_AP0100_WRITE_BYTE,        //0x13
++	APTINA_AP0100_READ_BYTE_SMBUS,   //0x14
++	APTINA_AP0100_WRITE_BYTE_SMBUS,  //0x15
++	I2C_CMD_COUNT,                   //0x16
++}i2c_cmd_mode_t;
++
++
++#define CAM1_CS_GPIO_NUM    188
++#define CAM2_CS_GPIO_NUM    152
++#define CAM3_CS_GPIO_NUM    186
++#define CAM4_CS_GPIO_NUM    176
++
++
++// I2C Address (7 bit)
++#define I2C_TW8824_ID           0x44
++#define I2C_TW8809_ID           0x45
++#define I2C_APTINA_AP0100_ID    0x48
++#define I2C_TCA9546A_ID         0x70
++#define I2C_TI914_ID            0x60
++#define I2C_TI913_ID            0x58
++
++
++//#define dbg_printk if(0) printk
++#define dbg_printk printk
++
++static dev_t tiserdes_dev_num = 0;
++static struct cdev dev_cdev;
++static struct class* dev_class = NULL;
++
++
++struct i2c_board_info i2cInfo;
++struct i2c_adapter *i2cAdapter = NULL;
++struct i2c_client *i2cClient44 = NULL;  // INTERSIL_TW8824
++struct i2c_client *i2cClient48 = NULL;  // APTINA_AP0100
++struct i2c_client *i2cClient45 = NULL;  // INTERSIL_TW8809
++struct i2c_client *i2cClient58 = NULL;  // TI_913
++struct i2c_client *i2cClient59 = NULL;  // TI_913
++struct i2c_client *i2cClient60 = NULL;  // TI_914
++struct i2c_client *i2cClient70 = NULL;  // TI_TCA9546A
++
++
++#define iic_write(client, command, value) \
++	i2c_smbus_write_byte_data(client, command, value)
++
++#define iic_read(client, command) \
++	i2c_smbus_read_byte_data(client, command)
++
++
++typedef enum
++{
++	CAMALL,
++	CAM1,
++	CAM2,
++	CAM3,
++	CAM4,
++}camera_ch_t;
++
++
++typedef struct _ioctl_data_t
++{
++	unsigned char data[2];
++	unsigned char addr[2];
++}ioctl_data_t;
++
++static int __init init_i2c(void)
++{
++
++	memset(&i2cInfo, 0, sizeof(struct i2c_board_info));
++	strlcpy(i2cInfo.type, "tiserdes", I2C_NAME_SIZE);
++
++	i2cAdapter = i2c_get_adapter(0);
++	if( i2cAdapter == NULL ) {
++		printk(KERN_ERR "[%s:%d] i2c_get_adpter failed!\n", __FUNCTION__, __LINE__);
++		return -1;
++	}
++
++	i2cInfo.addr = I2C_TCA9546A_ID;
++	i2cClient70 = i2c_new_device(i2cAdapter, &i2cInfo);
++	if( i2cClient70 == NULL ) {
++		printk(KERN_ERR "[%s:%d] i2c_new_device #28 failed!\n", __FUNCTION__, __LINE__);
++		i2c_del_adapter(i2cAdapter);
++		i2cAdapter = NULL;
++		return -3;
++	}
++
++	i2cInfo.addr = I2C_TI914_ID;
++	i2cClient60 = i2c_new_device(i2cAdapter, &i2cInfo);
++	if( i2cClient60 == NULL ) {
++		printk(KERN_ERR "[%s:%d] i2c_new_device #28 failed!\n", __FUNCTION__, __LINE__);
++		i2c_del_adapter(i2cAdapter);
++		i2cAdapter = NULL;
++		return -3;
++	}
++
++	i2cInfo.addr = I2C_TI913_ID;
++	i2cClient58 = i2c_new_device(i2cAdapter, &i2cInfo);
++	if( i2cClient58 == NULL ) {
++		printk(KERN_ERR "[%s:%d] i2c_new_device #28 failed!\n", __FUNCTION__, __LINE__);
++		i2c_del_adapter(i2cAdapter);
++		i2cAdapter = NULL;
++		return -3;
++	}
++
++	i2cInfo.addr = I2C_APTINA_AP0100_ID;
++	i2cClient48 = i2c_new_device(i2cAdapter, &i2cInfo);
++	if( i2cClient48 == NULL ) {
++		printk(KERN_ERR "[%s:%d] i2c_new_device #28 failed!\n", __FUNCTION__, __LINE__);
++		i2c_del_adapter(i2cAdapter);
++		i2cAdapter = NULL;
++		return -3;
++	}
++
++	i2cInfo.addr = I2C_TW8809_ID;
++	i2cClient45 = i2c_new_device(i2cAdapter, &i2cInfo);
++	if( i2cClient45 == NULL ) {
++		printk(KERN_ERR "[%s:%d] i2c_new_device #28 failed!\n", __FUNCTION__, __LINE__);
++		i2c_del_adapter(i2cAdapter);
++		i2cAdapter = NULL;
++		return -3;
++	}
++
++	i2cInfo.addr = I2C_TW8824_ID;
++	i2cClient44 = i2c_new_device(i2cAdapter, &i2cInfo);
++	if( i2cClient44 == NULL ) {
++		printk(KERN_ERR "[%s:%d] i2c_new_device #28 failed!\n", __FUNCTION__, __LINE__);
++		i2c_del_adapter(i2cAdapter);
++		i2cAdapter = NULL;
++		return -3;
++	}
++
++	printk("[%s:%d] Initial i2c success!\n", __FUNCTION__, __LINE__);
++
++	return 0;
++}
++
++
++static int i2c_read_byte_data(const struct i2c_client *client, u8 addr, u8* data)
++{
++	struct i2c_msg msg;
++
++	msg.addr = client->addr;
++
++	// write
++	//msg.flags = I2C_M_NOSTART;
++	msg.flags = 0;
++	msg.len = 1;
++	msg.buf = &addr;
++	i2c_transfer(client->adapter, &msg, 1);
++
++	// read 
++	//msg.flags |= I2C_M_RD;
++	msg.flags = I2C_M_RD;
++	msg.len = 1;
++	msg.buf = data;
++	i2c_transfer(client->adapter, &msg, 1);
++
++	return 0;
++}
++
++
++/*
++* clock : I2C clock , unit = kHZ, 
++	max 511kHZ, min 13.5kHZ(1~13)
++	if clock=0, default clock will be used
++*/
++static int i2c_read_byte_data_clock(const struct i2c_client *client, u8 addr, u8* data, u16 clock)
++{
++	struct i2c_msg msg;
++
++	if(clock > 511)
++		clock = 511;
++	clock = (clock >>1) & 0xff;
++	msg.addr = (clock<<8)|(client->addr);
++	printk("\nmsg.addr = 0x%04x \n", msg.addr);
++
++	// write
++	//msg.flags = I2C_M_NOSTART;
++	msg.flags = 0;
++	msg.len = 1;
++	msg.buf = &addr;
++	i2c_transfer(client->adapter, &msg, 1);
++
++	// read 
++	//msg.flags |= I2C_M_RD;
++	msg.flags = I2C_M_RD;
++	msg.len = 1;
++	msg.buf = data;
++	i2c_transfer(client->adapter, &msg, 1);
++
++	return 0;
++}
++
++
++static int i2c_write_byte_data(const struct i2c_client *client, u8 addr, u8 data)
++{
++	struct i2c_msg msg;
++	u8 buf[2] = {addr, data};
++
++	msg.addr = client->addr;
++	msg.flags = 0;
++	msg.len = 2;
++	msg.buf = buf;
++	i2c_transfer(client->adapter, &msg, 1);
++
++	return 0;
++}
++
++
++static int i2c_write_byte_data_clock(const struct i2c_client *client, u8 addr, u8 data, u16 clock)
++{
++	struct i2c_msg msg;
++	u8 buf[2] = {addr, data};
++
++	if(clock > 511)
++		clock = 511;
++	clock = (clock >>1) & 0xff;
++	msg.addr = (clock<<8)|(client->addr);
++	printk("\nmsg.addr = 0x%04x \n", msg.addr);
++
++	msg.flags = 0;
++	msg.len = 2;
++	msg.buf = buf;
++	i2c_transfer(client->adapter, &msg, 1);
++
++	return 0;
++}
++
++static int aptina_ap0100_read(const struct i2c_client *client, u8* addr, u8* data)
++{
++	struct i2c_msg msg;
++
++	msg.addr = client->addr;
++
++	// write
++	msg.flags = 0;
++	//msg.flags = 0|I2C_M_NOSTART;	//for test restart mode
++	msg.len = 2;
++	msg.buf = addr;
++	i2c_transfer(client->adapter, &msg, 1);
++
++	// read
++	//msg.flags |= I2C_M_RD;
++	msg.flags = I2C_M_RD;
++	msg.len = 2;
++	msg.buf = data;
++	i2c_transfer(client->adapter, &msg, 1);
++
++	return 0;
++}
++
++static int aptina_ap0100_read_clock(const struct i2c_client *client, u8* addr, u8* data, u16 clock)
++{
++	struct i2c_msg msg;
++
++	if(clock > 511)
++		clock = 511;
++	clock = (clock >>1) & 0xff;
++	msg.addr = (clock<<8)|(client->addr);
++	printk("\nmsg.addr = 0x%04x \n", msg.addr);
++
++	// write
++	msg.flags = 0;
++	//msg.flags = 0|I2C_M_NOSTART;  //for test restart mode
++	msg.len = 2;
++	msg.buf = addr;
++	i2c_transfer(client->adapter, &msg, 1);
++
++	// read 
++	//msg.flags |= I2C_M_RD;
++	msg.flags = I2C_M_RD;
++	msg.len = 2;
++	msg.buf = data;
++	i2c_transfer(client->adapter, &msg, 1);
++
++	return 0;
++} 
++
++
++static int aptina_ap0100_read_byte(const struct i2c_client *client, u8* addr, u8* data)
++{
++	struct i2c_msg msg;
++
++	msg.addr = client->addr;
++
++	// write
++	msg.flags = 0;
++	//msg.flags = 0|I2C_M_NOSTART;  //for test restart mode
++	msg.len = 2;
++	msg.buf = addr;
++	i2c_transfer(client->adapter, &msg, 1);
++
++	// read
++	//msg.flags |= I2C_M_RD;
++	msg.flags = I2C_M_RD;
++	msg.len = 1;
++	msg.buf = data;
++	i2c_transfer(client->adapter, &msg, 1);
++
++	return 0;
++}
++
++static int aptina_ap0100_read_byte_clock(const struct i2c_client *client, u8* addr, u8* data, u16 clock)
++{
++	struct i2c_msg msg;
++
++	if(clock > 511)
++		clock = 511;
++	clock = (clock >>1) & 0xff;
++	msg.addr = (clock<<8)|(client->addr);
++	printk("\nmsg.addr = 0x%04x \n", msg.addr);
++
++	// write
++	msg.flags = 0;
++	//msg.flags = 0|I2C_M_NOSTART;  //for test restart mode
++	msg.len = 2;
++	msg.buf = addr;
++	i2c_transfer(client->adapter, &msg, 1);
++
++	// read
++	//msg.flags |= I2C_M_RD;
++	msg.flags = I2C_M_RD;
++	msg.len = 1;
++	msg.buf = data;
++	i2c_transfer(client->adapter, &msg, 1);
++
++	return 0;
++}
++
++static int aptina_ap0100_write(const struct i2c_client *client, u8* addr, u8* data)
++{
++	struct i2c_msg msg;
++	u8 buf[4] = {addr[0], addr[1], data[0], data[1]};
++
++	msg.addr = client->addr;
++
++	// write
++	msg.flags = 0;
++	msg.len = 4;
++	msg.buf = buf;
++	i2c_transfer(client->adapter, &msg, 1);
++
++	return 0;
++}
++
++static int aptina_ap0100_write_clock(const struct i2c_client *client, u8* addr, u8* data, u16 clock)
++{
++	struct i2c_msg msg;
++	u8 buf[4] = {addr[0], addr[1], data[0], data[1]};
++
++	if(clock > 511)
++		clock = 511;
++	clock = (clock >>1) & 0xff;
++	msg.addr = (clock<<8)|(client->addr);
++	printk("\nmsg.addr = 0x%04x \n", msg.addr);
++
++	// write
++	msg.flags = 0;
++	msg.len = 4;
++	msg.buf = buf;
++	i2c_transfer(client->adapter, &msg, 1);
++
++	return 0;
++}
++
++static int aptina_ap0100_write_byte(const struct i2c_client *client, u8* addr, u8* data)
++{
++	struct i2c_msg msg;
++	u8 buf[4] = {addr[0], addr[1], data[0], data[1]};
++
++	msg.addr = client->addr;
++
++	// write
++	msg.flags = 0;
++	msg.len = 3;
++	msg.buf = buf;
++	i2c_transfer(client->adapter, &msg, 1);
++
++	return 0;
++}
++
++static int aptina_ap0100_write_byte_clock(const struct i2c_client *client, u8* addr, u8* data, u16 clock)
++{
++	struct i2c_msg msg;
++	u8 buf[4] = {addr[0], addr[1], data[0], data[1]};
++
++	if(clock > 511)
++		clock = 511;
++	clock = (clock >>1) & 0xff;
++	msg.addr = (clock<<8)|(client->addr);
++	printk("\nmsg.addr = 0x%04x \n", msg.addr);
++
++	// write
++	msg.flags = 0;
++	msg.len = 3;
++	msg.buf = buf;
++	i2c_transfer(client->adapter, &msg, 1);
++
++	return 0;
++}
++
++static void camera_i2c_channel_sel(camera_ch_t channel)
++{
++	switch(channel) {
++		case CAM1:
++			i2c_smbus_write_byte(i2cClient70, 0x01);
++			break;
++
++		case CAM2:
++			i2c_smbus_write_byte(i2cClient70, 0x01<<1);
++			break;
++
++		case CAM3:
++			i2c_smbus_write_byte(i2cClient70, 0x01<<2);
++			break;
++
++		case CAM4:
++			i2c_smbus_write_byte(i2cClient70, 0x01<<3);
++			break;
++
++		default:
++			//dbg_printk("[%s] Invalid Camera Channel\n", __FUNCTION__);
++			printk("[%s] Invalid Camera Channel, camera channel = %d\n", __FUNCTION__, channel);
++			break;
++	}
++}
++
++static void init_ti914(void)
++{
++	camera_ch_t current_cam_ch;	
++	for(current_cam_ch = CAM1; current_cam_ch <= CAM4; current_cam_ch++){
++		camera_i2c_channel_sel(current_cam_ch);
++		i2c_smbus_write_byte_data(i2cClient60, 0x07, 0xb0);  // SER Alias
++		//i2c_smbus_write_byte_data(i2cClient60, 0x03, 0x0d);
++		//i2c_smbus_write_byte_data(i2cClient60, 0x21, 0x85);
++		//i2c_smbus_write_byte_data(i2cClient60, 0x07, 0xb0);
++		i2c_smbus_write_byte_data(i2cClient60, 0x08, 0x90);  // Slave ID
++		i2c_smbus_write_byte_data(i2cClient60, 0x10, 0x90);  // Slave Alias
++
++		i2c_smbus_write_byte_data(i2cClient60, 0x40, 0x0c);  // SCL high time 0.6us
++		i2c_smbus_write_byte_data(i2cClient60, 0x41, 0x1a);  // SCL low time 1.3us
++	}
++}
++
++static void init_ti913(void)
++{
++	camera_ch_t current_cam_ch;	
++	for(current_cam_ch = CAM1; current_cam_ch <= CAM4; current_cam_ch++){
++		camera_i2c_channel_sel(current_cam_ch);
++		i2c_smbus_write_byte_data(i2cClient58, 0x11, 0x0c);  // SCL high time 0.6us
++		i2c_smbus_write_byte_data(i2cClient58, 0x12, 0x1a);  // SCL low time 1.3us
++	}
++}
++
++/*
++static void init_tw8809(void)
++{
++	camera_ch_t current_cam_ch;
++	for(current_cam_ch = CAM1; current_cam_ch <= CAM4; current_cam_ch++){
++		camera_i2c_channel_sel(current_cam_ch);
++		tw8809_720p_init();
++	}
++}
++*/
++
++static void init_tw8824(void)
++{
++	camera_ch_t current_cam_ch;
++	for(current_cam_ch = CAM1; current_cam_ch <= CAM4; current_cam_ch++){
++		camera_i2c_channel_sel(current_cam_ch);
++		TW8824_720p_init();
++	}
++}
++
++static long tiserdes_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
++{
++	long ret = 0;
++	static ioctl_data_t i2c_cmd_data;
++	static camera_ch_t cam_num;
++	camera_ch_t current_cam_ch;
++
++	//dbg_printk("[%s] get cmd: 0x%x\n", __FUNCTION__, cmd);
++	printk("\n[%s] get cmd: 0x%x\n", __FUNCTION__, cmd);
++
++	if( (cmd == TI9546A_WRITE_BYTE) || (cmd == TI9546A_READ_BYTE) ) {
++		switch(cmd) {
++			case TI9546A_READ_BYTE:
++				i2c_cmd_data.data[0] = i2c_smbus_read_byte(i2cClient70);
++
++					//printk("i2c_cmd_data.data[0] = %d \n", i2c_cmd_data.data[0]);
++
++				switch(i2c_cmd_data.data[0]) {
++				case 0x00:
++					cam_num = CAMALL;
++					break;
++
++				case 0x01:
++					cam_num = CAM1;
++					break;
++
++				case 0x02:
++					cam_num = CAM2;
++					break;
++
++				case 0x04:
++					cam_num = CAM3;
++					break;
++
++				case 0x08:
++					cam_num = CAM4;
++					break;
++
++				default:
++					cam_num = CAMALL;
++					printk("[%s] Invalid Camera Channel, camera channel = %d\n", __FUNCTION__, i2c_cmd_data.data[0]);
++					printk("Input channel should be 0x01(CAM1), 0x02(CAM2), 0x04(CAM3), 0x08(CAM4)\n");
++					break;
++				}
++
++				copy_to_user((void __user *)arg, &cam_num, sizeof(camera_ch_t));
++				//printk("2.1 Camera num = %d \n", cam_num);
++				break;
++
++			case TI9546A_WRITE_BYTE:
++				if ( copy_from_user(&cam_num, (const void __user *)arg, sizeof(camera_ch_t)) ) {
++					printk(KERN_WARNING "[%s] copy from user fail!!\n", __FUNCTION__);
++					return -1;
++				}
++				//printk("1. Camera num = %d \n", cam_num);
++
++				switch(cam_num) {
++				case CAMALL:
++					i2c_cmd_data.data[0] = 0;
++					break;
++
++				case CAM1:
++					i2c_cmd_data.data[0] = 1;
++					break;
++
++				case CAM2:
++					i2c_cmd_data.data[0] = 2;
++					break;
++
++				case CAM3:
++					i2c_cmd_data.data[0] = 4;
++					break;
++
++				case CAM4:
++					i2c_cmd_data.data[0] = 8;
++					break;
++
++				default:
++					i2c_cmd_data.data[0] = 0;
++					printk("[%s] Invalid Camera Channel, camera channel = %d\n", __FUNCTION__, i2c_cmd_data.data[0]);
++					printk("Input channel should be 0x01(CAM1), 0x02(CAM2), 0x04(CAM3), 0x08(CAM4)\n");
++					break;
++				}
++
++				i2c_smbus_write_byte(i2cClient70, i2c_cmd_data.data[0]);
++
++				//printk("2.2 Camera num = %d \n", cam_num);
++				break;
++		}
++		dbg_printk("[%s] DONE!\n", __FUNCTION__);
++		return ret;
++	}
++
++	if ( copy_from_user( &i2c_cmd_data, (const void __user *)arg, sizeof(ioctl_data_t)) ) {
++		printk(KERN_WARNING "[%s] copy from user fail!!\n", __FUNCTION__);
++		return -1;
++	}
++	printk("1. Camera num = %d \n", cam_num);
++
++	if(cam_num == CAMALL) {
++		for(current_cam_ch = CAM1; current_cam_ch <= CAM4; current_cam_ch++){
++			//dbg_printk("Set Camera %d \n", current_cam_ch);
++			printk("All camera set in Cemera %d \n", current_cam_ch);
++
++			camera_i2c_channel_sel(current_cam_ch);
++
++			switch(cmd) {
++				case TI914_READ_BYTE:
++					i2c_cmd_data.data[0] = i2c_smbus_read_byte_data(i2cClient60, i2c_cmd_data.addr[0]);
++					copy_to_user((void __user *)arg, i2c_cmd_data.data, sizeof(i2c_cmd_data.data));
++					dbg_printk("0x%2x\n", i2c_cmd_data.data[0]);
++					break;
++
++				case TI914_WRITE_BYTE:
++					i2c_smbus_write_byte_data(i2cClient60, i2c_cmd_data.addr[0], i2c_cmd_data.data[0]);
++					break;
++
++				case TW8824_READ_BYTE:
++					i2c_cmd_data.data[0] = i2c_smbus_read_byte_data(i2cClient44, i2c_cmd_data.addr[0]);
++					copy_to_user((void __user *)arg, i2c_cmd_data.data, sizeof(i2c_cmd_data.data));
++					dbg_printk("0x%2x\n", i2c_cmd_data.data[0]);
++					break;
++
++				case TW8824_WRITE_BYTE:
++					i2c_smbus_write_byte_data(i2cClient44, i2c_cmd_data.addr[0], i2c_cmd_data.data[0]);
++					//printk("addr = 0x%02x, data = 0x%02x\n", i2c_cmd_data.addr[0], i2c_cmd_data.data[0]);
++					break;
++
++				default:
++					dbg_printk("[%s] Invalid Cmd\n", __FUNCTION__);
++					break;
++			}
++		}
++	}
++	else {  // Set One Camera
++
++		camera_i2c_channel_sel(cam_num);
++
++/*
++	APTINA_AP0100_READ,             //0x0c
++	APTINA_AP0100_WRITE,            //0x0d
++	APTINA_AP0100_READ_BYTE,        //0x0e
++	APTINA_AP0100_WRITE_BYTE,       //0x0f
++	APTINA_AP0100_READ_BYTE_SMBUS,  //0x10
++	APTINA_AP0100_WRITE_BYTE_SMBUS, //0x11
++*/
++
++		switch (cmd) {
++			case TI914_READ_BYTE:
++				//ret = i2c_read_byte_data(i2cClient60, i2c_cmd_data.addr[0], i2c_cmd_data.data);
++				ret = i2c_read_byte_data_clock(i2cClient60, i2c_cmd_data.addr[0], i2c_cmd_data.data, 10);
++				copy_to_user((void __user *)arg, i2c_cmd_data.data, sizeof(i2c_cmd_data.data));
++				dbg_printk("0x%2x\n", i2c_cmd_data.data[0]);
++				break;
++
++			case TI914_WRITE_BYTE:
++				//ret = i2c_write_byte_data(i2cClient60, i2c_cmd_data.addr[0], i2c_cmd_data.data[0]);
++				ret = i2c_write_byte_data_clock(i2cClient60, i2c_cmd_data.addr[0], i2c_cmd_data.data[0], 10);
++				break;
++
++			case TI914_READ_BYTE_SMBUS:
++				i2c_cmd_data.data[0] = i2c_smbus_read_byte_data(i2cClient60, i2c_cmd_data.addr[0]);
++				copy_to_user((void __user *)arg, i2c_cmd_data.data, sizeof(i2c_cmd_data.data));
++				dbg_printk("0x%2x\n", i2c_cmd_data.data[0]);
++				break;
++
++			case TI914_WRITE_BYTE_SMBUS:
++				i2c_smbus_write_byte_data(i2cClient60, i2c_cmd_data.addr[0], i2c_cmd_data.data[0]);
++				break;
++
++			case TI913_READ_BYTE:
++				//ret = i2c_read_byte_data(i2cClient58, i2c_cmd_data.addr[0], i2c_cmd_data.data );
++				ret = i2c_read_byte_data_clock(i2cClient58, i2c_cmd_data.addr[0], i2c_cmd_data.data, 10);
++				copy_to_user((void __user *)arg, i2c_cmd_data.data, sizeof(i2c_cmd_data.data));
++				dbg_printk("0x%2x\n", i2c_cmd_data.data[0]);
++
++				printk("kernel read 0x%02x\n", i2c_cmd_data.data[0]);
++				break;
++
++			case TI913_WRITE_BYTE:
++				//ret = i2c_write_byte_data(i2cClient58, i2c_cmd_data.addr[0], i2c_cmd_data.data[0]);
++				ret = i2c_write_byte_data_clock(i2cClient58, i2c_cmd_data.addr[0], i2c_cmd_data.data[0], 10);
++				break;
++
++			case TI913_READ_BYTE_SMBUS:
++				i2c_cmd_data.data[0] = i2c_smbus_read_byte_data(i2cClient58, i2c_cmd_data.addr[0]);
++				copy_to_user((void __user *)arg, i2c_cmd_data.data, sizeof(i2c_cmd_data.data));
++				dbg_printk("0x%2x\n", i2c_cmd_data.data[0]);
++
++				printk("kernel read 0x%02x\n", i2c_cmd_data.data[0]);
++				break;
++
++			case TI913_WRITE_BYTE_SMBUS:
++				i2c_smbus_write_byte_data(i2cClient58, i2c_cmd_data.addr[0], i2c_cmd_data.data[0]);
++				break;
++
++			case TW8824_READ_BYTE:
++				i2c_cmd_data.data[0] = i2c_smbus_read_byte_data(i2cClient44, i2c_cmd_data.addr[0]);
++				copy_to_user((void __user *)arg, i2c_cmd_data.data, sizeof(i2c_cmd_data.data));
++				dbg_printk("0x%2x\n", i2c_cmd_data.data[0]);
++				break;
++
++			case TW8824_WRITE_BYTE:
++				i2c_smbus_write_byte_data(i2cClient44, i2c_cmd_data.addr[0], i2c_cmd_data.data[0]);
++				break;
++
++			case APTINA_AP0100_READ:
++				//ret = aptina_ap0100_read(i2cClient48, i2c_cmd_data.addr, i2c_cmd_data.data);
++				printk("\n APTINA_AP0100_READ 0x%02x 0x%02x ", i2c_cmd_data.addr[0], i2c_cmd_data.addr[1]);
++
++				ret = aptina_ap0100_read_clock(i2cClient48, i2c_cmd_data.addr, i2c_cmd_data.data, 10);
++				copy_to_user((void __user *)arg, i2c_cmd_data.data, sizeof(i2c_cmd_data.data));
++				dbg_printk("0x%2x\n", i2c_cmd_data.data[0]);
++				break;	
++
++			case APTINA_AP0100_WRITE:
++				//ret = aptina_ap0100_write(i2cClient48, i2c_cmd_data.addr, i2c_cmd_data.data);
++				ret = aptina_ap0100_write_clock(i2cClient48, i2c_cmd_data.addr, i2c_cmd_data.data, 10);
++				break;
++
++			case APTINA_AP0100_READ_BYTE:
++				//ret = aptina_ap0100_read_byte(i2cClient48, i2c_cmd_data.addr, i2c_cmd_data.data);
++				ret = aptina_ap0100_read_byte_clock(i2cClient48, i2c_cmd_data.addr, i2c_cmd_data.data, 10);
++				copy_to_user((void __user *)arg, i2c_cmd_data.data, sizeof(i2c_cmd_data.data));
++				dbg_printk("0x%2x\n", i2c_cmd_data.data[0]);
++				break;
++
++			case APTINA_AP0100_WRITE_BYTE:
++				//ret = aptina_ap0100_write_byte(i2cClient48, i2c_cmd_data.addr, i2c_cmd_data.data);
++				ret = aptina_ap0100_write_byte_clock(i2cClient48, i2c_cmd_data.addr, i2c_cmd_data.data, 10);
++				break;
++
++			case APTINA_AP0100_READ_BYTE_SMBUS:
++				i2c_cmd_data.data[0] = i2c_smbus_read_byte_data(i2cClient48, i2c_cmd_data.addr[0]);
++				copy_to_user((void __user *)arg, i2c_cmd_data.data, sizeof(i2c_cmd_data.data));
++				dbg_printk("0x%2x\n", i2c_cmd_data.data[0]);
++				break;
++
++			case APTINA_AP0100_WRITE_BYTE_SMBUS:
++				i2c_smbus_write_byte_data(i2cClient48, i2c_cmd_data.addr[0], i2c_cmd_data.data[0]);
++				break;
++
++			default:
++				dbg_printk("[%s] Invalid Cmd\n", __FUNCTION__);
++				break;
++		}
++	}
++	dbg_printk("[%s] DONE!\n", __FUNCTION__);
++	return ret;
++}
++
++static const struct file_operations tiserdes_fops =
++{
++	.open           = NULL,
++	.release        = NULL,
++	.unlocked_ioctl = tiserdes_ioctl,
++};
++
++static int __init tiserdes_dev_init(void)
++{
++	int ret = 0;
++	printk("insert TISERDES driver!\n");
++
++	// Request a device number from kernel
++
++	ret = alloc_chrdev_region( &tiserdes_dev_num, DEVNUM_MINOR_START, DEVNUM_COUNT, DEVNUM_NAME );
++	if (ret) {
++		printk(KERN_WARNING "%s : could not allocate device\n", __func__);
++		return ret;
++	}
++	else {
++		printk("%s : registered with major number:%i, minor number:%i\n",
++		__func__, MAJOR(tiserdes_dev_num), MINOR(tiserdes_dev_num));
++	}
++
++	// Initialize device parameters
++	cdev_init( &dev_cdev, &tiserdes_fops);
++	dev_cdev.owner = THIS_MODULE;
++	dev_cdev.ops = &tiserdes_fops;
++	ret = cdev_add( &dev_cdev, tiserdes_dev_num, DEVNUM_COUNT );
++
++	// sys class related
++	dev_class = class_create(THIS_MODULE, "tiserdes");
++	if (IS_ERR(dev_class)) {
++		printk(KERN_WARNING "class_simple_create fail %s\n", "tiserdes_class");
++		return -1;
++	}
++	printk("class_create %s\n", "tiserdes_class");
++
++	device_create( dev_class, NULL, tiserdes_dev_num,NULL ,DEVNUM_NAME );
++	printk("device_create %s\n", DEVNUM_NAME);
++
++	init_i2c();
++	//init_ti914();  //mark
++	//init_ti913();  //mark
++	//init_tw8809();
++	//init_tw8824();  //mark
++
++	//camera_i2c_channel_sel(CAM1);  //mark
++
++	return 0;
++}
++
++static void __exit tiserdes_dev_exit(void)
++{
++	printk("exit TISERDES driver!\n");
++
++	device_destroy(dev_class, tiserdes_dev_num);
++	class_destroy(dev_class);
++
++	cdev_del( &dev_cdev );
++	unregister_chrdev_region( tiserdes_dev_num, DEVNUM_COUNT );
++}
++
++module_init(tiserdes_dev_init);
++module_exit(tiserdes_dev_exit);
+--- a/drivers/i2c/busses/ti_serdes_i2c/tiserdes_setting.c	1970-01-01 03:00:00.000000000 +0300
++++ a/drivers/i2c/busses/ti_serdes_i2c/tiserdes_setting.c	2018-11-12 06:42:53.000000000 +0300
+@@ -0,0 +1,468 @@
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/types.h>
++#include <linux/cdev.h>
++#include <asm/types.h>
++#include <linux/i2c.h>
++
++extern struct i2c_client *i2cClient45;
++extern struct i2c_client *i2cClient44;
++
++void tw8809_720p_init(void)
++{
++	i2c_smbus_write_byte_data(i2cClient45, 0xFF, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x02, 0x4A);
++	i2c_smbus_write_byte_data(i2cClient45, 0x03, 0xFC);
++	i2c_smbus_write_byte_data(i2cClient45, 0x04, 0x01);
++	i2c_smbus_write_byte_data(i2cClient45, 0x06, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x07, 0x08);
++	i2c_smbus_write_byte_data(i2cClient45, 0x08, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x1F, 0x06);
++	i2c_smbus_write_byte_data(i2cClient45, 0x40, 0x42);
++	i2c_smbus_write_byte_data(i2cClient45, 0x41, 0x11);
++	i2c_smbus_write_byte_data(i2cClient45, 0x42, 0x5A);
++	i2c_smbus_write_byte_data(i2cClient45, 0x43, 0x28);
++	i2c_smbus_write_byte_data(i2cClient45, 0x44, 0xA0);
++	i2c_smbus_write_byte_data(i2cClient45, 0x45, 0x90);
++	i2c_smbus_write_byte_data(i2cClient45, 0x46, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x47, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x48, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x4A, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x50, 0x10);
++	i2c_smbus_write_byte_data(i2cClient45, 0x51, 0x08);
++	i2c_smbus_write_byte_data(i2cClient45, 0x52, 0x02);
++	i2c_smbus_write_byte_data(i2cClient45, 0x53, 0x02);
++	i2c_smbus_write_byte_data(i2cClient45, 0x54, 0x10);
++	i2c_smbus_write_byte_data(i2cClient45, 0x56, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x57, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x5F, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x67, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x68, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x69, 0x25);
++	i2c_smbus_write_byte_data(i2cClient45, 0x6A, 0x99);
++	i2c_smbus_write_byte_data(i2cClient45, 0x6B, 0xD0);
++	i2c_smbus_write_byte_data(i2cClient45, 0x6C, 0x15);
++	i2c_smbus_write_byte_data(i2cClient45, 0x6D, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0xA0, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0xA1, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0xA2, 0x80);
++	i2c_smbus_write_byte_data(i2cClient45, 0xA3, 0xFF);
++	i2c_smbus_write_byte_data(i2cClient45, 0xA4, 0xC0);
++	i2c_smbus_write_byte_data(i2cClient45, 0xF6, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0xF7, 0x16);
++	i2c_smbus_write_byte_data(i2cClient45, 0xF8, 0x01);
++	i2c_smbus_write_byte_data(i2cClient45, 0xF9, 0x76);
++	i2c_smbus_write_byte_data(i2cClient45, 0xFA, 0x2D);
++	i2c_smbus_write_byte_data(i2cClient45, 0xFB, 0x40);
++	i2c_smbus_write_byte_data(i2cClient45, 0xFC, 0x30);
++	i2c_smbus_write_byte_data(i2cClient45, 0xFD, 0x22);
++
++	i2c_smbus_write_byte_data(i2cClient45, 0xFF, 0x01);
++	i2c_smbus_write_byte_data(i2cClient45, 0x01, 0x83);
++	i2c_smbus_write_byte_data(i2cClient45, 0x02, 0x48);
++	i2c_smbus_write_byte_data(i2cClient45, 0x04, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x05, 0x0F);
++	i2c_smbus_write_byte_data(i2cClient45, 0x06, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x07, 0x02);
++	i2c_smbus_write_byte_data(i2cClient45, 0x08, 0x14);
++	i2c_smbus_write_byte_data(i2cClient45, 0x09, 0xF0);
++	i2c_smbus_write_byte_data(i2cClient45, 0x0A, 0x09);
++	i2c_smbus_write_byte_data(i2cClient45, 0x0B, 0xD0);
++	i2c_smbus_write_byte_data(i2cClient45, 0x0C, 0xDC);
++	i2c_smbus_write_byte_data(i2cClient45, 0x0D, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x10, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x11, 0x5C);
++	i2c_smbus_write_byte_data(i2cClient45, 0x12, 0x11);
++	i2c_smbus_write_byte_data(i2cClient45, 0x13, 0x80);
++	i2c_smbus_write_byte_data(i2cClient45, 0x14, 0x80);
++	i2c_smbus_write_byte_data(i2cClient45, 0x15, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x17, 0x30);
++	i2c_smbus_write_byte_data(i2cClient45, 0x18, 0x44);
++	i2c_smbus_write_byte_data(i2cClient45, 0x1A, 0x10);
++	i2c_smbus_write_byte_data(i2cClient45, 0x1B, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x1C, 0x17);
++	i2c_smbus_write_byte_data(i2cClient45, 0x1D, 0x03);
++	i2c_smbus_write_byte_data(i2cClient45, 0x20, 0x50);
++	i2c_smbus_write_byte_data(i2cClient45, 0x21, 0x22);
++	i2c_smbus_write_byte_data(i2cClient45, 0x22, 0xF0);
++	i2c_smbus_write_byte_data(i2cClient45, 0x23, 0xD8);
++	i2c_smbus_write_byte_data(i2cClient45, 0x24, 0xBC);
++	i2c_smbus_write_byte_data(i2cClient45, 0x25, 0xB8);
++	i2c_smbus_write_byte_data(i2cClient45, 0x26, 0x44);
++	i2c_smbus_write_byte_data(i2cClient45, 0x27, 0x38);
++	i2c_smbus_write_byte_data(i2cClient45, 0x28, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x29, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x2A, 0x78);
++	i2c_smbus_write_byte_data(i2cClient45, 0x2B, 0x44);
++	i2c_smbus_write_byte_data(i2cClient45, 0x2C, 0x30);
++	i2c_smbus_write_byte_data(i2cClient45, 0x2D, 0x14);
++	i2c_smbus_write_byte_data(i2cClient45, 0x2E, 0xA5);
++	i2c_smbus_write_byte_data(i2cClient45, 0x2F, 0xE0);
++	i2c_smbus_write_byte_data(i2cClient45, 0x30, 0x50);
++	i2c_smbus_write_byte_data(i2cClient45, 0x31, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x32, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x33, 0x05);
++	i2c_smbus_write_byte_data(i2cClient45, 0x34, 0x1A);
++	i2c_smbus_write_byte_data(i2cClient45, 0x35, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x40, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x41, 0x80);
++	i2c_smbus_write_byte_data(i2cClient45, 0x42, 0x00);
++
++	i2c_smbus_write_byte_data(i2cClient45, 0xFF, 0x02);
++	i2c_smbus_write_byte_data(i2cClient45, 0x01, 0x30);
++	i2c_smbus_write_byte_data(i2cClient45, 0x02, 0x94);
++	i2c_smbus_write_byte_data(i2cClient45, 0x03, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x04, 0x14);
++	i2c_smbus_write_byte_data(i2cClient45, 0x05, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x06, 0x20);
++	i2c_smbus_write_byte_data(i2cClient45, 0x07, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x08, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x09, 0x40);
++	i2c_smbus_write_byte_data(i2cClient45, 0x0A, 0x06);
++	i2c_smbus_write_byte_data(i2cClient45, 0x0B, 0x47);
++	i2c_smbus_write_byte_data(i2cClient45, 0x0C, 0x08);
++	i2c_smbus_write_byte_data(i2cClient45, 0x0D, 0x81);
++	i2c_smbus_write_byte_data(i2cClient45, 0x0E, 0x50);
++	i2c_smbus_write_byte_data(i2cClient45, 0x0F, 0x28);
++	i2c_smbus_write_byte_data(i2cClient45, 0x10, 0x60);
++	i2c_smbus_write_byte_data(i2cClient45, 0x11, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x12, 0x05);
++	i2c_smbus_write_byte_data(i2cClient45, 0x13, 0x14);
++	i2c_smbus_write_byte_data(i2cClient45, 0x14, 0x3C);
++	i2c_smbus_write_byte_data(i2cClient45, 0x15, 0xA0);
++	i2c_smbus_write_byte_data(i2cClient45, 0x16, 0xD0);
++	i2c_smbus_write_byte_data(i2cClient45, 0x17, 0x02);
++	i2c_smbus_write_byte_data(i2cClient45, 0x18, 0xC6);
++	i2c_smbus_write_byte_data(i2cClient45, 0x19, 0x40);
++	i2c_smbus_write_byte_data(i2cClient45, 0x1A, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x1B, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x1C, 0x60);
++	i2c_smbus_write_byte_data(i2cClient45, 0x1D, 0x1D);
++	i2c_smbus_write_byte_data(i2cClient45, 0x1E, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x1F, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x20, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x21, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x80, 0x20);
++	i2c_smbus_write_byte_data(i2cClient45, 0x81, 0x80);
++	i2c_smbus_write_byte_data(i2cClient45, 0x82, 0x80);
++	i2c_smbus_write_byte_data(i2cClient45, 0x83, 0x80);
++	i2c_smbus_write_byte_data(i2cClient45, 0x84, 0x80);
++	i2c_smbus_write_byte_data(i2cClient45, 0x85, 0x80);
++	i2c_smbus_write_byte_data(i2cClient45, 0x86, 0x80);
++	i2c_smbus_write_byte_data(i2cClient45, 0x87, 0x80);
++	i2c_smbus_write_byte_data(i2cClient45, 0x88, 0x80);
++	i2c_smbus_write_byte_data(i2cClient45, 0x89, 0x80);
++	i2c_smbus_write_byte_data(i2cClient45, 0x8A, 0x80);
++	i2c_smbus_write_byte_data(i2cClient45, 0x8B, 0x30);
++	i2c_smbus_write_byte_data(i2cClient45, 0x8C, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0xB0, 0x30);
++	i2c_smbus_write_byte_data(i2cClient45, 0xB1, 0x40);
++	i2c_smbus_write_byte_data(i2cClient45, 0xB2, 0x40);
++	i2c_smbus_write_byte_data(i2cClient45, 0xB6, 0x67);
++	i2c_smbus_write_byte_data(i2cClient45, 0xB7, 0x94);
++	i2c_smbus_write_byte_data(i2cClient45, 0xBF, 0x0D);
++	i2c_smbus_write_byte_data(i2cClient45, 0xE0, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0xE1, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0xE2, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0xE3, 0x72);
++	i2c_smbus_write_byte_data(i2cClient45, 0xE4, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0xF0, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0xF1, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0xF2, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0xF3, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0xF4, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0xF5, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0xF8, 0x02);
++	i2c_smbus_write_byte_data(i2cClient45, 0xF9, 0x79);
++
++	i2c_smbus_write_byte_data(i2cClient45, 0xFF, 0x03);
++	i2c_smbus_write_byte_data(i2cClient45, 0x00, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x01, 0x06);
++	i2c_smbus_write_byte_data(i2cClient45, 0x02, 0x06);
++	i2c_smbus_write_byte_data(i2cClient45, 0x03, 0x5F);
++	i2c_smbus_write_byte_data(i2cClient45, 0x04, 0x0C);
++	i2c_smbus_write_byte_data(i2cClient45, 0x05, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x06, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x07, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x08, 0x10);
++	i2c_smbus_write_byte_data(i2cClient45, 0x09, 0xFF);
++	i2c_smbus_write_byte_data(i2cClient45, 0x0A, 0x90);
++	i2c_smbus_write_byte_data(i2cClient45, 0x0B, 0xC6);
++	i2c_smbus_write_byte_data(i2cClient45, 0x0C, 0x6F);
++	i2c_smbus_write_byte_data(i2cClient45, 0x0D, 0xFF);
++	i2c_smbus_write_byte_data(i2cClient45, 0x0E, 0xFF);
++	i2c_smbus_write_byte_data(i2cClient45, 0x10, 0xC0);
++	i2c_smbus_write_byte_data(i2cClient45, 0x11, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x12, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x13, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x14, 0x12);
++	i2c_smbus_write_byte_data(i2cClient45, 0x15, 0x01);
++	i2c_smbus_write_byte_data(i2cClient45, 0x16, 0x17);
++	i2c_smbus_write_byte_data(i2cClient45, 0x17, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x18, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x19, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x1A, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x1B, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x1C, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x1D, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x1E, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x1F, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x20, 0x40);
++	i2c_smbus_write_byte_data(i2cClient45, 0x21, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x22, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x23, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x24, 0x1E);
++	i2c_smbus_write_byte_data(i2cClient45, 0x25, 0x01);
++	i2c_smbus_write_byte_data(i2cClient45, 0x26, 0x28);
++	i2c_smbus_write_byte_data(i2cClient45, 0x27, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x28, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x29, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x2A, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x2B, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x2C, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x2D, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x2E, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x2F, 0x28);
++	i2c_smbus_write_byte_data(i2cClient45, 0x30, 0x40);
++	i2c_smbus_write_byte_data(i2cClient45, 0x31, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x32, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x33, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x34, 0x3C);
++	i2c_smbus_write_byte_data(i2cClient45, 0x35, 0x01);
++	i2c_smbus_write_byte_data(i2cClient45, 0x36, 0x28);
++	i2c_smbus_write_byte_data(i2cClient45, 0x37, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x38, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x39, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x3A, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x3B, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x3C, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x3D, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x3E, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x3F, 0x50);
++	i2c_smbus_write_byte_data(i2cClient45, 0x40, 0x40);
++	i2c_smbus_write_byte_data(i2cClient45, 0x41, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x42, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x43, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x44, 0x5A);
++	i2c_smbus_write_byte_data(i2cClient45, 0x45, 0x01);
++	i2c_smbus_write_byte_data(i2cClient45, 0x46, 0x28);
++	i2c_smbus_write_byte_data(i2cClient45, 0x47, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x48, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x49, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x4A, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x4B, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x4C, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x4D, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x4E, 0x00);
++	i2c_smbus_write_byte_data(i2cClient45, 0x4F, 0x78);
++	i2c_smbus_write_byte_data(i2cClient45, 0x50, 0x09);
++	i2c_smbus_write_byte_data(i2cClient45, 0x51, 0x1B);
++	i2c_smbus_write_byte_data(i2cClient45, 0x52, 0x01);
++	i2c_smbus_write_byte_data(i2cClient45, 0x53, 0xD0);
++	i2c_smbus_write_byte_data(i2cClient45, 0x54, 0xF4);
++
++	i2c_smbus_write_byte_data(i2cClient45, 0xFF, 0x00);
++}
++
++
++void TW8824_720p_init(void)
++{
++	i2c_smbus_write_byte_data(i2cClient44, 0xFF, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x02, 0x42);
++	i2c_smbus_write_byte_data(i2cClient44, 0x03, 0xFF);
++	i2c_smbus_write_byte_data(i2cClient44, 0x06, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x07, 0x8A);
++	i2c_smbus_write_byte_data(i2cClient44, 0x08, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x09, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x1F, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x40, 0x03);
++	i2c_smbus_write_byte_data(i2cClient44, 0x41, 0xD1);
++	i2c_smbus_write_byte_data(i2cClient44, 0x42, 0x50);
++	i2c_smbus_write_byte_data(i2cClient44, 0x43, 0x14);
++	i2c_smbus_write_byte_data(i2cClient44, 0x44, 0xA0);
++	i2c_smbus_write_byte_data(i2cClient44, 0x45, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x46, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x47, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x48, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x4B, 0x01);
++	i2c_smbus_write_byte_data(i2cClient44, 0x50, 0x0C);
++	i2c_smbus_write_byte_data(i2cClient44, 0x51, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x52, 0x02);
++	i2c_smbus_write_byte_data(i2cClient44, 0x53, 0x02);
++	i2c_smbus_write_byte_data(i2cClient44, 0x54, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x56, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x57, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x5F, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x66, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x67, 0x22);
++	i2c_smbus_write_byte_data(i2cClient44, 0x68, 0x01);
++	i2c_smbus_write_byte_data(i2cClient44, 0x69, 0x25);
++	i2c_smbus_write_byte_data(i2cClient44, 0x6A, 0x02);
++	i2c_smbus_write_byte_data(i2cClient44, 0x6B, 0xD0);
++	i2c_smbus_write_byte_data(i2cClient44, 0x6C, 0x83);
++	i2c_smbus_write_byte_data(i2cClient44, 0x6D, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x6E, 0x10);
++	i2c_smbus_write_byte_data(i2cClient44, 0x6F, 0x10);
++	i2c_smbus_write_byte_data(i2cClient44, 0x78, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x79, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x7A, 0x50);
++	i2c_smbus_write_byte_data(i2cClient44, 0x80, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x88, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x90, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x98, 0x0E);
++	i2c_smbus_write_byte_data(i2cClient44, 0xD6, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0xD7, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0xD8, 0x80);
++	i2c_smbus_write_byte_data(i2cClient44, 0xDB, 0x55);
++	i2c_smbus_write_byte_data(i2cClient44, 0xDC, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0xDD, 0x80);
++	i2c_smbus_write_byte_data(i2cClient44, 0xDE, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0xDF, 0x80);
++	i2c_smbus_write_byte_data(i2cClient44, 0xF6, 0x01);
++	i2c_smbus_write_byte_data(i2cClient44, 0xF7, 0x16);
++	i2c_smbus_write_byte_data(i2cClient44, 0xF8, 0x01);
++	i2c_smbus_write_byte_data(i2cClient44, 0xF9, 0x76);
++	i2c_smbus_write_byte_data(i2cClient44, 0xFA, 0x2D);
++	i2c_smbus_write_byte_data(i2cClient44, 0xFB, 0x40);
++	i2c_smbus_write_byte_data(i2cClient44, 0xFC, 0x30);
++	i2c_smbus_write_byte_data(i2cClient44, 0xFD, 0x21);
++	i2c_smbus_write_byte_data(i2cClient44, 0xFF, 0x00);
++
++	i2c_smbus_write_byte_data(i2cClient44, 0xFF, 0x01);
++	i2c_smbus_write_byte_data(i2cClient44, 0x02, 0x40);
++	i2c_smbus_write_byte_data(i2cClient44, 0x04, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x05, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x06, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x07, 0x12);
++	i2c_smbus_write_byte_data(i2cClient44, 0x08, 0x12);
++	i2c_smbus_write_byte_data(i2cClient44, 0x09, 0x20);
++	i2c_smbus_write_byte_data(i2cClient44, 0x0A, 0x0A);
++	i2c_smbus_write_byte_data(i2cClient44, 0x0B, 0xD0);
++	i2c_smbus_write_byte_data(i2cClient44, 0x0C, 0xCC);
++	i2c_smbus_write_byte_data(i2cClient44, 0x0D, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x10, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x11, 0x5C);
++	i2c_smbus_write_byte_data(i2cClient44, 0x12, 0x11);
++	i2c_smbus_write_byte_data(i2cClient44, 0x13, 0x80);
++	i2c_smbus_write_byte_data(i2cClient44, 0x14, 0x80);
++	i2c_smbus_write_byte_data(i2cClient44, 0x15, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x17, 0x80);
++	i2c_smbus_write_byte_data(i2cClient44, 0x18, 0x44);
++	i2c_smbus_write_byte_data(i2cClient44, 0x1A, 0x10);
++	i2c_smbus_write_byte_data(i2cClient44, 0x1C, 0x27);
++	i2c_smbus_write_byte_data(i2cClient44, 0x1D, 0x7F);
++	i2c_smbus_write_byte_data(i2cClient44, 0x20, 0x50);
++	i2c_smbus_write_byte_data(i2cClient44, 0x21, 0x22);
++	i2c_smbus_write_byte_data(i2cClient44, 0x22, 0xF0);
++	i2c_smbus_write_byte_data(i2cClient44, 0x23, 0xD8);
++	i2c_smbus_write_byte_data(i2cClient44, 0x24, 0xBC);
++	i2c_smbus_write_byte_data(i2cClient44, 0x25, 0xB8);
++	i2c_smbus_write_byte_data(i2cClient44, 0x26, 0x44);
++	i2c_smbus_write_byte_data(i2cClient44, 0x27, 0x38);
++	i2c_smbus_write_byte_data(i2cClient44, 0x28, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x29, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x2A, 0x78);
++	i2c_smbus_write_byte_data(i2cClient44, 0x2B, 0x44);
++	i2c_smbus_write_byte_data(i2cClient44, 0x2C, 0x30);
++	i2c_smbus_write_byte_data(i2cClient44, 0x2D, 0x14);
++	i2c_smbus_write_byte_data(i2cClient44, 0x2E, 0xA5);
++	i2c_smbus_write_byte_data(i2cClient44, 0x2F, 0xE0);
++	i2c_smbus_write_byte_data(i2cClient44, 0x33, 0x05);
++	i2c_smbus_write_byte_data(i2cClient44, 0x34, 0x1A);
++	i2c_smbus_write_byte_data(i2cClient44, 0x35, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x36, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x37, 0x06);
++	i2c_smbus_write_byte_data(i2cClient44, 0x38, 0xD9);
++	i2c_smbus_write_byte_data(i2cClient44, 0x39, 0x30);
++	i2c_smbus_write_byte_data(i2cClient44, 0x3A, 0x30);
++	i2c_smbus_write_byte_data(i2cClient44, 0x3B, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x3C, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x3D, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0xE1, 0x05);
++	i2c_smbus_write_byte_data(i2cClient44, 0xFF, 0x01);
++
++	i2c_smbus_write_byte_data(i2cClient44, 0xFF, 0x02);
++	i2c_smbus_write_byte_data(i2cClient44, 0x01, 0x30);
++	i2c_smbus_write_byte_data(i2cClient44, 0x02, 0x20);
++	i2c_smbus_write_byte_data(i2cClient44, 0x03, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x04, 0x20);
++	i2c_smbus_write_byte_data(i2cClient44, 0x05, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x06, 0x20);
++	i2c_smbus_write_byte_data(i2cClient44, 0x07, 0x80);
++	i2c_smbus_write_byte_data(i2cClient44, 0x08, 0x10);
++	i2c_smbus_write_byte_data(i2cClient44, 0x09, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x0A, 0x04);
++	i2c_smbus_write_byte_data(i2cClient44, 0x0B, 0x30);
++	i2c_smbus_write_byte_data(i2cClient44, 0x0C, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x0D, 0x01);
++	i2c_smbus_write_byte_data(i2cClient44, 0x0E, 0x50);
++	i2c_smbus_write_byte_data(i2cClient44, 0x0F, 0x0A);
++	i2c_smbus_write_byte_data(i2cClient44, 0x10, 0xB4);
++	i2c_smbus_write_byte_data(i2cClient44, 0x11, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x12, 0x05);
++	i2c_smbus_write_byte_data(i2cClient44, 0x13, 0x10);
++	i2c_smbus_write_byte_data(i2cClient44, 0x14, 0x20);
++	i2c_smbus_write_byte_data(i2cClient44, 0x15, 0x22);
++	i2c_smbus_write_byte_data(i2cClient44, 0x16, 0xD0);
++	i2c_smbus_write_byte_data(i2cClient44, 0x17, 0x02);
++	i2c_smbus_write_byte_data(i2cClient44, 0x18, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x19, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x1A, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x1B, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x1C, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x1D, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x1E, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x1F, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x20, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x21, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x40, 0x10);
++	i2c_smbus_write_byte_data(i2cClient44, 0x41, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x42, 0x01);
++	i2c_smbus_write_byte_data(i2cClient44, 0x43, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x44, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x45, 0x01);
++	i2c_smbus_write_byte_data(i2cClient44, 0x46, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x47, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x48, 0x01);
++	i2c_smbus_write_byte_data(i2cClient44, 0x49, 0x10);
++	i2c_smbus_write_byte_data(i2cClient44, 0x4A, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x4B, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x4C, 0x10);
++	i2c_smbus_write_byte_data(i2cClient44, 0x4D, 0x80);
++	i2c_smbus_write_byte_data(i2cClient44, 0x4E, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x4F, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x50, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x51, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0x80, 0x20);
++	i2c_smbus_write_byte_data(i2cClient44, 0x81, 0x80);
++	i2c_smbus_write_byte_data(i2cClient44, 0x82, 0x80);
++	i2c_smbus_write_byte_data(i2cClient44, 0x83, 0x80);
++	i2c_smbus_write_byte_data(i2cClient44, 0x84, 0x80);
++	i2c_smbus_write_byte_data(i2cClient44, 0x85, 0x80);
++	i2c_smbus_write_byte_data(i2cClient44, 0x86, 0x80);
++	i2c_smbus_write_byte_data(i2cClient44, 0x87, 0x80);
++	i2c_smbus_write_byte_data(i2cClient44, 0x88, 0x80);
++	i2c_smbus_write_byte_data(i2cClient44, 0x89, 0x80);
++	i2c_smbus_write_byte_data(i2cClient44, 0x8A, 0x80);
++	i2c_smbus_write_byte_data(i2cClient44, 0x8B, 0x30);
++	i2c_smbus_write_byte_data(i2cClient44, 0x8C, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0xB0, 0x10);
++	i2c_smbus_write_byte_data(i2cClient44, 0xB1, 0x40);
++	i2c_smbus_write_byte_data(i2cClient44, 0xB2, 0x40);
++	i2c_smbus_write_byte_data(i2cClient44, 0xB6, 0x67);
++	i2c_smbus_write_byte_data(i2cClient44, 0xB7, 0x94);
++	i2c_smbus_write_byte_data(i2cClient44, 0xBE, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0xBF, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0xE0, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0xE1, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0xE3, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0xE4, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0xF0, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0xF1, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0xF2, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0xF8, 0x00);
++	i2c_smbus_write_byte_data(i2cClient44, 0xF9, 0x80);
++	i2c_smbus_write_byte_data(i2cClient44, 0xFF, 0x02);
++
++	i2c_smbus_write_byte_data(i2cClient44, 0xFF, 0x00);
++}

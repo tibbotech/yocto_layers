@@ -1,0 +1,14 @@
+connect "/usr/sbin/chat -v -f /etc/chatscripts/{T.PROFILE}.chat"
+/dev/{T.TTY}
+4000000
+{T.user}
+noipdefault
+usepeerdns
+defaultroute
+#replacedefaultroute
+nodeflate
+nobsdcomp
+maxfail 0
+ipparam "metric {T.UNIT}"
+{T.DEBUG}
+{T.UNIT}

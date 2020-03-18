@@ -1,0 +1,13 @@
+--- a/deps/npm/lib/install/inflate-shrinkwrap.js	2019-05-31 19:25:59.065933903 +0300
++++ a/deps/npm/lib/install/inflate-shrinkwrap.js	2019-05-31 18:53:57.623790927 +0300
+@@ -74,7 +74,9 @@
+ }
+ 
+ function tarballToVersion (name, tb) {
+-  const registry = quotemeta(npm.config.get('registry'))
++  var x = npm.config.get('registry');
++  if ( x === null) x = '';
++  const registry = quotemeta(x)
+     .replace(/https?:/, 'https?:')
+     .replace(/([^/])$/, '$1/')
+   let matchRegTarball

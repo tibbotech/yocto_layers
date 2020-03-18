@@ -1,0 +1,59 @@
+--- ./drivers/net/phy/icplus.c	2014-10-30 13:03:13.000000000 +0300
++++ ./drivers/net/phy/icplus.c	2014-10-30 14:16:59.280287889 +0300
+@@ -105,20 +105,24 @@
+ 	int bmcr;
+ 
+ 	/* Software Reset PHY */
++pr_info( "%s %d %s()\n", "icplus.c", __LINE__, __FUNCTION__);
+ 	bmcr = phy_read(phydev, MII_BMCR);
+ 	if (bmcr < 0)
+ 		return bmcr;
++pr_info( "%s %d %s()\n", "icplus.c", __LINE__, __FUNCTION__);
+ 	bmcr |= BMCR_RESET;
+ 	bmcr = phy_write(phydev, MII_BMCR, bmcr);
+ 	if (bmcr < 0)
+ 		return bmcr;
+ 
++pr_info( "%s %d %s()\n", "icplus.c", __LINE__, __FUNCTION__);
+ 	do {
+ 		bmcr = phy_read(phydev, MII_BMCR);
+ 		if (bmcr < 0)
+ 			return bmcr;
+ 	} while (bmcr & BMCR_RESET);
+ 
++pr_info( "%s %d %s()\n", "icplus.c", __LINE__, __FUNCTION__);
+ 	return 0;
+ }
+ 
+@@ -169,19 +173,23 @@
+ {
+ 	int c;
+ 
++pr_info( "%s %d %s()\n", "icplus.c", __LINE__, __FUNCTION__);
+ 	c = ip1xx_reset(phydev);
+ 	if (c < 0)
+ 		return c;
+ 
+ 	/* INTR pin used: speed/link/duplex will cause an interrupt */
++pr_info( "%s %d %s()\n", "icplus.c", __LINE__, __FUNCTION__);
+ 	c = phy_write(phydev, IP101A_G_IRQ_CONF_STATUS, IP101A_G_IRQ_DEFAULT);
+ 	if (c < 0)
+ 		return c;
+ 
++pr_info( "%s %d %s()\n", "icplus.c", __LINE__, __FUNCTION__);
+ 	/* Enable Auto Power Saving mode */
+ 	c = phy_read(phydev, IP10XX_SPEC_CTRL_STATUS);
+ 	c |= IP101A_G_APS_ON;
+ 
++pr_info( "%s %d %s()\n", "icplus.c", __LINE__, __FUNCTION__);
+ 	return phy_write(phydev, IP10XX_SPEC_CTRL_STATUS, c);
+ }
+ 
+@@ -206,6 +214,7 @@
+ 
+ static int ip101a_g_ack_interrupt(struct phy_device *phydev)
+ {
++pr_info( "%s %d %s()\n", "icplus.c", __LINE__, __FUNCTION__);
+ 	int err = phy_read(phydev, IP101A_G_IRQ_CONF_STATUS);
+ 	if (err < 0)
+ 		return err;

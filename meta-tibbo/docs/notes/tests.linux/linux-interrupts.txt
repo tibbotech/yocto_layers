@@ -1,0 +1,65 @@
+
+http://www.linux-tutorial.info/modules.php?name=MContent&pageid=302
+
+https://github.com/gkaindl/linux-gpio-irq-latency-test/blob/master/test-irq-latency.c
+
+recipt: kern-mod-dvgit (module)
+
+in main DTS:
+
+{
+...
+    dvgit0@0 {
+	compatible = "dv-git";
+	pinctrl-names = "default";
+	pinctrl-0 = <&dvgit0_pins>;
+	status = "okay";
+	message = "message from kernel2";
+	gpios = <&gpio2 30 GPIO_ACTIVE_HIGH>;
+    };
+...
+};
+
+&am33xx_pinmux {
+    pinctrl-0 = <&old_dcan1_pins>;
+	dvgit0_pins: dvgit0_pins {
+	    pinctrl-single,pins = <
+		0x100 (PIN_INPUT | MUX_MODE7)	/* gpio2.30 pin94 S19A */
+	    >;
+	};
+	old_dcan1_pins: old_dcan1_pins {
+	    pinctrl-single,pins = <
+		0x104 (PIN_OUTPUT | MUX_MODE7)<>/* gpio2.31 pin95 S19B */
+	>;
+    };
+};
+
+// export pin95, set 'out', echo 1 > value
+// pins 94, 95
+
+-------- test 2
+
+in main DTS:
+
+{
+...
+    dvgit0@0 {
+	compatible = "dv-git";
+	pinctrl-names = "default";
+	pinctrl-0 = <&dvgit0_pins>;
+	status = "okay";
+	message = "message from kernel2";
+	gpios = <&gpio3 16 GPIO_ACTIVE_HIGH>;
+    };
+...
+};
+
+&am33xx_pinmux {
+	dvgit0_pins: dvgit0_pins {
+	    pinctrl-single,pins = <
+		0x198 (PIN_INPUT | MUX_MODE7)	/* mmc2_cd  S21_C */
+	    >;
+	};
+};
+
+// mass on S21_C, tps pin #42, linux pin 102

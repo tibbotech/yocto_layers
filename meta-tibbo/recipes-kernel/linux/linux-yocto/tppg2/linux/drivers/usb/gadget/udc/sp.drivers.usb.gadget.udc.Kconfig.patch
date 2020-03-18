@@ -1,0 +1,14 @@
+--- a/drivers/usb/gadget/udc/Kconfig	2017-09-20 09:25:38.000000000 +0300
++++ a/drivers/usb/gadget/udc/Kconfig	2018-11-12 06:42:55.000000000 +0300
+@@ -29,6 +29,11 @@
+ # Integrated controllers
+ #
+ 
++config USB_GADGET_SUNPLUS
++	tristate "Sunplus Gemini USB Device Controller"
++	select USB_GADGET_DUALSPEED
++	default n
++
+ config USB_AT91
+ 	tristate "Atmel AT91 USB Device Port"
+ 	depends on ARCH_AT91

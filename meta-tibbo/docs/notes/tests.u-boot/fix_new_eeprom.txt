@@ -1,0 +1,28 @@
+U-Boot SPL 2014.07-rc3 (Dec 29 2014 - 10:56:37)
+Incorrect magic number (0xffffffee) in EEPROM
+------------------
+
+TPBs3# i2c dev 3
+Setting bus to 3
+TPBs3# i2c mm 0x50 4
+00000004: ff ? aa
+00000005:
+Error reading the chip,
+ ? 55
+00000006:
+Error reading the chip,
+ ? 33
+00000007:
+Error reading the chip,
+ ? ee
+00000008:
+Error reading the chip,
+ ? ff
+00000009:
+Error reading the chip,
+ ? ff
+0000000a:
+Error reading the chip,
+ ? TPBs3# i2c md 50 0 100
+0000: 00 ff ff ff aa 55 33 ee ff ff ff ff ff ff ff ff    .....U3.........
+...

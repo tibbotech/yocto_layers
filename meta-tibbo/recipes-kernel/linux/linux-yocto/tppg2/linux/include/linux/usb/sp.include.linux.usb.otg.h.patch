@@ -1,0 +1,17 @@
+--- a/include/linux/usb/otg.h	2017-09-20 09:25:38.000000000 +0300
++++ a/include/linux/usb/otg.h	2018-11-12 06:42:56.000000000 +0300
+@@ -56,6 +56,14 @@
+ 	bool adp_support;
+ };
+ 
++#ifdef CONFIG_USB_SUNPLUS_OTG
++extern int usb_set_transceiver_sunplus(struct usb_phy *, int);
++#endif
++
++#ifdef CONFIG_USB_SUNPLUS_OTG
++extern struct usb_phy *usb_get_transceiver_sunplus(int bus_num);
++#endif
++
+ extern const char *usb_otg_state_string(enum usb_otg_state state);
+ 
+ /* Context: can sleep */

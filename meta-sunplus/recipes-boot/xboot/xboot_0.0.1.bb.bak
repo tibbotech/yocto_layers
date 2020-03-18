@@ -1,0 +1,75 @@
+DESCRIPTION = "ROM code for q628"
+SUMMARY = "XBoot bootloader"
+HOMEPAGE = "https://www.sunplus.com/"
+SECTION = "bootloaders"
+
+PACKAGE_ARCH = "${MACHINE_ARCH}"
+COMPATIBLE_HOST = "(arm).*-linux"
+
+SRCREV_draminit = "da3b9b85cfc15525dd3a96ea4b32694ca4456601"
+SRCREV_xboot = "00773b7d0b0be4bee812b7363edafab718185ba5"
+
+SRC_URI = "\
+git://git@113.196.136.131:22/qac628/boot/draminit;protocol=ssh;name=draminit;branch=master;destsuffix=draminit; \
+git://git@113.196.136.131:22/qac628/boot/xboot;protocol=ssh;name=xboot;branch=master;destsuffix=xboot; \
+"
+
+SRC_URI += "file://xboot.boot.ldi.patch"
+SRC_URI += "file://xboot.config.h.patch"
+SRC_URI += "file://xboot.Makefile.size.patch"
+
+S = "${WORKDIR}/xboot"
+
+inherit deploy
+
+EXTRA_OEMAKE = " PLATFORM=${XBOOT_CONFIG}"
+
+HOST_CC_ARCH=""
+
+python exp_Ka () {
+    return d.getVarFlags('XBOOT_CONFIGS').keys();
+}
+
+python exp_Va () {
+    return d.getVarFlags('XBOOT_CONFIGS').items();
+}
+
+do_configure() {
+ cp ${S}/configs/${XBOOT_CONFIG} ${S}/.config
+ for v in ${@exp_Ka()}; do
+   echo "k:${v}"
+ done;
+ for v in ${@exp_Va()}; do
+   echo "v:${v}"
+ done;
+}
+
+do_install() {
+ install ${S}/bin/xboot.bin ${D}/
+}
+
+do_deploy() {
+ install -d ${DEPLOY_DIR_IMAGE}/sp_tools/tools
+ install ${S}/bin/xboot.bin ${DEPLOY_DIR_IMAGE}/
+ install ${S}/add_xhdr.sh ${DEPLOY_DIR_IMAGE}/sp_tools/
+ install ${S}/tools/tcpsum ${DEPLOY_DIR_IMAGE}/sp_tools/tools/
+}
+
+#TCLIBC = "musl"
+
+FILES_${PN} += "xboot.bin"
+FILES_${PN} += "add_xhdr.sh"
+FILES_${PN} += "tcpsum"
+
+LICENSE = "GPLv2+"
+LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/GPL-2.0;md5=801f80980d171dd6425610833a22dbe6"
+
+DEPENDS += "vim-native"
+DEPENDS += "isp-native"
+
+BBCLASSEXTEND = "native"
+
+MIRRORS=""
+PREMIRRORS=""
+
+addtask deploy before do_package_stage after do_compile

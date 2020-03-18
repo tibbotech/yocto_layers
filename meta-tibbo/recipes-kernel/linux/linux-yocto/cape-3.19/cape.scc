@@ -1,0 +1,5 @@
+define KFEATURE_DESCRIPTION "Enable CapeManager for DTB"
+define KFEATURE_COMPATIBILITY all
+force kconf non-hardware cape.cfg
+patch cape.patch
+patch cape_add.patch

@@ -1,0 +1,7 @@
+--- a/drivers/irqchip/Makefile	2017-09-20 09:25:38.000000000 +0300
++++ a/drivers/irqchip/Makefile	2018-11-12 06:42:53.000000000 +0300
+@@ -76,3 +76,4 @@
+ obj-$(CONFIG_ARCH_ASPEED)		+= irq-aspeed-vic.o
+ obj-$(CONFIG_STM32_EXTI) 		+= irq-stm32-exti.o
+ obj-$(CONFIG_QCOM_IRQ_COMBINER)		+= qcom-irq-combiner.o
++obj-$(CONFIG_SP_INTC)			+= irq-sp-intc.o

@@ -1,0 +1,46 @@
+
+gpio_io="/sys/class/gpio"
+
+pin_ex() {
+ if [ -d "${gpio_io}/gpio${1}" ]; then
+   return 0;
+ fi;
+ echo "${1}" > "${gpio_io}/export";
+ if [ ! -d "${gpio_io}/gpio${1}" ]; then
+   return 1;
+ fi;
+ return 0;
+}
+
+pin_dir() {
+ echo "${2}"  > "${gpio_io}/gpio${1}/direction"
+ t=`cat ${gpio_io}/gpio${1}/direction`
+ if [ "${t}" != "${2}" ]; then
+   return 1
+ fi;
+}
+
+pin_set() {
+ t=`cat ${gpio_io}/gpio${1}/direction`
+ if [ "${t}" != "out" ]; then
+   return 1
+ fi;
+ echo "${2}" > "${gpio_io}/gpio${1}/value"
+ return 0;
+}
+
+pin_get() {
+ echo "in" > "${gpio_io}/gpio${1}/direction"
+ t=`cat "${gpio_io}/gpio${1}/value"`
+ return $t
+}
+pin_get_i() {
+ echo "in" > "${gpio_io}/gpio${1}/direction"
+ cat "${gpio_io}/gpio${1}/value"
+}
+
+f_pins="/opt/tps-shared/hwini/pins.ini"
+
+pins_pin() {
+ grep -i "${1}" $f_pins | grep -v GPIO | grep "=" | sed -e 's/.*=\s*//'
+}

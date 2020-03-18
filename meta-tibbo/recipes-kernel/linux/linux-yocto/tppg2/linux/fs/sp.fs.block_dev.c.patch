@@ -1,0 +1,13 @@
+--- a/fs/block_dev.c	2017-09-20 09:25:38.000000000 +0300
++++ a/fs/block_dev.c	2018-11-12 06:42:56.000000000 +0300
+@@ -1323,6 +1323,10 @@
+ 		       disk->disk_name, bdev_size, disk_size);
+ 		i_size_write(bdev->bd_inode, disk_size);
+ 		flush_disk(bdev, false);
++		if(disk_size == 0)
++			kobject_uevent(&disk_to_dev(disk)->kobj, KOBJ_OFFLINE);
++		else
++			kobject_uevent(&disk_to_dev(disk)->kobj, KOBJ_ONLINE);
+ 	}
+ }
+ EXPORT_SYMBOL(check_disk_size_change);

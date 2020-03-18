@@ -1,0 +1,10 @@
+[Unit]
+Description=Sound Service
+
+[Service]
+#ExecStart=/usr/bin/pulseaudio --system --disallow-exit -vvvvvvvvvvvvvvv
+ExecStart=/usr/bin/pulseaudio --system --disallow-exit
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

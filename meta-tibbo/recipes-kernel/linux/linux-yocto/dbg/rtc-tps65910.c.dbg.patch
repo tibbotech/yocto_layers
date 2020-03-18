@@ -1,0 +1,58 @@
+--- ./drivers/rtc/rtc-tps65910.c	2015-05-18 00:58:43.000000000 +0300
++++ ./drivers/rtc/rtc-tps65910.c	2015-05-18 00:53:18.000000000 +0300
+@@ -132,6 +132,7 @@
+ 	struct tps65910 *tps = dev_get_drvdata(dev->parent);
+ 	int ret;
+ 
++dev_err(dev, "%s():%d\n", __FUNCTION__, __LINE__);
+ 	ret = regmap_bulk_read(tps->regmap, TPS65910_SECONDS, alarm_data,
+ 		NUM_TIME_REGS);
+ 	if (ret < 0) {
+@@ -150,6 +151,7 @@
+ 	if (ret < 0)
+ 		return ret;
+ 
++dev_err(dev, "%s():%d ret:%d int_val:%d\n", __FUNCTION__, __LINE__, ret, int_val);
+ 	if (int_val & TPS65910_RTC_INTERRUPTS_IT_ALARM)
+ 		alm->enabled = 1;
+ 
+@@ -162,6 +164,7 @@
+ 	struct tps65910 *tps = dev_get_drvdata(dev->parent);
+ 	int ret;
+ 
++dev_err(dev, "%s():%d\n", __FUNCTION__, __LINE__);
+ 	ret = tps65910_rtc_alarm_irq_enable(dev, 0);
+ 	if (ret)
+ 		return ret;
+@@ -173,6 +176,7 @@
+ 	alarm_data[4] = bin2bcd(alm->time.tm_mon + 1);
+ 	alarm_data[5] = bin2bcd(alm->time.tm_year - 100);
+ 
++dev_err(dev, "%s():%d\n", __FUNCTION__, __LINE__);
+ 	/* update all the alarm registers in one shot */
+ 	ret = regmap_bulk_write(tps->regmap, TPS65910_ALARM_SECONDS,
+ 		alarm_data, NUM_TIME_REGS);
+@@ -196,6 +200,7 @@
+ 	int ret;
+ 	u32 rtc_reg;
+ 
++dev_err(dev, "%s():%d\n", __FUNCTION__, __LINE__);
+ 	ret = regmap_read(tps->regmap, TPS65910_RTC_STATUS, &rtc_reg);
+ 	if (ret)
+ 		return IRQ_NONE;
+@@ -203,6 +208,7 @@
+ 	if (rtc_reg & TPS65910_RTC_STATUS_ALARM)
+ 		events = RTC_IRQF | RTC_AF;
+ 
++dev_err(dev, "%s():%d\n", __FUNCTION__, __LINE__);
+ 	ret = regmap_write(tps->regmap, TPS65910_RTC_STATUS, rtc_reg);
+ 	if (ret)
+ 		return IRQ_NONE;
+@@ -210,6 +216,7 @@
+ 	/* Notify RTC core on event */
+ 	rtc_update_irq(tps_rtc->rtc, 1, events);
+ 
++dev_err(dev, "%s():%d\n", __FUNCTION__, __LINE__);
+ 	return IRQ_HANDLED;
+ }
+ 

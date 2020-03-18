@@ -1,0 +1,12 @@
+--- a/drivers/tty/serial/Kconfig	2017-09-20 09:25:38.000000000 +0300
++++ a/drivers/tty/serial/Kconfig	2018-11-12 06:42:55.000000000 +0300
+@@ -1688,6 +1688,9 @@
+ 	  and warnings and which allows logins in single user mode)
+ 	  Otherwise, say 'N'.
+ 
++config SERIAL_SP_UART
++	bool "Sunplus UART serial port support"
++
+ endmenu
+ 
+ config SERIAL_MCTRL_GPIO

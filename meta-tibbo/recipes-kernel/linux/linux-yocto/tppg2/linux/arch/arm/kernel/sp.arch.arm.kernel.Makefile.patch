@@ -1,0 +1,11 @@
+--- a/arch/arm/kernel/Makefile	2017-09-20 09:25:38.000000000 +0300
++++ a/arch/arm/kernel/Makefile	2018-11-12 06:42:50.000000000 +0300
+@@ -13,6 +13,8 @@
+ 
+ CFLAGS_REMOVE_return_address.o = -pg
+ 
++CFLAGS_devtree.o := -DDEBUG
++
+ # Object file lists.
+ 
+ obj-y		:= elf.o entry-common.o irq.o opcodes.o \

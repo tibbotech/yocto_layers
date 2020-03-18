@@ -1,0 +1,124 @@
+DESCRIPTION = "ROM code for q628"
+SUMMARY = "XBoot bootloader"
+HOMEPAGE = "https://www.sunplus.com/"
+SECTION = "bootloaders"
+
+PACKAGE_ARCH = "${MACHINE_ARCH}"
+COMPATIBLE_HOST = "(arm).*-linux"
+
+SRCREV_draminit = "da3b9b85cfc15525dd3a96ea4b32694ca4456601"
+SRCREV_xboot = "00773b7d0b0be4bee812b7363edafab718185ba5"
+
+SRC_URI = "\
+git://git@113.196.136.131:22/qac628/boot/draminit;protocol=ssh;name=draminit;branch=master;destsuffix=draminit; \
+git://git@113.196.136.131:22/qac628/boot/xboot;protocol=ssh;name=xboot;branch=master;destsuffix=xboot; \
+"
+
+SRC_URI += "file://xboot.boot.ldi.patch"
+SRC_URI += "file://xboot.config.h.patch"
+SRC_URI += "file://xboot.Makefile.size.patch"
+
+S = "${WORKDIR}/xboot"
+
+XBOOT_CONFIG ?= "q628_defconfig"
+
+inherit deploy populate_sdk
+
+HOST_CC_ARCH=""
+
+def exp_Ka (d):
+    x = d.getVarFlags('XBOOT_CONFIGS')
+    if x is None:
+#        bb.note("isNone Ka")
+        return ''
+    v = ' '.join(x.keys())
+    return v
+    
+def exp_Va (d):
+    x = d.getVarFlags('XBOOT_CONFIGS')
+    if x is None:
+#        bb.note("isNone Va")
+        return ''
+    a = []
+    for c in x.keys():
+        a.append( d.getVarFlag('XBOOT_CONFIGS',c))
+    return ' '.join(a)
+
+#EXTRA_OEMAKE = " PLATFORM=${XBOOT_CONFIG}"
+
+do_configure() {
+ cp ${S}/configs/${XBOOT_CONFIG} ${S}/.config
+ x="${@exp_Ka(d)}"
+ y="${@exp_Va(d)}"
+ unset i j
+ for ck in $x; do
+   i=$(expr $i + 1);
+   for cv in $y; do
+     j=$(expr $j + 1);
+     if [ $i -eq $j ]; then
+       cp -r ${S}/ ${S}/../${PN}-${ck}
+#       cp ${S}/configs/${cv} ${S}/../${PN}-${ck}/.config
+     fi;
+   done;
+   unset j
+ done;
+}
+
+do_compile() {
+ oe_runmake PLATFORM=${XBOOT_CONFIG}
+}
+
+do_compile_append() {
+ x="${@exp_Ka(d)}"
+ y="${@exp_Va(d)}"
+ unset i j
+ for ck in $x; do
+   i=$(expr $i + 1);
+   for cv in $y; do
+     j=$(expr $j + 1);
+     if [ $i -eq $j ]; then
+       cd ${S}/../${PN}-${ck}
+#       oe_runmake PLATFORM=${cv}
+     fi;
+   done;
+   unset j
+ done;
+}
+ 
+do_install() {
+ install ${S}/bin/xboot.bin ${D}/
+ x="${@exp_Ka(d)}"
+# for ck in $x; do
+#   install ${S}/../${PN}-${ck}/bin/xboot.bin ${D}/xboot.bin-${ck}
+# done;
+}
+
+do_deploy() {
+ install -d ${DEPLOY_DIR_IMAGE}/sp_tools/tools
+ install ${S}/bin/xboot.bin ${DEPLOY_DIR_IMAGE}/
+ install ${S}/add_xhdr.sh ${DEPLOY_DIR_IMAGE}/sp_tools/
+ install ${S}/tools/tcpsum ${DEPLOY_DIR_IMAGE}/sp_tools/tools/
+ x="${@exp_Ka(d)}"
+# for ck in $x; do
+#   install ${S}/../${PN}-${ck}/bin/xboot.bin ${DEPLOY_DIR_IMAGE}/xboot.bin-${ck}
+# done;
+}
+
+#TCLIBC = "musl"
+
+FILES_${PN} += "xboot.bin"
+FILES_${PN} += "add_xhdr.sh"
+FILES_${PN} += "tcpsum"
+
+LICENSE = "GPLv2+"
+LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/GPL-2.0;md5=801f80980d171dd6425610833a22dbe6"
+
+DEPENDS += "vim-native"
+DEPENDS += "isp-native"
+
+#BBCLASSEXTEND = "native"
+
+MIRRORS=""
+PREMIRRORS=""
+
+addtask deploy before do_package_stage after do_compile

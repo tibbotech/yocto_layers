@@ -1,0 +1,4 @@
+define KFEATURE_DESCRIPTION "Enable SunPlus SDIO"
+define KFEATURE_COMPATIBILITY board
+
+kconf hardware wifi/sdio.cfg

@@ -1,0 +1,1 @@
+obj-y += hal_hdmi_tx.o hdmi_tx.o

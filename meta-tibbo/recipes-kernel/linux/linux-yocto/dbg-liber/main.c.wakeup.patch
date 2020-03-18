@@ -1,0 +1,11 @@
+--- a/drivers/net/wireless/libertas/main.c	2016-05-03 14:52:11.000000000 +0300
++++ a/drivers/net/wireless/libertas/main.c	2016-05-03 16:19:42.368181441 +0300
+@@ -891,7 +891,7 @@
+ 	priv->is_deep_sleep = 0;
+ 	priv->is_auto_deep_sleep_enabled = 0;
+ 	priv->deep_sleep_required = 0;
+-	priv->wakeup_dev_required = 0;
++	priv->wakeup_dev_required = 1;
+ 	init_waitqueue_head(&priv->ds_awake_q);
+ 	init_waitqueue_head(&priv->scan_q);
+ 	priv->authtype_auto = 1;

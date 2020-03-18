@@ -1,0 +1,10 @@
+#define PJ_HAS_FLOATING_POINT               1
+#define PJMEDIA_HAS_ALAW_ULAW_TABLE         1
+#define PJ_LOG_MAX_LEVEL                    3
+#define PJ_ENABLE_EXTRA_CHECK               0
+#define PJ_OS_HAS_CHECK_STAC                0
+#define PJSUA_DEFAULT_CODEC_QUALITY         0
+#define PJMEDIA_CODEC_SPEEX_DEFAULT_QUALITY 1
+#define PJ_AUTOCONF 1
+#define PJ_IS_BIG_ENDIAN 0
+#define PJ_IS_LITTLE_ENDIAN 1

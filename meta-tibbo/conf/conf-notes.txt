@@ -1,0 +1,11 @@
+Targets are:
+    tps-node
+    tps-agent
+    tps-klm
+
+Additional targets are:
+    meta-toolchain
+    adt-installer
+    meta-ide-support
+
+You can also run generated qemu images with a command like 'runqemu qemux86'

@@ -1,0 +1,27 @@
+7767517
+25 26
+Input            input            0 1 data 0=3 1=11 2=11
+Convolution      conv1_in         1 1 data conv1_in 0=8 1=3 2=1 3=2 4=0 5=1 6=216
+BatchNorm        conv1_bn         1 1 conv1_in conv1_bn 0=8
+Scale            conv1_bn_scale   1 1 conv1_bn conv1_bn_scale 0=8 1=1
+PReLU            conv1_prelu      1 1 conv1_bn_scale conv1 0=8
+Convolution      conv2_pw         1 1 conv1 conv2_pw 0=12 1=1 2=1 3=1 4=0 5=1 6=96
+BatchNorm        conv2_pw_bn      1 1 conv2_pw conv2_pw_bn 0=12
+Scale            conv2_pw_bn_scale 1 1 conv2_pw_bn conv2_pw_bn_scale 0=12 1=1
+PReLU            conv2_pw_prelu   1 1 conv2_pw_bn_scale conv2_pw_prelu 0=12
+ConvolutionDepthWise conv2_dw         1 1 conv2_pw_prelu conv2_dw 0=12 1=3 2=1 3=1 4=0 5=1 6=108 7=12
+BatchNorm        conv2_dw_bn      1 1 conv2_dw conv2_dw_bn 0=12
+Scale            conv2_dw_bn_scale 1 1 conv2_dw_bn conv2_dw_bn_scale 0=12 1=1
+PReLU            conv2_dw_prelu   1 1 conv2_dw_bn_scale conv2 0=12
+Convolution      conv3_pw         1 1 conv2 conv3_pw 0=16 1=1 2=1 3=1 4=0 5=1 6=192
+BatchNorm        conv3_pw_bn      1 1 conv3_pw conv3_pw_bn 0=16
+Scale            conv3_pw_bn_scale 1 1 conv3_pw_bn conv3_pw_bn_scale 0=16 1=1
+PReLU            conv3_pw_prelu   1 1 conv3_pw_bn_scale conv3_pw_prelu 0=16
+ConvolutionDepthWise conv3_dw         1 1 conv3_pw_prelu conv3_dw 0=16 1=3 2=1 3=1 4=0 5=1 6=144 7=16
+BatchNorm        conv3_dw_bn      1 1 conv3_dw conv3_dw_bn 0=16
+Scale            conv3_dw_bn_scale 1 1 conv3_dw_bn conv3_dw_bn_scale 0=16 1=1
+PReLU            conv3_dw_prelu   1 1 conv3_dw_bn_scale conv3 0=16
+Split            splitncnn_0      1 2 conv3 conv3_splitncnn_0 conv3_splitncnn_1
+Convolution      conv4-1          1 1 conv3_splitncnn_1 conv4-1 0=2 1=1 2=1 3=1 4=0 5=1 6=32
+Convolution      conv4-2          1 1 conv3_splitncnn_0 conv4-2 0=4 1=1 2=1 3=1 4=0 5=1 6=64
+Softmax          prob1            1 1 conv4-1 prob1 0=0

@@ -1,0 +1,11 @@
+--- a/drivers/net/wireless/libertas/main.c	2016-05-03 14:27:19.000000000 +0300
++++ a/drivers/net/wireless/libertas/main.c	2016-05-03 14:48:45.996210510 +0300
+@@ -34,7 +34,7 @@
+ 
+ 
+ /* Module parameters */
+-unsigned int lbs_debug;
++unsigned int lbs_debug = 0xFFFFFFFF;
+ EXPORT_SYMBOL_GPL(lbs_debug);
+ module_param_named(libertas_debug, lbs_debug, int, 0644);
+ 

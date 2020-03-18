@@ -1,0 +1,19 @@
+--- a/drivers/usb/host/ehci-hub.c	2017-09-20 09:25:38.000000000 +0300
++++ a/drivers/usb/host/ehci-hub.c	2018-11-12 06:42:55.000000000 +0300
+@@ -1320,6 +1320,16 @@
+ static void ehci_relinquish_port(struct usb_hcd *hcd, int portnum)
+ {
+ 	struct ehci_hcd		*ehci = hcd_to_ehci(hcd);
++#ifdef CONFIG_RETRY_TIMES
++	u32 port_val;
++
++	port_val = ehci_readl(ehci, &ehci->regs->port_status[0]);
++	if (PORT_CONNECT & port_val) {
++		ehci_writel(ehci, 0x0, &ehci->regs->configured_flag);
++		//ehci_halt(ehci);
++		//ehci_reset(ehci);
++	}
++#endif
+ 
+ 	if (ehci_is_TDI(ehci))
+ 		return;

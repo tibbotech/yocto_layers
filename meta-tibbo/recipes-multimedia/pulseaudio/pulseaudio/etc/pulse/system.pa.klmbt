@@ -1,0 +1,25 @@
+
+load-module module-native-protocol-unix auth-anonymous=1
+
+load-module module-udev-detect
+
+load-module module-stream-restore
+load-module module-device-restore
+
+### Automatically restore the default sink/source when changed by the user
+load-module module-default-device-restore
+
+### Automatically move streams to the default sink if the sink they are dies
+load-module module-rescue-streams
+
+load-module module-always-sink
+
+# load-module module-suspend-on-idle
+# load-module module-position-event-sounds
+
+load-module module-switch-on-connect
+load-module module-switch-on-port-available
+
+load-module module-bluetooth-policy
+load-module module-bluetooth-discover headset=native
+

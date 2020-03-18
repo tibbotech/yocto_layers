@@ -1,0 +1,3 @@
+from
+http://git.yoctoproject.org/cgit/cgit.cgi/meta-maker/tree/recipes-multimedia/mjpg-streamer
+git://git.yoctoproject.org/meta-maker

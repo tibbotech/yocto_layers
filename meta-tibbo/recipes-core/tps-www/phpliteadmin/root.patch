@@ -1,0 +1,11 @@
+diff -ur a/phpliteadmin.php a/phpliteadmin.php
+--- a/phpliteadmin.php	2015-07-05 18:55:04.000000000 +0300
++++ a/phpliteadmin.php	2016-08-11 18:53:28.977329904 +0300
+@@ -414,6 +414,7 @@
+ //- Initialization
+ 
+ // load optional configuration file
++chdir( $_SERVER[ 'DOCUMENT_ROOT']);
+ $config_filename = './phpliteadmin.config.php';
+ if (is_readable($config_filename)) {
+ 	include_once $config_filename;

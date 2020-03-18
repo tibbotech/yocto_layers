@@ -1,0 +1,20 @@
+--- a/examples/ssd/ssdmobilenet.cpp	2020-02-19 15:23:40.874248748 +0300
++++ a/examples/ssd/ssdmobilenet.cpp	2020-02-19 17:50:05.402755580 +0300
+@@ -90,7 +90,7 @@
+             cv::Size label_size = cv::getTextSize(label, cv::FONT_HERSHEY_SIMPLEX, 0.5, 1, &baseLine);
+             cv::rectangle(raw_img, cv::Rect(cv::Point(object.rec.x, object.rec.y- label_size.height),
+                                   cv::Size(label_size.width, label_size.height + baseLine)),
+-                      cv::Scalar(255, 255, 255), CV_FILLED);
++                      cv::Scalar(255, 255, 255), -1);
+             cv::putText(raw_img, label, cv::Point(object.rec.x, object.rec.y),
+                     cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 0));
+         }
+@@ -105,7 +105,7 @@
+ {
+     const char* imagepath = "test.jpg";
+ 
+-    cv::Mat m = cv::imread(imagepath, CV_LOAD_IMAGE_COLOR);
++    cv::Mat m = cv::imread(imagepath, cv::IMREAD_COLOR);
+     if (m.empty())
+     {
+         fprintf(stderr, "cv::imread %s failed\n", imagepath);

@@ -1,0 +1,22 @@
+--- a/drivers/usb/host/ehci-platform.h	1970-01-01 03:00:00.000000000 +0300
++++ a/drivers/usb/host/ehci-platform.h	2018-11-12 06:42:55.000000000 +0300
+@@ -0,0 +1,19 @@
++#ifndef __EHCI_PLATFORM_H
++#define __EHCI_PLATFORM_H
++
++int ehci_platform_probe(struct platform_device *dev);
++
++int ehci_platform_remove(struct platform_device *dev);
++
++
++#ifdef CONFIG_PM_WARP
++int sp_ehci_fb_resume(struct platform_device *dev);
++
++int sp_ehci_fb_suspend(struct platform_device *dev, pm_message_t state);
++#endif
++
++#endif
++
++
++
++

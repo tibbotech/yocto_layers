@@ -1,0 +1,14 @@
+[Unit]
+Description=Set 485 for %I
+BindsTo=dev-%i.device
+After=dev-%i.device
+Before=node-red.service
+
+[Service]
+Type=oneshot
+ExecStart=/home/root/dvtests/set485 /dev/%I 2
+TimeoutStopSec=20
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target node-red.service

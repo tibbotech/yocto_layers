@@ -1,0 +1,42 @@
+--- a/drivers/usb/gadget/Kconfig	2017-09-20 09:25:38.000000000 +0300
++++ a/drivers/usb/gadget/Kconfig	2018-11-12 06:42:55.000000000 +0300
+@@ -13,6 +13,8 @@
+ # both kinds of controller can also support "USB On-the-Go" (CONFIG_USB_OTG).
+ #
+ 
++if USB_GADGET_ENABLED
++
+ menuconfig USB_GADGET
+ 	tristate "USB Gadget Support"
+ 	select USB_COMMON
+@@ -45,6 +47,24 @@
+ 
+ if USB_GADGET
+ 
++config GADGET_USB0
++	bool
++	default y if USB_GADGET_PORT0_ENABLED
++
++# Selected by UDC drivers that support high-speed operation.
++config USB_GADGET_DUALSPEED
++	bool
++
++# Deal with ean function transfer data will be lose a packet after set_interface
++config USB_DEVICE_LOSE_PACKET_AFTER_SET_INTERFACE_WORKAROUND
++	bool "Enable Workaround USB Device Lose Packet After Set Interface"
++	depends on USB
++
++# Deal with ep11 auto switch buffer invaild
++config USB_DEVICE_EP11_NOT_AUTO_SWITCH_WORKAROUND
++	bool "Enable Workaround USB Device EP11 Not Auto Switch Ping Pong Buffer"
++	depends on USB
++
+ config USB_GADGET_DEBUG
+ 	bool "Debugging messages (DEVELOPMENT)"
+ 	depends on DEBUG_KERNEL
+@@ -488,3 +508,5 @@
+ endchoice
+ 
+ endif # USB_GADGET
++
++endif # USB_GADGET_ENABLED

@@ -1,0 +1,70 @@
+in special DTS:
+
+// in root section
+{
+....
+       sound {
+               compatible = "ti,da830-evm-audio";
+               ti,model = "AM335x TPP";
+               ti,audio-codec = <&tlv320aic3x>;
+               ti,mcasp-controller = <&mcasp0>;
+               ti,codec-clock-rate = <12000000>;
+               ti,audio-routing =
+                       "Headphone Jack",       "HPLOUT",
+                       "Headphone Jack",       "HPROUT",
+                       "MIC2L",                "Mic Bias",
+                       "MIC2R",                "Mic Bias";
+                       /*"Mic Bias",             "Mic Jack";*/
+       };
+
+       i2c@1 {
+               pinctrl-names = "default";
+               pinctrl-0 = <&i2cs1_pins>;
+               gpios = <&gpio2 26 GPIO_ACTIVE_HIGH     /* i2c_soft1.sda, gpio2_26, 0xf0 (PIN_INPUT | MUX_MODE7), old:gpio2 26|gpio1 28? GPIO_ACTIVE_HIGH */
+                        &gpio1 23 GPIO_ACTIVE_HIGH     /* i2c_soft1.scl, gpio1_23, 0x5c (PIN_OUTPUT_PULLUP | MUX_MODE7) */
+                       >;
+               status = "okay";
+
+               tlv320aic3x: tlv320aic3x@18 {
+                       compatible = "ti,tlv320aic3104";
+                       reg = <0x18>;
+                       status = "okay";
+                       ai3x-micbias-vg = <2>;
+                       gpio-reset = <&gpio0 10 GPIO_ACTIVE_HIGH>;
+
+                       /* Regulators */
+                       AVDD-supply = <&vaux2_reg>;
+                       IOVDD-supply = <&vaux2_reg>;
+                       DRVDD-supply = <&vio_reg>;
+                       DVDD-supply = <&vio_reg>;
+               };
+       };
+...
+};
+
+&am33xx_pinmux {
+       sound_pins: sound_pins {
+               pinctrl-single,pins = <
+                       0xdc  (PIN_INPUT  | MUX_MODE3) /* mcasp0_ahclkx   S9C */
+                       0xc4  (PIN_INPUT  | MUX_MODE3) /* mcasp0_fsx   S9B */
+                       0xc0  (PIN_INPUT  | MUX_MODE3) /* mcasp_aclkx ? S9A */
+                       0x1a0 (PIN_OUTPUT | MUX_MODE2) /* mcasp_axr2  S7D */
+                       0x68  (PIN_INPUT  | MUX_MODE6) /* mcasp_axr0  S7B */
+               >;
+       };
+};
+
+&mcasp0 {
+       pinctrl-names = "default";
+       pinctrl-0 = <&sound_pins>;
+       status = "okay";
+
+       op-mode = <0>;          /* MCASP_IIS_MODE */
+       tdm-slots = <2>;
+       /* 4 serializers */
+       serial-dir = <  /* 0: INACTIVE, 1: TX, 2: RX */
+               2 0 1 0
+       >;
+       tx-num-evt = <32>;
+       rx-num-evt = <32>;
+};

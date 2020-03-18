@@ -1,0 +1,21 @@
+--- a/drivers/staging/iio/meter/ade7758_core.c	2017-05-25 18:30:34.000000000 +0300
++++ a/drivers/staging/iio/meter/ade7758_core.c	2017-05-26 15:08:03.581771850 +0300
+@@ -415,6 +415,10 @@
+ 		ade7758_read_16bit,
+ 		ade7758_write_16bit,
+ 		ADE7758_CVRMSGAIN);
++static IIO_DEV_ATTR_FREQ(S_IRUGO,
++		ade7758_read_16bit,
++		NULL,
++		ADE7758_FREQ);
+ 
+ int ade7758_set_irq(struct device *dev, bool enable)
+ {
+@@ -623,6 +627,7 @@
+ 	&iio_dev_attr_avrmsos.dev_attr.attr,
+ 	&iio_dev_attr_bvrmsos.dev_attr.attr,
+ 	&iio_dev_attr_cvrmsos.dev_attr.attr,
++	&iio_dev_attr_freq.dev_attr.attr,
+ 	NULL,
+ };
+ 

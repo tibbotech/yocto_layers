@@ -1,0 +1,1 @@
+dtsi.timer4.patch - apply to tpp.dtsi and test timer4

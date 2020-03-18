@@ -1,0 +1,19 @@
+--- a/drivers/staging/iio/meter/ade7758_core.c	2017-05-26 16:17:00.992047649 +0300
++++ a/drivers/staging/iio/meter/ade7758_core.c	2017-05-26 16:16:00.848811800 +0300
+@@ -576,6 +576,8 @@
+ 		ADE7758_BVAHR);
+ static IIO_DEV_ATTR_CVAHR(ade7758_read_16bit,
+ 		ADE7758_CVAHR);
++static IIO_DEVICE_ATTR(freq, S_IRUGO, ade7758_read_16bit, NULL,
++		ADE7758_FREQ);
+ 
+ static IIO_DEV_ATTR_SAMP_FREQ(S_IWUSR | S_IRUGO,
+ 		ade7758_read_frequency,
+@@ -625,6 +625,7 @@
+ 	&iio_dev_attr_avrmsos.dev_attr.attr,
+ 	&iio_dev_attr_bvrmsos.dev_attr.attr,
+ 	&iio_dev_attr_cvrmsos.dev_attr.attr,
++	&iio_dev_attr_freq.dev_attr.attr,
+ 	NULL,
+ };
+ 

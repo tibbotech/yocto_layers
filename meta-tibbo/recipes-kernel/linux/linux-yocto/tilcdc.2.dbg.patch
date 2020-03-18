@@ -1,0 +1,38 @@
+--- a/drivers/gpu/drm/tilcdc/tilcdc_drv.c	2016-12-08 15:13:00.000000000 +0300
++++ a/drivers/gpu/drm/tilcdc/tilcdc_drv.c	2016-12-08 18:50:50.293654752 +0300
+@@ -258,15 +258,19 @@
+ 	platform_set_drvdata(pdev, dev);
+ 
+ 	if (priv->is_componentized) {
++printk(KERN_ERR "%s %s:%d comp0\n", __FILE__, __FUNCTION__, __LINE__);
+ 		ret = component_bind_all(dev->dev, dev);
+ 		if (ret < 0)
+ 			goto fail_mode_config_cleanup;
+ 
++printk(KERN_ERR "%s %s:%d r0:%d\n", __FILE__, __FUNCTION__, __LINE__, ret);
+ 		ret = tilcdc_add_external_encoders(dev, &bpp);
+ 		if (ret < 0)
+ 			goto fail_component_cleanup;
++printk(KERN_ERR "%s %s:%d r1:%d\n", __FILE__, __FUNCTION__, __LINE__, ret);
+ 	}
+ 
++printk(KERN_ERR "%s %s:%d N0:%d N1:%d\n", __FILE__, __FUNCTION__, __LINE__, priv->num_encoders, priv->num_connectors);
+ 	if ((priv->num_encoders == 0) || (priv->num_connectors == 0)) {
+ 		dev_err(dev->dev, "no encoders/connectors found\n");
+ 		ret = -ENXIO;
+@@ -294,6 +298,7 @@
+ 			break;
+ 	}
+ 
++printk(KERN_ERR "%s %s:%d bpp:%d\n", __FILE__, __FUNCTION__, __LINE__, bpp);
+ 	priv->fbdev = drm_fbdev_cma_init(dev, bpp,
+ 			dev->mode_config.num_crtc,
+ 			dev->mode_config.num_connector);
+@@ -656,6 +661,7 @@
+ 	}
+ 
+ 	ret = tilcdc_get_external_components(&pdev->dev, &match);
++printk(KERN_ERR "%s %s:%d ret:%d\n", __FILE__, __FUNCTION__, __LINE__, ret);
+ 	if (ret < 0)
+ 		return ret;
+ 	else if (ret == 0)

@@ -1,0 +1,14 @@
+--- a/drivers/mtd/spi-nor/Kconfig	2017-09-20 09:25:38.000000000 +0300
++++ a/drivers/mtd/spi-nor/Kconfig	2018-11-12 06:42:54.000000000 +0300
+@@ -113,4 +113,11 @@
+ 	  This enables support for the STM32 Quad SPI controller.
+ 	  We only connect the NOR to this controller.
+ 
++config SPI_SUNPLUS_SPI
++	tristate "Sunplus SPI nor controller"
++	depends on ARCH_PENTAGRAM
++	help
++	  Enable the Sunplus spi nor controller driver. This driver
++	  can be used to access the SPI NOR flash on platforms.
++
+ endif # MTD_SPI_NOR

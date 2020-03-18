@@ -1,0 +1,12 @@
+try this
+ https://www.npmjs.com/package/systemd
+ 
+systemd socket activation
+
+read this
+ https://rocketeer.be/articles/deploying-node-js-with-systemd/
+ 
+# git clone git@bitbucket.org:voxiferus/settings-app.git
+with my ssh key!!! then
+cd ..../output
+npm install .

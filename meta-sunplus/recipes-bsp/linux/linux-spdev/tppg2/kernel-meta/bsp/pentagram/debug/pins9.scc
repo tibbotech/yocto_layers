@@ -1,0 +1,6 @@
+define KFEATURE_DESCRIPTION "Enable SunPlus PinCTRL debug"
+define KFEATURE_COMPATIBILITY board
+
+kconf non-hardware printk.cfg
+kconf non-hardware pinctl.cfg
+kconf non-hardware sppctl.cfg

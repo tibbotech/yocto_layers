@@ -1,0 +1,51 @@
+--- linux/arch/arm/boot/dts/am335x-TPPs2.dts	1970-01-01 03:00:00.000000000 +0300
++++ linux/arch/arm/boot/dts/am335x-TPPs2.dts	2014-12-16 10:12:59.961528417 +0300
+@@ -0,0 +1,47 @@
++/*
++ * Tibbo Project PCB 2 for Linux (TPP2)
++ * Copyright (C) 2015 Tibbo Tech. - http://tibbo.com/tps/
++ * License: GPLv2 or later
++ */
++/dts-v1/;
++
++#include "am33xx.tpp.dtsi"
++#include "am335x-TPP.dtsi"
++
++/ {
++	model = "AM335x TPPs2";
++	compatible = "ti,am335x-tpp2", "ti,am335x-tpp", "ti,am33xx";
++};
++
++&mcasp0 {
++	status = "disabled";
++};
++
++&usb {
++	status = "okay";
++
++	control@44e10620 {
++		status = "okay";
++	};
++
++	usb-phy@47401300 {
++		status = "okay";
++	};
++
++	usb-phy@47401b00 {
++		status = "disabled";
++	};
++
++	usb@47401000 {
++		status = "okay";
++	};
++
++	usb@47401800 {
++		status = "disabled";
++		dr_mode = "host";
++	};
++
++	dma-controller@47402000  {
++		status = "okay";
++	};
++};
++

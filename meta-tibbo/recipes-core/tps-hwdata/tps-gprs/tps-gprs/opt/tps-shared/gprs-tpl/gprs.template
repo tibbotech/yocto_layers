@@ -1,0 +1,14 @@
+connect "/etc/ppp/peers/T_reset.sh /dev/{T.TTY} {T.GPI} && /etc/ppp/peers/T_speed.sh /dev/{T.TTY} {T.GPI} && /etc/ppp/peers/T_gprs.sh /dev/{T.TTY} {T.GPI} && /usr/sbin/chat -v -f /etc/chatscripts/{T.PROFILE}.chat"
+/dev/{T.TTY}
+115200
+{T.user}
+noipdefault
+usepeerdns
+defaultroute
+#replacedefaultroute
+nodeflate
+nobsdcomp
+maxfail 0
+ipparam "metric {T.UNIT}"
+{T.DEBUG}
+{T.UNIT}

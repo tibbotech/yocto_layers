@@ -1,0 +1,116 @@
+/*
+ * Automatic software update for U-Boot
+ * Make sure the flashing addresses ('load' prop) is correct for your board!
+ */
+
+/dts-v1/;
+
+/ {
+	description = "TPS3 + nodejs";
+	#address-cells = <1>;
+
+	images {
+		update@1 {
+			description = "U-Boot SPL0";
+			data = /incbin/("./MLO-tpp-tpp");
+			compression = "none";
+			arch = "arm";
+			type = "firmware";
+			tps-upd-to = "NAND.SPL0";
+			hash@1 {
+				algo = "sha1";
+			};
+		};
+		update@2 {
+			description = "U-Boot SPL1";
+			data = /incbin/("./MLO-tpp-tpp");
+			compression = "none";
+			arch = "arm";
+			type = "firmware";
+			tps-upd-to = "NAND.SPL1";
+			hash@1 {
+				algo = "sha1";
+			};
+		};
+		update@3 {
+			description = "U-Boot SPL2";
+			data = /incbin/("./MLO-tpp-tpp");
+			compression = "none";
+			arch = "arm";
+			type = "firmware";
+			tps-upd-to = "NAND.SPL2";
+			hash@1 {
+				algo = "sha1";
+			};
+		};
+		update@4 {
+			description = "U-Boot SPL3";
+			data = /incbin/("./MLO-tpp-tpp");
+			compression = "none";
+			arch = "arm";
+			type = "firmware";
+			tps-upd-to = "NAND.SPL3";
+			hash@1 {
+				algo = "sha1";
+			};
+		};
+		update@5 {
+			description = "U-Boot binary";
+			data = /incbin/("./u-boot.img-tpp");
+			compression = "none";
+			arch = "arm";
+			type = "firmware";
+			tps-upd-to = "NAND.u-boot";
+			hash@1 {
+				algo = "sha1";
+			};
+		};
+		update@6 {
+			description = "Kernel DTS";
+			data = /incbin/("./uImage-am335x-TPPs3-RLP.dtb");
+			compression = "none";
+			arch = "arm";
+			os = "linux";
+			type = "flat_dt";
+			tps-upd-to = "NAND.kernel-dts0";
+			hash@1 {
+				algo = "sha1";
+			};
+		};
+		update@7 {
+			description = "Kernel DTS";
+			data = /incbin/("./uImage-am335x-TPPs3.dtb");
+			compression = "none";
+			arch = "arm";
+			os = "linux";
+			type = "flat_dt";
+			tps-upd-to = "NAND.kernel-dts1";
+			hash@1 {
+				algo = "sha1";
+			};
+		};
+		update@8 {
+			description = "Kernel";
+			data = /incbin/("./uImage");
+			compression = "none";
+			arch = "arm";
+			os = "linux";
+			type = "kernel";
+			tps-upd-to = "NAND.kernel";
+			hash@1 {
+				algo = "sha1";
+			};
+		};
+		update@9 {
+			description = "RootFS";
+			data = /incbin/("./TPS-rlp-tpp.ubi");
+			compression = "none";
+			arch = "arm";
+			type = "filesystem";
+			tps-upd-to = "NAND.rootfs";
+			hash@1 {
+				algo = "sha1";
+			};
+		};
+	};
+};

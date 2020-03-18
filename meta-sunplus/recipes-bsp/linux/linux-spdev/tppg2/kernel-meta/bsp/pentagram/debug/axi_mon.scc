@@ -1,0 +1,4 @@
+define KFEATURE_DESCRIPTION "Enable SunPlus AXI monitor"
+define KFEATURE_COMPATIBILITY board
+
+kconf non-hardware axi_mon.cfg

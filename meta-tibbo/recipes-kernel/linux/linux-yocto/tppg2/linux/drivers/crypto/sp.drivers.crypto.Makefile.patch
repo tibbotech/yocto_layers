@@ -1,0 +1,7 @@
+--- a/drivers/crypto/Makefile	2017-09-20 09:25:38.000000000 +0300
++++ a/drivers/crypto/Makefile	2018-11-12 06:42:52.000000000 +0300
+@@ -39,3 +39,4 @@
+ obj-$(CONFIG_CRYPTO_DEV_VIRTIO) += virtio/
+ obj-$(CONFIG_CRYPTO_DEV_VMX) += vmx/
+ obj-$(CONFIG_CRYPTO_DEV_BCM_SPU) += bcm/
++obj-$(CONFIG_CRYPTO_DEV_SP)= sp/

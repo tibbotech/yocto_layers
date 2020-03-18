@@ -1,0 +1,20 @@
+--- a/arch/arm/boot/dts/pentagram-sp7021-tpsgpio.dts	2019-10-21 11:57:43.816338478 +0300
++++ a/arch/arm/boot/dts/pentagram-sp7021-tpsgpio.dts	2019-10-21 15:26:11.366826711 +0300
+@@ -66,6 +66,8 @@
+      MUXF_L2SW_LED_ON0
+      MUXF_L2SW_LED_FLASH1
+      MUXF_L2SW_LED_ON1
++     MUXF_L2SW_P0_MAC_RMII_RXER
++     MUXF_L2SW_P1_MAC_RMII_RXER
+    >;
+  };
+  
+@@ -80,6 +82,8 @@
+       SP7021_IOPAD(51,SP7021_PCTL_G_GPIO,0,0)   /* was L2SW_LED_ON0 */
+       SP7021_IOPAD(30,SP7021_PCTL_G_GPIO,0,0)   /* was L2SW_LED_FLASH1 */
+       SP7021_IOPAD(39,SP7021_PCTL_G_GPIO,0,0)   /* was L2SW_LED_ON1  */
++      SP7021_IOPAD(56,SP7021_PCTL_G_GPIO,0,0)   /* was L2SW_P0_MAC_RMII_RXER  */
++      SP7021_IOPAD(49,SP7021_PCTL_G_GPIO,0,0)   /* was L2SW_P1_MAC_RMII_RXER  */
+     >;
+  };
+ 

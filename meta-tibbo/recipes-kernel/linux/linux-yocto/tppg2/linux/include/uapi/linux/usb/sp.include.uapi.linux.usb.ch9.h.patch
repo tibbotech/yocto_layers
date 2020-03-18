@@ -1,0 +1,10 @@
+--- a/include/uapi/linux/usb/ch9.h	2017-09-20 09:25:38.000000000 +0300
++++ a/include/uapi/linux/usb/ch9.h	2018-11-12 06:42:56.000000000 +0300
+@@ -324,6 +324,7 @@
+ #define USB_CLASS_MISC			0xef
+ #define USB_CLASS_APP_SPEC		0xfe
+ #define USB_CLASS_VENDOR_SPEC		0xff
++#define USB_CLASS_DEVICE_NOT_SUPPORT	0x1f
+ 
+ #define USB_SUBCLASS_VENDOR_SPEC	0xff
+ 

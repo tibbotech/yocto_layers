@@ -1,0 +1,1 @@
+TODO: disable syslog and udhcpc or busybox completely!

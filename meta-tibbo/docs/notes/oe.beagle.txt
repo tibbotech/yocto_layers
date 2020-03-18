@@ -1,0 +1,49 @@
+// doc: https://gist.github.com/17twenty/2712354
+
+git clone git://git.yoctoproject.org/poky.git
+cd poky
+// optional (not used now)
+[git clone git://git.yoctoproject.org/meta-ti]
+
+git clone https://github.com/imyller/meta-nodejs.git
+
+source oe-init-build-env beaglebone
+bitbake core-image-minimal
+
+--- стандартная загрузка с NAND:
+load mmc 1 0x82000000 zImage
+load mmc 1 0x88000000 dtbs/am335x-boneblack.dtb
+// load mmc 1 0x88080000 initrd.img
+setenv bootargs console=tty0 console=ttyO0,115200n8 root=/dev/mmcblk0p2 ro rootfstype=ext4 rootwait fixrtc systemd=quiet init=/lib/systemd/systemd
+// вручную: 
+bootz 0x82000000 - 0x88000000
+// размер initrd неизвестен вручную
+
+--- загрузка с SDcard
+load mmc 0 0x82000000 uimage
+load mmc 0 0x88000000 dtbs/am335x-boneblack.dtb
+1) setenv bootargs console=tty0 console=ttyO0,115200n8 root=/dev/mmcblk1p2 ro rootfstype=ext4 rootwait fixrtc systemd=quiet init=/lib/systemd/systemd
+2) setenv bootargs console=tty0 console=ttyO0,115200n8 root=/dev/mmcblk1p2 ro rootfstype=ext4 rootwait fixrtc
+или root=UUID=2abad565-1132-484f-9edf-ceaf3ba327bf ro 
+bootm 0x82000000 - 0x88000000
+
+--- SDcard ext4
+load mmc 0 0x82000000 /boot/uImage
+load mmc 0 0x88000000 /boot/uImage-am335x-boneblack.dtb
+setenv bootargs console=tty0 console=ttyO0,115200n8 root=/dev/mmcblk0p1 ro rootfstype=ext4 rootwait fixrtc systemd=quiet init=/lib/systemd/systemd
+bootm 0x82000000 - 0x88000000
+
+
+--------- save to nand:
+TPBs3# setenv autoload off
+TPBs3# dhcp   
+link up on port 0, speed 100, full duplex
+BOOTP broadcast 1
+DHCP client bound to address 10.1.1.100
+TPBs3# setenv serverip 10.1.1.1
+TPBs3# tftp ${loadadddr} uImage-am335x-TPBs3.dtb
+...
+TPBs3# nand write ${loadaddr} u-boot-spl-os 0x20000
+
+NAND write: device 0 offset 0x240000, size 0x20000
+ 131072 bytes written: OK

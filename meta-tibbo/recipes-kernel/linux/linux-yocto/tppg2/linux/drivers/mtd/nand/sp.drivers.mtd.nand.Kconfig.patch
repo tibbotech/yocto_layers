@@ -1,0 +1,20 @@
+--- a/drivers/mtd/nand/Kconfig	2017-09-20 09:25:38.000000000 +0300
++++ a/drivers/mtd/nand/Kconfig	2018-11-12 06:42:54.000000000 +0300
+@@ -560,4 +560,17 @@
+ 	  Enables support for NAND controller on MTK SoCs.
+ 	  This controller is found on mt27xx, mt81xx, mt65xx SoCs.
+ 
++config MTD_NAND_SP
++	tristate "Support for NAND controller on MTK SoCs"
++	select MTD
++	select MTD_CHAR
++	select MTD_BLOCK
++	select MTD_BLKDEVS
++	select MTD_NAND
++	select MTD_NAND_IDS
++	select MTD_NAND_ECC
++	help
++	  Enables support for NAND controller on SUNPLUS SoCs.
++	  This controller is found on Sunplus SoCs.	  
++	  
+ endif # MTD_NAND
