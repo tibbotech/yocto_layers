@@ -28,8 +28,9 @@ bitbake img-spmn
 
 After build /disk2/build.24/tmp/deploy/images/tppg2/ contains all required image components: bootloaders, kernel, rootfs images.
 Pack the final image:
-
+```
 $ cd /disk2/build.24/tmp/deploy/images/tppg2/
 $ make -f ./sp_make.mk
+```
 
 ISPBOOOT.BIN is in the ./sp_out/ 
