@@ -1,7 +1,7 @@
-# Yocto Layers
+# Tibbo/SunPlus Yocto Layers
 Tibbo/SunPlus Linux Yocto layers for sp7021, am335x -based boards
 
-[Plus1: A Linux Chip for IoT and Industrial Control Applications](https://tibbo.com/store/plus1.html)
+Plus1 (sp7021): [A Linux Chip for IoT and Industrial Control Applications](https://tibbo.com/store/plus1.html)
 
 
 ## Clonning layers
