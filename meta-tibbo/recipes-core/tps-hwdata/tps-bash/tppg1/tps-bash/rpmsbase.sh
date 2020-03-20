@@ -1,0 +1,1 @@
+export RPMSBASE="https://tibbo.com/downloads/LTPS/repo/tppg1"

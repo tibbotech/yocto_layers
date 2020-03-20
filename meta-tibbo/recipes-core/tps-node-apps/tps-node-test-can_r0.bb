@@ -9,7 +9,6 @@ LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/GPL-2.0;md5=80
 
 require tps-node-apps-perm.inc
 
-#S = "${WORKDIR}/${PN}"
 S = "${WORKDIR}/git"
 
 DV_BR="master"

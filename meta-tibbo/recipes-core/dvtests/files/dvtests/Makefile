@@ -26,10 +26,11 @@ all:
 
 clean:
 	rm -f beep_bell beep_tone
-	rm -f dvgpio_fast dvgpio_simple dvi2c
+	rm -f dvgpio_fast dvgpio_simp dvi2c
 	rm -f dvspi
 	rm -f spidev_test
-	rm -f rtc
+	rm -f rtc rtc01 rtctest
+	rm -f endian
 	rm -f tpsid
 	rm -f ttyhrw
 	rm -f tty485

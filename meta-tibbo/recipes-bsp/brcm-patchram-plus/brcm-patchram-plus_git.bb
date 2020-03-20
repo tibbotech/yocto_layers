@@ -1,6 +1,6 @@
 DESCRIPTION = "Broadcom patchram utility"
 HOMEPAGE = "https://chromium.googlesource.com/chromiumos/third_party/broadcom/"
-SECTION = "console/utils"
+SECTION = "networking"
 
 SRCREV = "b146b5319f17fe8f21a608869fba86dccf670076"
 SRC_URI  = "git://chromium.googlesource.com/chromiumos/third_party/broadcom/;protocol=http;branch=master"

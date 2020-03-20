@@ -7,9 +7,3 @@ SECTION = "base"
 inherit useradd
 
 require tps-www-user.inc
-
-#USERADD_PACKAGES = "${PN}"
-#USERADD_PARAM_${PN} = " \
-#    --system --no-create-home \
-#    --groups ${WWW_G} \
-#    --user-group ${WWW_U}"

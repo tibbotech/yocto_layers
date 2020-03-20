@@ -24,8 +24,3 @@ FILES_${PN}  = "*"
 
 DEPENDS += " tps-node-apps-perm"
 RDEPENDS_${PN} += " tps-node-apps-perm"
-
-#USERADD_PACKAGES = "${PN}"
-#USERADD_PARAM_${PN} = " \
-#    --system --create-home --home-dir ${NAPPS_PFX} -s /bin/false \
-#    --groups ${NAPPS_G} --user-group ${NAPPS_U}"

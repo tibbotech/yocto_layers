@@ -1,6 +1,3 @@
-# inspector is disabled at configure state for Node 6
-#PACKAGECONFIG_append = " v8-inspector"
-
 BBCLASSEXTEND = "native nativesdk"
 
 FILESEXTRAPATHS_prepend := "${THISDIR}/${BPN}:"

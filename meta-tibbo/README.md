@@ -1,39 +1,21 @@
-# meta-tibbo
+# meta-sunplus
 
-Yocto BSP layer for Tibbo (<http://tibbo.com/>) and SunPlus (<https://www.sunplus.com/>) boards.
+Yocto layer for Tibbo Linux (<http://tibbo.com/>).
 
 ## Quick links
 
-* Git repo: ...
-* Mailing list (yocto mailing list): <yocto@yoctoproject.org>
-* Issues management (Github Issues): ...
-* Documentation: ...
+* Git repo: https://github.com/tibbotech/yocto_layers
 
 ## Description
 
-This is the ....
-
-## Dependencies
-
-This layer depends on:
-
-* URI: git://git.yoctoproject.org/poky
-  * branch: master
-  * revision: HEAD
-
-* URI: git://git.openembedded.org/meta-openembedded
-  * layers: meta-oe, meta-multimedia, meta-networking, meta-python
-  * branch: master
-  * revision: HEAD
+This is the applications collection
 
 ## Quick Start
 
-1. source poky/oe-init-build-env build-tpp
-2. Add this layer to bblayers.conf and the dependencies above
-3. Set MACHINE in local.conf to one of the supported boards
-4. bitbake tps-image
-5. ...
-6. Boot your board.
+1. source poky/oe-init-build-env c.tppg2
+2. bitbake img-spmn
+3. cd /disk2/build.24/tmp/deploy/images/tppg2/; make -f sp_make.mk
+4. Follow instructions at https://tibbo.com/downloads/LTPS/FW/LTPPg2/
 
 ## Maintainers
 

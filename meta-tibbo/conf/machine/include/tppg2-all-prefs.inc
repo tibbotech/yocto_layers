@@ -16,6 +16,7 @@ PREFERRED_VERSION_isp-native = "gh"
 uboot_v = "gh"
 PREFERRED_VERSION_u-boot-fw-utils = "${uboot_v}"
 PREFERRED_VERSION_u-boot-tools = "${uboot_v}"
+PREFERRED_VERSION_u-boot-tools-native = "${uboot_v}"
 PREFERRED_VERSION_u-boot = "${uboot_v}"
 
 # possible values:

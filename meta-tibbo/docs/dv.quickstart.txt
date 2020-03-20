@@ -1,5 +1,0 @@
-git clone git://git.yoctoproject.org/poky.git
-cd poky
-git checkout  sumo
-. ./oe-init-build-env c.tppg2
-

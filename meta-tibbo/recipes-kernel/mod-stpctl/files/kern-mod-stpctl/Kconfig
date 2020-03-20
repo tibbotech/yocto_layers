@@ -1,7 +1,0 @@
-config PINCTRL_SPPCTL
-	bool "SunPlus additional pinmux driver"
-	depends on ARCH_PENTAGRAM
-	help
-	    Say Y here to support SunPlus additional on-the-fly
-	    pinmux controller.
-	    GPIO is provided by a separate driver.

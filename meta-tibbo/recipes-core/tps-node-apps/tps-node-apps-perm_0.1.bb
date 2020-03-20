@@ -21,8 +21,3 @@ do_install() {
 }
 
 FILES_${PN}  = "*"
-
-#USERADD_PACKAGES = "${PN}"
-#USERADD_PARAM_${PN} = " \
-#    --system --create-home --home-dir ${NAPPS_PFX} -s /bin/false \
-#    --groups ${NAPPS_G} --user-group ${NAPPS_U}"

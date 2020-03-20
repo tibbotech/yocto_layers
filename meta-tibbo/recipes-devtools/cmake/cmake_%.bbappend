@@ -1,5 +1,5 @@
 
-# make life easer to use DSK with Qt Creator
+# make life easer to use SDK with Qt Creator
 
 FILESEXTRAPATHS_prepend := "${THISDIR}/${BPN}:"
 

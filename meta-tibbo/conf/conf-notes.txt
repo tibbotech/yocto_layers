@@ -1,7 +1,7 @@
 Targets are:
-    tps-node
-    tps-agent
-    tps-klm
+    img-spmn
+    img-spmt
+    img-spba
 
 Additional targets are:
     meta-toolchain

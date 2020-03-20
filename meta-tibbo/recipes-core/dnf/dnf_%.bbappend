@@ -9,9 +9,4 @@ do_install_append() {
  install -m 0644 ${WORKDIR}/automatic.conf ${D}${sysconfdir}/dnf/automatic.conf
 }
 
-#FILES_${PN} += "/etc/nsswitch.conf"
-
-#RDEPENDS_${PN} += " dnf"
-#DEPENDS_${PN} += " dnf"
-
 PR="1"
