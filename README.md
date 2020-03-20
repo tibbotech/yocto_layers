@@ -56,7 +56,7 @@ Components to choose:
 * rootfs: there are several, packed to ext4, UBI and squashfs.
 
 ### Preconfigured RPM repo URL
-is defined at (PACKAGE_FEED_URIS variable)
+is defined (PACKAGE_FEED_URIS variable) at
 ```
 meta-tibbo/conf/distro/tps.conf
 ```
