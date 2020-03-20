@@ -12,8 +12,6 @@ S = "${WORKDIR}/git"
 
 inherit deploy native
 
-#DEPENDS += "iboot-native"
-
 do_compile() {
  cd ${S}/tools/isp;
  oe_runmake

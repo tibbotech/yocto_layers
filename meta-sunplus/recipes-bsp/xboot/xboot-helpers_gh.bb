@@ -1,7 +1,7 @@
-DESCRIPTION = "XBoot build native helper programs"
+DESCRIPTION = "XBoot native helper programs"
 SUMMARY = "XBoot native helpers"
 
-require xboot-src-sp.inc
+require xboot-src-gh.inc
 
 S = "${WORKDIR}/xboot/tools"
 

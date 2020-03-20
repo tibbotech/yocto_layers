@@ -1,5 +1,6 @@
 DESCRIPTION = "First step bootloader for q628 (${XBOOT_CONFIG})"
-SUMMARY = "XBoot bootloader"
+SUMMARY = "XBoot Bootloader"
+SECTION = "bootloaders"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 COMPATIBLE_HOST = "(arm).*-linux"
@@ -30,8 +31,6 @@ do_deploy() {
  echo "DV deploy:${DEPLOY_DIR_IMAGE}"
  install ${S}/bin/xboot.bin ${DEPLOY_DIR_IMAGE}/${PN}.bin
 }
-
-#FILES_${PN} += "${PN}.bin"
 
 FILES_${PN} += "*"
 

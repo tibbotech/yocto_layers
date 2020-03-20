@@ -4,20 +4,20 @@ KBRANCH_tppg2 = "master"
 #KBRANCH_tppg2 = "tibbo/muxZero"
 #KBRANCH_tppg2 = "tibbo/noExportOTPfunc"
 #KBRANCH_tppg2 = "tibbo/otp"
-#KBRANCH_tppg2 = "tibbo/muxZero"
 #KBRANCH_tppg2 = "kernel_4.12"
 # mainline
 COMPATIBLE_MACHINE_tppg2 = "tppg2"
 
-SRC_URI = "git://git@113.196.136.131:22/qac628/linux/kernel;protocol=ssh;name=machine;branch=${KBRANCH};"
+SRC_URI = "git://github.com/tibbotech/plus1_kernel.git;branch=${KBRANCH};"
 # SRC_URI += "git://git.yoctoproject.org/yocto-kernel-cache;type=kmeta;name=meta;branch=yocto-4.12;destsuffix=${KMETA}"
 SRC_URI += "file://kernel-meta/*;type=kmeta;name=meta;destsuffix=${KMETA}"
 #SRC_URI += "file://kernel-meta/bsp/pentagram/pentagram-standard.scc"
 
+SRCREV = "b8b9c746f6d4c165954d288f398a4b77c4163dc7"
 # 4.12
 SRCREV_machine_tppg2 = "2e30599bd77bcfb6102ae45cdf47c40d7be55669"
 # 4.19
-SRCREV_machine_tppg2 = "20a0cf5d61a749ccea3af0bc495188595d69ccb6"
+SRCREV_machine_tppg2 = "b8b9c746f6d4c165954d288f398a4b77c4163dc7"
 
 # if using meta from master
 #SRCREV_meta ?= "cebe198870d781829bd997a188cc34d9f7a61023"

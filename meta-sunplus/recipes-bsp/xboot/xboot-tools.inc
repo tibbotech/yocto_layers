@@ -7,7 +7,6 @@ COMPATIBLE_HOST = "(x86).*-linux"
 S = "${WORKDIR}/xboot"
 
 inherit deploy
-#inherit populate_sdk
 
 HOST_CC_ARCH=""
 
