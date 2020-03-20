@@ -42,14 +42,14 @@ ISPBOOOT.BIN is in the ./sp_out/
 
 ### Bootloader and kernel source 
 (SunPlus private repo or GitHub public) are defined at
-
+```
 meta-tibbo/conf/machine/include/tppg2-all-prefs.inc
-
+```
 ### ISPBOOOT.BIN components
 are defined at
-
+```
 /disk2/build.24/tmp/deploy/images/tppg2/sp_make.mk
-
+```
 Components to choose:
 * xboot and U-boot: for nand or emmc,
 * DTB version,
@@ -57,5 +57,6 @@ Components to choose:
 
 ### Preconfigured RPM repo URL
 is defined at (PACKAGE_FEED_URIS variable)
-
+```
 meta-tibbo/conf/distro/tps.conf
+```
