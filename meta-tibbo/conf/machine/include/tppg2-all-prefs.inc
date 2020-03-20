@@ -23,5 +23,5 @@ PREFERRED_VERSION_u-boot = "${uboot_v}"
 # linux-spdev - private SP version
 # linux-yocto - traditional Yocto version
 
-linux_v = "spdev"
+linux_v = "sprel"
 PREFERRED_PROVIDER_virtual/kernel = "linux-${linux_v}"
