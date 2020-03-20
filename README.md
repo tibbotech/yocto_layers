@@ -1,5 +1,7 @@
-# yocto_layers
-Tibbo Linux Yocto layers for sp7021, am335x -based boards
+# Yocto Layers
+Tibbo/SunPlus Linux Yocto layers for sp7021, am335x -based boards
+
+[Plus1: A Linux Chip for IoT and Industrial Control Applications](https://tibbo.com/store/plus1.html)
 
 
 ## Clonning layers
@@ -34,4 +36,26 @@ $ cd /disk2/build.24/tmp/deploy/images/tppg2/
 $ make -f ./sp_make.mk
 ```
 
-ISPBOOOT.BIN is in the ./sp_out/ 
+ISPBOOOT.BIN is in the ./sp_out/
+
+## Customizations
+
+### Bootloader and kernel source 
+(SunPlus private repo or GitHub public) are defined at
+
+meta-tibbo/conf/machine/include/tppg2-all-prefs.inc
+
+### ISPBOOOT.BIN components
+are defined at
+
+/disk2/build.24/tmp/deploy/images/tppg2/sp_make.mk
+
+Components to choose:
+* xboot and U-boot: for nand or emmc,
+* DTB version,
+* rootfs: there are several, packed to ext4, UBI and squashfs.
+
+### Preconfigured RPM repo URL
+is defined at (PACKAGE_FEED_URIS variable)
+
+meta-tibbo/conf/distro/tps.conf
