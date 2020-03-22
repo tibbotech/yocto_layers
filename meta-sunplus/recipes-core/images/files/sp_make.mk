@@ -19,7 +19,7 @@ F_UBT=u-boot.img-a7021_ppg2
 F_DTB=sp7021-ltpp3g2revD.dtb
 
 #F_ROO=img-spt-tppg2.squashfs
-F_ROO=img-sp-tinl-tppg2.ext4
+F_ROO=img-sp-tiny-tppg2.ext4
 
 all: ${D0}/${OUTD}/ISPBOOOT.BIN
 
