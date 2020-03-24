@@ -1,7 +1,7 @@
 
 include img-bai_15.0.0.inc
 
-SRCREV_tibbo = "5697c448fb5c360a032088e714563750015a0785"
+SRCREV_tibbo = "b780924938217433fdc45164f9d8ac6a21f1ca9f"
 SRC_URI += "git://github.com/tibbotech/yocto_layers.git;branch=master;name=tibbo;destsuffix=xxx;"
 SRC_URI += "file://builder_session.sh.patch"
 
