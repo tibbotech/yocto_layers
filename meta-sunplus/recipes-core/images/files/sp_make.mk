@@ -68,6 +68,7 @@ ${D0}/${OUTD}/ISPBOOOT.BIN: ${D0}/${OUTD}/xboot.img ${D0}/${OUTD}/${F_UBT} ${D0}
 	${D0}/${OUTD}/uboot2 0x100000 \
 	${D0}/${OUTD}/env 0x80000 \
 	${D0}/${OUTD}/env_redund 0x80000 \
+	${D0}/${OUTD}/nonos 0x100000 \
 	${D0}/${OUTD}/dtb 0x40000 \
 	${D0}/${OUTD}/kernel 0xf00000 \
 	${D0}/${OUTD}/rootfs 0x1E000000

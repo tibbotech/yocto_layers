@@ -13,11 +13,11 @@ SRC_URI = "git://github.com/tibbotech/plus1_kernel.git;branch=${KBRANCH};"
 SRC_URI += "file://kernel-meta/*;type=kmeta;name=meta;destsuffix=${KMETA}"
 #SRC_URI += "file://kernel-meta/bsp/pentagram/pentagram-standard.scc"
 
-SRCREV = "b8b9c746f6d4c165954d288f398a4b77c4163dc7"
+SRCREV = "b1ebc0e0b97f06e7fbc2a14ff84d020afc72d17d"
 # 4.12
 SRCREV_machine_tppg2 = "2e30599bd77bcfb6102ae45cdf47c40d7be55669"
 # 4.19
-SRCREV_machine_tppg2 = "b8b9c746f6d4c165954d288f398a4b77c4163dc7"
+SRCREV_machine_tppg2 = "b1ebc0e0b97f06e7fbc2a14ff84d020afc72d17d"
 
 # if using meta from master
 #SRCREV_meta ?= "cebe198870d781829bd997a188cc34d9f7a61023"
@@ -46,7 +46,7 @@ SRC_URI += "file://pentagram-sp7021-common.dtsi.sdio.patch"
 #SRC_URI += "file://uart_gpio_rtscts/sp7021-tpstest.dts.4ctsrts.patch"
 #SRC_URI += "file://uart_gpio_rtscts/sp7021-tpsgpio.dts.4ugpio.patch"
 SRC_URI += "file://sdio_dbg/spsdv2.c.err.patch"
-SRC_URI += "file://bcmdhd.ampak.patch"
+#SRC_URI += "file://bcmdhd.ampak.patch"
 
 #do_patch_append() {
 # cp -r ${WORKDIR}/bcmdhd ${S}/drivers/net/wireless/bcmdhd

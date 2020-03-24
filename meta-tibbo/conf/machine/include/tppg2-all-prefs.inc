@@ -10,7 +10,6 @@ PREFERRED_VERSION_xboot-emmc = "${xboot_v}"
 PREFERRED_VERSION_xboot-tools = "${xboot_v}"
 PREFERRED_VERSION_xboot-tools-native = "${xboot_v}"
 PREFERRED_VERSION_xboot-helpers = "${xboot_v}"
-PREFERRED_VERSION_xboot-helpers-native = "${xboot_v}"
 
 PREFERRED_VERSION_isp-native = "gh"
 

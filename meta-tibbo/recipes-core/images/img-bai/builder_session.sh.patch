@@ -1,0 +1,10 @@
+--- a/etc/mini_x/session.d/builder_session.sh	2020-01-24 15:42:05.000000000 +0300
++++ a/etc/mini_x/session.d/builder_session.sh	2020-03-22 20:45:19.755651396 +0300
+@@ -28,6 +28,6 @@
+ fi
+ 
+ cd /home/builder/poky
+-. ./oe-init-build-env
++. ./oe-init-build-env c.tppg2
+ 
+ matchbox-terminal&

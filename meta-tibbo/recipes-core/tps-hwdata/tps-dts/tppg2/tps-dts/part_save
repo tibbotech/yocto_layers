@@ -1,6 +1,6 @@
 
 part_save() {
- dd if=/dev/zero of=/dev/mmcblk0p5 bs=1K
- dd if=${f_name}.dtb of=/dev/mmcblk0p5 bs=1K
+ dd if=/dev/zero of=/dev/mmcblk0p6 bs=1K
+ dd if=${f_name}.dtb of=/dev/mmcblk0p6 bs=1K
  return 0;
 }
