@@ -1,7 +1,7 @@
 
 include img-bai_15.0.0.inc
 
-SRCREV_tibbo = "5697c448fb5c360a032088e714563750015a0785"
+SRCREV_tibbo = "1f1390d82265c2b66dfa0613f32ad901f62bc387"
 SRC_URI += "git://github.com/tibbotech/yocto_layers.git;branch=master;name=tibbo;destsuffix=xxx;"
 SRCREV_oe = "9e60d30669a2ad0598e9abf0cd15ee06b523986b"
 SRC_URI += "git://git.openembedded.org/meta-openembedded;branch=zeus;name=oe;destsuffix=xx0;"
