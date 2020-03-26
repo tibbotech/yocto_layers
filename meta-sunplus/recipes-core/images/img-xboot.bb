@@ -37,6 +37,5 @@ python tinyinitrd () {
 
 IMAGE_INSTALL = "xboot"
 DEPENDS += "xboot-tools-native"
-#DEPENDS += "xboot"
 DEPENDS += "xboot-nand"
 DEPENDS += "xboot-emmc"

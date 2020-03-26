@@ -11,7 +11,7 @@ VIRTUAL-RUNTIME_base-utils-syslog = ""
 # = 1.3 by default to add 30% of free space.
 IMAGE_OVERHEAD_FACTOR = "1"
 # 20 MB of free space
-IMAGE_ROOTFS_EXTRA_SPACE = "40480"
+IMAGE_ROOTFS_EXTRA_SPACE = "20480"
 
 IMAGE_INSTALL = ""
 IMAGE_INSTALL += "${@bb.utils.contains("MACHINE_FEATURES", "tpsleds", "tpsled ", "",d)}"

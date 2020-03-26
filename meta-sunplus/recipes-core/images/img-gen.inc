@@ -1,5 +1,4 @@
 
-#D0 = "${TOPDIR}/tmp-mc-${MCNAME}/deploy/images/${MCMACHINE}"
 D0 = "${TMPDIR}/deploy/images/${MACHINE}/"
 D1 = "${TMPDIR}/deploy/images/${MACHINE}-arm5/"
 

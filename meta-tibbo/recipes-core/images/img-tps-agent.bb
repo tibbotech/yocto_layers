@@ -11,8 +11,6 @@ IMAGE_INSTALL += "tps-wan"
 
 # aggregate-agent
 IMAGE_INSTALL += "tps-agent"
-#IMAGE_INSTALL += "tps-ag"
-#IMAGE_INSTALL += "tps-agsme"
 IMAGE_INSTALL += "tps-ag-stable"
 
 IMAGE_INSTALL += " openssh-sftp-server"

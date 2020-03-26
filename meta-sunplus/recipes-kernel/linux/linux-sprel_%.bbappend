@@ -13,11 +13,11 @@ SRC_URI = "git://github.com/tibbotech/plus1_kernel.git;branch=${KBRANCH};"
 SRC_URI += "file://kernel-meta/*;type=kmeta;name=meta;destsuffix=${KMETA}"
 #SRC_URI += "file://kernel-meta/bsp/pentagram/pentagram-standard.scc"
 
-SRCREV = "b1ebc0e0b97f06e7fbc2a14ff84d020afc72d17d"
+SRCREV = "a6eb6e4444ad5438d1d68335eed69a1f8767363c"
 # 4.12
 SRCREV_machine_tppg2 = "2e30599bd77bcfb6102ae45cdf47c40d7be55669"
 # 4.19
-SRCREV_machine_tppg2 = "b1ebc0e0b97f06e7fbc2a14ff84d020afc72d17d"
+SRCREV_machine_tppg2 = "a6eb6e4444ad5438d1d68335eed69a1f8767363c"
 
 # if using meta from master
 #SRCREV_meta ?= "cebe198870d781829bd997a188cc34d9f7a61023"
@@ -40,7 +40,6 @@ SRC_URI += "file://pentagram-sp7021-achip-ttt.dts.patch"
 #SRC_URI += "file://pinctrl_dbg/sppctl.c.err.patch"
 #SRC_URI += "file://pinctrl_dbg/sp7021_gpio_ops.c.Fdbg.patch"
 SRC_URI += "file://sp7021-tpsgpio.dts.patch"
-SRC_URI += "file://pentagram-sp7021-common.dtsi.sdio.patch"
 # for gpio-driven rts/cts
 #SRC_URI += "file://uart_gpio_rtscts/sp_uart.c.dbg.patch"
 #SRC_URI += "file://uart_gpio_rtscts/sp7021-tpstest.dts.4ctsrts.patch"

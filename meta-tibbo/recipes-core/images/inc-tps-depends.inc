@@ -4,6 +4,8 @@ DEPENDS += "mariadb"
 
 # multimedia
 DEPENDS += "opencv"
+DEPENDS += "ncnn"
+DEPENDS += "v4l-utils"
 DEPENDS += "gstreamer1.0-plugins-base"
 DEPENDS += "gstreamer1.0-plugins-good"
 DEPENDS += "gstreamer1.0-plugins-bad"
@@ -48,3 +50,5 @@ DEPENDS += "python3-pip"
 DEPENDS += "python-cython"
 #DEPENDS += "python-opencv"
 #DEPENDS += "python3-scikit-learn"
+
+DEPENDS += "dvtests"
