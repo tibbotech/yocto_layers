@@ -51,4 +51,6 @@ DEPENDS += "python-cython"
 #DEPENDS += "python-opencv"
 #DEPENDS += "python3-scikit-learn"
 
+# tests
 DEPENDS += "dvtests"
+DEPENDS += "iperf3"

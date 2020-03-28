@@ -19,23 +19,5 @@ IMAGE_INSTALL += "tcf-agent"
 
 #IMAGE_INSTALL += "tps-wan"
 IMAGE_INSTALL += "resize-helper"
-IMAGE_INSTALL += "dvtests"
 IMAGE_INSTALL += "u-boot-fw-utils"
 IMAGE_INSTALL += "tzdata-asia"
-
-#IMAGE_INSTALL += "qt5ledscreen qt5everywheredemo"
-
-# really need this in base image?
-IMAGE_INSTALL += "bluez5 pulseaudio-server pulseaudio-misc ofono obexftp"
-
-# really need this in base image?
-IMAGE_INSTALL += "gstreamer1.0-plugins-base"
-IMAGE_INSTALL += "gstreamer1.0-plugins-good"
-IMAGE_INSTALL += "gstreamer1.0-plugins-bad"
-IMAGE_INSTALL += "gstreamer1.0-libav"
-
-# really need this in base image?
-IMAGE_INSTALL += "v4l-utils"
-
-IMAGE_INSTALL += "littlevgl"
-IMAGE_INSTALL += "test-freetype"
