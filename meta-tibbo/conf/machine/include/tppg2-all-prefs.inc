@@ -14,6 +14,8 @@ PREFERRED_VERSION_xboot-helpers-native = "${xboot_v}"
 
 PREFERRED_VERSION_isp-native = "gh"
 
+PREFERRED_VERSION_bnoos = "gh"
+
 uboot_v = "gh"
 PREFERRED_VERSION_u-boot-fw-utils = "${uboot_v}"
 PREFERRED_VERSION_u-boot-tools = "${uboot_v}"

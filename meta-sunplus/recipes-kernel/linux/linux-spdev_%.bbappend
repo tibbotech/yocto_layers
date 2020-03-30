@@ -13,11 +13,11 @@ SRC_URI = "git://git@113.196.136.131:22/qac628/linux/kernel;protocol=ssh;name=ma
 SRC_URI += "file://kernel-meta/*;type=kmeta;name=meta;destsuffix=${KMETA}"
 #SRC_URI += "file://kernel-meta/bsp/pentagram/pentagram-standard.scc"
 
-SRCREV = "928084c4e3a336f92992e09745cfe3cd397ddad7"
+SRCREV = "b4e699e6bc58ca48ef0bfdbd645f64c453207f00"
 # 4.12
 SRCREV_machine_tppg2 = "2e30599bd77bcfb6102ae45cdf47c40d7be55669"
 # 4.19
-SRCREV_machine_tppg2 = "928084c4e3a336f92992e09745cfe3cd397ddad7"
+SRCREV_machine_tppg2 = "b4e699e6bc58ca48ef0bfdbd645f64c453207f00"
 
 # if using meta from master
 #SRCREV_meta ?= "cebe198870d781829bd997a188cc34d9f7a61023"

@@ -6,20 +6,33 @@ D1=../tppg2-arm5
 
 OUTD=sp_out
 
-F_KRN=uImage
+###### Lines, marked with "***" are variable
+###### Xboot, U-Boot : NAND/EMMC
+###### DTS : there are several of them
+###### rootfs : there are several of them
 
+###### *** Xboot (arm926,Chip-B): pre-uboot, bootloader #1
 #F_XBT=xboot-nand.bin
 F_XBT=xboot-emmc.bin
 
+###### xxx No-OS (arm926,Chip-B): main binary [optional]
+F_NON=a926.img
+
+###### *** U-Boot (A7,Chip-A): bootloader #2
 #F_UBT=u-boot-a7021_emmc-sp-r0.img
 #F_UBT=u-boot.img-a7021_nand
 F_UBT=u-boot.img-a7021_ppg2
 
+###### *** DTS
 #F_DTB=pentagram-sp7021-achip-emu.dtb
 F_DTB=sp7021-ltpp3g2revD.dtb
 
+###### xxx Kernel (A7,Chip-A): Linux kernel
+F_KRN=uImage
+
+###### *** rootfs
 #F_ROO=img-spt-tppg2.squashfs
-F_ROO=img-sp-tinl-tppg2.ext4
+F_ROO=img-tps-base-tppg2.ext4
 
 all: ${D0}/${OUTD}/ISPBOOOT.BIN
 
@@ -30,6 +43,10 @@ ${D0}/${OUTD}/xboot.img: ${D1}/${F_XBT}
 	cd ${D1}/sp_tools/; ./add_xhdr.sh ../../tppg2/${OUTD}/xboot.bin ../../tppg2/${OUTD}/xboot.img 1
 	install ${D0}/${OUTD}/xboot.img ${D0}/${OUTD}/xboot0
 	install ${D0}/${OUTD}/xboot.img ${D0}/${OUTD}/xboot1
+
+${D0}/${OUTD}/nonos: ${D1}/${F_NON}
+	install -d ${D0}/${OUTD}/
+	install ${D1}/${F_NON} ${D0}/${OUTD}/nonos
 
 ${D0}/${OUTD}/${F_UBT}: ${D0}/${F_UBT}
 	install -d ${D0}/${OUTD}/
@@ -58,7 +75,7 @@ ${D0}/${OUTD}/rootfs: ${D0}/${F_ROO}
 # implement for dtb
 #fi;
 
-${D0}/${OUTD}/ISPBOOOT.BIN: ${D0}/${OUTD}/xboot.img ${D0}/${OUTD}/${F_UBT} ${D0}/${OUTD}/${F_KRN} ${D0}/${OUTD}/dtb ${D0}/${OUTD}/rootfs
+${D0}/${OUTD}/ISPBOOOT.BIN: ${D0}/${OUTD}/xboot.img ${D0}/${OUTD}/nonos ${D0}/${OUTD}/${F_UBT} ${D0}/${OUTD}/${F_KRN} ${D0}/${OUTD}/dtb ${D0}/${OUTD}/rootfs
 	which mkimage
 	${D0}/sp_tools/isp pack_image ${D0}/${OUTD}/ISPBOOOT.BIN \
 	${D0}/${OUTD}/xboot0 \
@@ -86,5 +103,5 @@ ${D0}/${OUTD}/ISPBOOOT.BIN: ${D0}/${OUTD}/xboot.img ${D0}/${OUTD}/${F_UBT} ${D0}
 
 .PHONY: all
 
-${D0}/${OUTD}/ISPBOOOT.BIN: sp_make.mk ${D0}/${OUTD}/xboot.img ${D0}/${OUTD}/${F_UBT} ${D0}/${OUTD}/${F_KRN} ${D0}/${OUTD}/dtb ${D0}/${OUTD}/rootfs
+${D0}/${OUTD}/ISPBOOOT.BIN: sp_make.mk ${D0}/${OUTD}/xboot.img ${D0}/${OUTD}/nonos ${D0}/${OUTD}/${F_UBT} ${D0}/${OUTD}/${F_KRN} ${D0}/${OUTD}/dtb ${D0}/${OUTD}/rootfs
 ${D0}/${OUTD}/xboot.img ${D0}/${OUTD}/${F_UBT} ${D0}/${OUTD}/${F_KRN} ${D0}/${OUTD}/dtb ${D0}/${OUTD}/rootfs: sp_make.mk

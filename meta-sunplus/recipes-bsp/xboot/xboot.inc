@@ -29,7 +29,7 @@ do_install() {
 
 do_deploy() {
  echo "DV deploy:${DEPLOY_DIR_IMAGE}"
- install ${S}/bin/xboot.bin ${DEPLOY_DIR_IMAGE}/${PN}.bin
+ install -m0644 ${S}/bin/xboot.bin ${DEPLOY_DIR_IMAGE}/${PN}.bin
 }
 
 FILES_${PN} += "*"
