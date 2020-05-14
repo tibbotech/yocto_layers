@@ -1,6 +1,8 @@
 
 include img-bai_15.0.0.inc
 
+SRC_URI += "file://npm.patch"
+
 SRCREV_tibbo = "a434e03556a50e2b2afea289c38ce2045aa884c3"
 SRC_URI += "git://github.com/tibbotech/yocto_layers.git;branch=master;name=tibbo;destsuffix=xxx;"
 SRCREV_oe = "9e60d30669a2ad0598e9abf0cd15ee06b523986b"
@@ -23,6 +25,7 @@ do_copy_tibbo_layers () {
  cp -R ${WORKDIR}/xxx/* ${WORKDIR}/git/
  cp -R ${WORKDIR}/xx0/* ${WORKDIR}/git/meta-openembedded/
  cp -R ${WORKDIR}/xx1/* ${WORKDIR}/git/meta-qt5/
+ patch -d ${WORKDIR}/git/ -p1 < ${WORKDIR}/npm.patch
 }
 
 IMAGE_INSTALL += "pstree mariadb-client mariadb-leftovers libmysqlclient-dev"
