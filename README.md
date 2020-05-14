@@ -16,6 +16,7 @@ cd meta-openembedded; git checkout origin/zeus; cd ..
 cd ..
 git clone https://github.com/tibbotech/yocto_layers.git ./poky.x
 rsync -a --exclude=.git ./poky.x/ ./poky/
+patch -p0 < ./npm.patch
 ```
 
 ## Prepare for builds
