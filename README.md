@@ -19,6 +19,14 @@ rsync -a --exclude=.git ./poky.x/ ./poky/
 patch -p0 < ./npm.patch
 ```
 
+## Pulling the updates from the GitHub
+```
+cd ./poky.x/
+git pull
+cd ..
+rsync -a --exclude=.git ./poky.x/ ./poky/
+```
+
 ## Prepare for builds
 ```
 mkdir /disk2
