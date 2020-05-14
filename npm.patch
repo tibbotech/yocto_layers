@@ -1,5 +1,5 @@
---- a/meta/classes/npm.bbclass	2020-05-14 11:10:50.920541874 +0300
-+++ a/meta/classes/npm.bbclass	2020-05-14 11:10:54.592541839 +0300
+--- poky/meta/classes/npm.bbclass	2020-05-14 11:10:50.920541874 +0300
++++ poky/meta/classes/npm.bbclass	2020-05-14 11:10:54.592541839 +0300
 @@ -55,7 +55,7 @@
  	mkdir -p ${D}${libdir}/node_modules
  	local NPM_PACKFILE=$(npm pack .)
