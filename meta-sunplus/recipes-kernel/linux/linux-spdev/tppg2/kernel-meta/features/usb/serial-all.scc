@@ -1,0 +1,7 @@
+# SPDX-License-Identifier: MIT
+define KFEATURE_DESCRIPTION "Enable USB serial support for all vendors"
+define KFEATURE_COMPATIBILITY board
+
+include serial.scc
+
+kconf hardware serial-all.cfg

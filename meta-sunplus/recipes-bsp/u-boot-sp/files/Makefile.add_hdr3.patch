@@ -1,0 +1,11 @@
+--- a/Makefile	2020-05-04 01:04:20.760448010 +0300
++++ a/Makefile	2020-05-04 01:06:57.420446516 +0300
+@@ -1029,7 +1029,7 @@
+ 	@# create u-boot.img
+ 	@echo "Wrap u-boot image..."
+ 
+-	./tools/add_uhdr.sh $(img_name) u-boot.bin u-boot.img 0x200040 0x200040
++	../../git/tools/add_uhdr.sh $(img_name) u-boot.bin u-boot.img 0x200040 0x200040
+ 	@img_sz=`du -sb u-boot.img | cut -f1` ; \
+ 	printf "size: %d (hex %x)\n" $$img_sz $$img_sz
+ 	$(call cmd,cfgcheck,u-boot.cfg)

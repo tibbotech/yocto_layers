@@ -17,7 +17,7 @@ SRCREV = "b4e699e6bc58ca48ef0bfdbd645f64c453207f00"
 # 4.12
 SRCREV_machine_tppg2 = "2e30599bd77bcfb6102ae45cdf47c40d7be55669"
 # 4.19
-SRCREV_machine_tppg2 = "b4e699e6bc58ca48ef0bfdbd645f64c453207f00"
+SRCREV_machine_tppg2 = "f0c780849c2d423b518700f7d234ee3437951726"
 
 # if using meta from master
 #SRCREV_meta ?= "cebe198870d781829bd997a188cc34d9f7a61023"

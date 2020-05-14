@@ -2,4 +2,5 @@ define KFEATURE_DESCRIPTION "Enable SunPlus USB"
 define KFEATURE_COMPATIBILITY board
 
 include features/usb/usb-base.scc
+include features/usb/serial-all.scc
 kconf hardware usb.cfg

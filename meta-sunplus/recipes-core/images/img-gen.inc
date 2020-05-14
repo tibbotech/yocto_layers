@@ -10,6 +10,7 @@ do_install() {
 }
 
 DEPENDS += "vim-native"
+DEPENDS += "u-boot-tools-native"
 
 #DEPENDS += "packagegroup-core-sdk"
 

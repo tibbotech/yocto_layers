@@ -51,6 +51,24 @@ DEPENDS += "python-cython"
 #DEPENDS += "python-opencv"
 #DEPENDS += "python3-scikit-learn"
 
-# tests
+# tests and benchmarks
 DEPENDS += "dvtests"
 DEPENDS += "iperf3"
+DEPENDS += "stress-ng"
+DEPENDS += "bonnie++"
+DEPENDS += "cpuburn-arm"
+DEPENDS += "fio"
+#DEPENDS += "glmark2"
+DEPENDS += "linpack"
+DEPENDS += "lmbench"
+DEPENDS += "memtester"
+DEPENDS += "nbench-byte"
+DEPENDS += "s-suite"
+DEPENDS += "sysbench"
+DEPENDS += "tinymembench"
+DEPENDS += "tiobench"
+DEPENDS += "whetstone"
+
+# cli tools
+DEPENDS += "mc"
+DEPENDS += "nano"

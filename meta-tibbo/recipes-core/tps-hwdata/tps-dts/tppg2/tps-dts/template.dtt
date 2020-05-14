@@ -13,8 +13,6 @@
         model = "{desc_short}";
 };
 
-&sdio {  status = "okay";  };
-
 {devices}
 
 &pctl {

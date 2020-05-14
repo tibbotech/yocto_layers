@@ -17,7 +17,7 @@ do_compile() {
 
 do_deploy() {
 # install -d ${DEPLOYDIR}/sp_tools/
- install -p -m0644 ${B}/bin/rom.img ${DEPLOY_DIR_IMAGE}/a926.img
+ install -p -m0644 ${B}/bin/rom.bin ${DEPLOY_DIR_IMAGE}/a926.bin
 }
 
 FILES_${PN} += "*"

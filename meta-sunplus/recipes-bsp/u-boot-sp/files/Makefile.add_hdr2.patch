@@ -1,0 +1,11 @@
+--- a/Makefile	2020-04-09 13:15:55.438441147 +0300
++++ a/Makefile	2020-04-09 13:18:56.291439423 +0300
+@@ -1040,7 +1040,7 @@
+ 		exit 1; \
+ 	fi
+ endif
+-	./tools/add_uhdr.sh $(img_name) u-boot.bin u-boot.img 0x200040 0x200040
++	../../git/tools/add_uhdr.sh $(img_name) u-boot.bin u-boot.img 0x200040 0x200040
+ 	@img_sz=`du -sb u-boot.img | cut -f1` ; \
+ 	printf "size: %d (hex %x)\n" $$img_sz $$img_sz
+ 	$(call cmd,cfgcheck,u-boot.cfg)

@@ -27,3 +27,5 @@ do_configure_append() {
 #RDEPENDS_${PN} += "node-pre-gyp"
 #RDEPENDS_${PN} += "bash"
 
+RDEPENDS_${PN}-node-gyp += "bash"
+RDEPENDS_${PN}-node-gyp += "python"

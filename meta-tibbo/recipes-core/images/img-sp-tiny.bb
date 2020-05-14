@@ -1,4 +1,4 @@
-DESCRIPTION = "Tibbo Project System"
+DESCRIPTION = "Tibbo sp7021 (tiny)"
 LICENSE = "MIT"
 PR = "r1"
 

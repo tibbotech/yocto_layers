@@ -22,6 +22,7 @@ IMAGE_INSTALL += "${@bb.utils.contains("DISTRO_FEATURES", "wifi", "iw wpa-suppli
 IMAGE_INSTALL += "${@bb.utils.contains("DISTRO_FEATURES", "wifi", "kernel-module-bcmdhd broadcom-bcmdhd-firmware", "",d)}"
 IMAGE_INSTALL += "${@bb.utils.contains("DISTRO_FEATURES", "bluetooth", "brcm-patchram-plus", "",d)}"
 IMAGE_INSTALL += "u-boot-fw-utils"
+IMAGE_INSTALL += "kernel-module-mcp251x"
 
 inherit core-image extrausers
 

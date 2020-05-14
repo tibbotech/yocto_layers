@@ -22,6 +22,7 @@ do_deploy() {
  install -p -m0755 ${B}/tools/isp/isp ${DEPLOYDIR}/sp_tools/
  install -p -m0755 ${B}/isp.sh ${DEPLOYDIR}/sp_tools/
  install -p -m0755 ${B}/part.sh ${DEPLOYDIR}/sp_tools/
+ install -p -m0755 ${B}/tools/add_uhdr.sh ${DEPLOYDIR}/sp_tools/
  install -d ${DEPLOYDIR}/sp_tools/secure_sign/sign_keys/test-keys/
  install -p -m0755 ${B}/tools/secure_sign/gen_signature.sh ${DEPLOYDIR}/sp_tools/secure_sign/
  install -p -m0755 ${B}/tools/secure_sign/sign_ed25519 ${DEPLOYDIR}/sp_tools/secure_sign/

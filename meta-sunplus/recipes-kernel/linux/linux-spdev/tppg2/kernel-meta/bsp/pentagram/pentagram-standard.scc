@@ -21,6 +21,7 @@ include features/namespaces/namespaces.scc
 include features/leds/leds.scc
 
 include usb/usb.scc
+include usb/customers.scc
 
 include wifi/tppg2_brcm.scc
 include bt/bt.scc
@@ -48,3 +49,5 @@ include ui/vt.scc
 
 #include sensors/thermal.scc
 #include sensors/hwmon.scc
+
+include features/can/can.scc

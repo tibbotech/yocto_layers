@@ -41,7 +41,6 @@ do_install_append_tppg1() {
   install -m 0644 ${STAGING_KERNEL_DIR}/arch/${ARCH}/boot/dts/am33*clocks* ${D}/opt/tps-shared/dts-orig/
 }
 do_install_append_tppg2() {
-  install -m 0644 ${STAGING_KERNEL_DIR}/arch/${ARCH}/boot/dts/pentagram*7021*.dtsi ${D}/opt/tps-shared/dts-orig/
   install -m 0644 ${STAGING_KERNEL_DIR}/arch/${ARCH}/boot/dts/sp7021*.dtsi ${D}/opt/tps-shared/dts-orig/
 }
 
