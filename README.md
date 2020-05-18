@@ -30,6 +30,7 @@ rsync -a --exclude=.git ./poky.x/ ./poky/
 ## Prepare for builds
 ```
 mkdir /disk2
+chmod 0777 /disk2
 ```
 
 ## Build
