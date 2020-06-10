@@ -31,8 +31,9 @@ F_DTB=sp7021-ltpp3g2revD.dtb
 F_KRN=uImage
 
 ###### *** rootfs
-#F_ROO=img-spt-tppg2.squashfs
-F_ROO=img-tps-base-tppg2.ext4
+#F_ROO=img-sp-tiny-tppg2.ext4
+#F_ROO=img-tps-base-tppg2.ext4
+F_ROO=img-tps-free-tppg2.ext4
 
 all: ${D0}/${OUTD}/ISPBOOOT.BIN
 
@@ -46,14 +47,12 @@ ${D0}/${OUTD}/xboot.img: ${D1}/${F_XBT}
 
 ${D0}/${OUTD}/nonos: ${D1}/${F_NON}
 	install -d ${D0}/${OUTD}/
-	export MKIMAGE=${D0}/sp_tools/mkimage
-	${D0}/sp_tools/add_uhdr.sh nonos_B $< $@ 0x10040 0x10040
+	export MKIMAGE=${D0}/sp_tools/mkimage;  ${D0}/sp_tools/add_uhdr.sh nonos_B $< $@ 0x10040 0x10040
 	@sz=`du -sb $@ |cut -f1`; printf "size: %d (hex %x)\n" $$sz $$sz
 
 ${D0}/${OUTD}/${F_UBT}: ${D0}/${F_UBT}
 	install -d ${D0}/${OUTD}/
-	export MKIMAGE=${D0}/sp_tools/mkimage
-	${D0}/sp_tools/add_uhdr.sh "uboot_pentagram_board" $< $@ 0x200040 0x200040
+	export MKIMAGE=${D0}/sp_tools/mkimage; ${D0}/sp_tools/add_uhdr.sh "uboot_pentagram_board" $< $@ 0x200040 0x200040
 	@sz=`du -sb $@ |cut -f1`; printf "size: %d (hex %x)\n" $$sz $$sz
 	${D0}/sp_tools/secure_sign/gen_signature.sh ${D0}/${OUTD}/ ${F_UBT} 1
 	install ${D0}/${OUTD}/${F_UBT} ${D0}/${OUTD}/uboot0

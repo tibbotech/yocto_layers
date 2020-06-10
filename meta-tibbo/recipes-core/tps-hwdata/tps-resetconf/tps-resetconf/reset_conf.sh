@@ -76,7 +76,7 @@ while [ "1" == "1" ]; do
 #  if [ ${x} == 0 ]; then continue;  fi;
   # got seq!
   logger "Doing conf reset..."
-  cp -f /etc/systemd/network/wired.network.orig /etc/systemd/network/wired.network
+  cp -f /etc/systemd/network/eth0.network.orig /etc/systemd/network/eth0.network
   cp -f /var/www/tps-wan/conf/.htpasswd.orig /var/www/tps-wan/conf/.htpasswd
   usermod -p `openssl passwd -1 -salt tibbo 123` root
   sync; sync; reboot

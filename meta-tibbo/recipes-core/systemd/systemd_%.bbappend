@@ -1,14 +1,24 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/${BPN}:"
 
-CONFFILES_${PN} += " ${sysconfdir}/systemd/network/wired.network"
-SRC_URI += "file://wired.network"
+CONFFILES_${PN} += " ${sysconfdir}/systemd/network/eth0.network"
+
+SRC_URI += "file://eth0.network"
+SRC_URI += "file://eth1.network"
 SRC_URI += "file://nsswitch.conf"
 
-do_install_append() {
- install -m 0644 ${WORKDIR}/wired.network ${D}${sysconfdir}/systemd/network/wired.network
- install -m 0644 ${WORKDIR}/wired.network ${D}${sysconfdir}/systemd/network/wired.network.orig
+do_install_append_tppg1() {
+ install -m 0644 ${WORKDIR}/eth0.network ${D}${sysconfdir}/systemd/network/eth0.network
+ install -m 0644 ${WORKDIR}/eth0.network ${D}${sysconfdir}/systemd/network/eth0.network.orig
  install -m 0644 ${WORKDIR}/nsswitch.conf ${D}${sysconfdir}/
-# ln -s ../run/systemd/resolve/resolv.conf ${D}${sysconfdir}/resolv.conf
+}
+do_install_append_tppg2() {
+ install -m 0644 ${WORKDIR}/eth0.network ${D}${sysconfdir}/systemd/network/eth0.network
+ install -m 0644 ${WORKDIR}/eth0.network ${D}${sysconfdir}/systemd/network/eth0.network.orig
+ install -m 0644 ${WORKDIR}/eth1.network ${D}${sysconfdir}/systemd/network/eth1.network
+ install -m 0644 ${WORKDIR}/nsswitch.conf ${D}${sysconfdir}/
+}
+do_install_append() {
+ install -m 0644 ${WORKDIR}/nsswitch.conf ${D}${sysconfdir}/
 }
 
 FILES_${PN} += "/etc/nsswitch.conf"

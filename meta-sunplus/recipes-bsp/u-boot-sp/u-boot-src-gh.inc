@@ -6,7 +6,8 @@ LICENSE = "GPLv2+"
 LIC_FILES_CHKSUM = "file://Licenses/README;md5=30503fd321432fc713238f582193b78e"
 PE = "1"
 
-SRCREV = "301677c8e8e44a0f34b5b971422326df6e98ef63"
+#SRCREV = "b338fa0f1a09ac14f3c06c4c8e5b4aaa80a46914"
+SRCREV = "212326214e985bf379090c6654521bf5e438e4c9"
 
 SRC_URI = "git://github.com/tibbotech/plus1_uboot.git;branch=master"
 
@@ -14,5 +15,6 @@ SRC_URI += "file://libfdt.i.patch"
 #SRC_URI += "file://Makefile.add_hdr.patch"
 #SRC_URI += "file://Makefile.add_hdr2.patch"
 #SRC_URI += "file://Makefile.add_hdr3.patch"
+SRC_URI += "file://pentagram_common.h.sep_dtb.patch"
 
 S = "${WORKDIR}/git"

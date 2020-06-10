@@ -51,3 +51,7 @@ include ui/vt.scc
 #include sensors/hwmon.scc
 
 include features/can/can.scc
+
+# temporary there
+#include debug/pins0.scc
+#include debug/pins9.scc

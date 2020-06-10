@@ -7,8 +7,6 @@
 
 #include "sp7021-ltpp3g2revD.dtsi"
 
-#include <dt-bindings/interrupt-controller/arm-gic.h>
-
 / {
         model = "{desc_short}";
 };

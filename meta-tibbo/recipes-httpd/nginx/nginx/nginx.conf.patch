@@ -2,7 +2,7 @@
 +++ ./nginx.conf
 @@ -8,7 +8,6 @@
  
- pid        /run/nginx/nginx.pid;
+ pid        /run/nginx.pid;
  
 -
  events {

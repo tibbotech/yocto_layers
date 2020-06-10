@@ -5,6 +5,7 @@ KBRANCH_tppg2 = "master"
 #KBRANCH_tppg2 = "tibbo/noExportOTPfunc"
 #KBRANCH_tppg2 = "tibbo/otp"
 #KBRANCH_tppg2 = "kernel_4.12"
+KBRANCH_tppg2 = "kernel_4.19"
 # mainline
 COMPATIBLE_MACHINE_tppg2 = "tppg2"
 
@@ -13,16 +14,19 @@ SRC_URI = "git://github.com/tibbotech/plus1_kernel.git;branch=${KBRANCH};"
 SRC_URI += "file://kernel-meta/*;type=kmeta;name=meta;destsuffix=${KMETA}"
 #SRC_URI += "file://kernel-meta/bsp/pentagram/pentagram-standard.scc"
 
-SRCREV = "ac3527cae68156396370424d1d2a0b391be7a999"
+SRCREV = "277821b48c1d1fd3cee8bd469a886f3cf693c0b2"
 # 4.12
 SRCREV_machine_tppg2 = "2e30599bd77bcfb6102ae45cdf47c40d7be55669"
 # 4.19
-SRCREV_machine_tppg2 = "7bf03ca60187927d02779c9857b14b3d96f8577c"
+SRCREV_machine_tppg2 = "277821b48c1d1fd3cee8bd469a886f3cf693c0b2"
+## 5.4
+#SRCREV_machine_tppg2 = "7857e7fc6400006b76b6f8169bef86e53504da2f"
 
 # if using meta from master
 #SRCREV_meta ?= "cebe198870d781829bd997a188cc34d9f7a61023"
 #LINUX_VERSION = "4.12.14"
 LINUX_VERSION = "4.19.37"
+#LINUX_VERSION = "5.4.35"
 
 #LINUX_KERNEL_TYPE = "debug"
 

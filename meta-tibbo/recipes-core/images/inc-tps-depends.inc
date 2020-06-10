@@ -72,3 +72,9 @@ DEPENDS += "whetstone"
 # cli tools
 DEPENDS += "mc"
 DEPENDS += "nano"
+DEPENDS += "syslog-ng"
+DEPENDS += "logrotate"
+DEPENDS += "log4cpp"
+
+#TOOLCHAIN_HOST_TASK_append += " nativesdk-dlib-dev"
+#TOOLCHAIN_HOST_TASK_append += " log4cpp-dev"
