@@ -5,7 +5,7 @@ IMAGE_ROOTFS_EXTRA_SPACE = "104857600"
 
 SRC_URI += "file://npm.patch"
 
-SRCREV_tibbo = "a434e03556a50e2b2afea289c38ce2045aa884c3"
+SRCREV_tibbo = "d005a5a05117f3c98362310bb8309930194fb579"
 SRC_URI += "git://github.com/tibbotech/yocto_layers.git;branch=master;name=tibbo;destsuffix=xxx;"
 SRCREV_oe = "9e60d30669a2ad0598e9abf0cd15ee06b523986b"
 SRC_URI += "git://git.openembedded.org/meta-openembedded;branch=zeus;name=oe;destsuffix=xx0;"
