@@ -4,7 +4,7 @@ SECTION = "bootloaders"
 LICENSE = "GPLv2+"
 LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/GPL-2.0;md5=801f80980d171dd6425610833a22dbe6"
 
-SRCREV_draminit = "212e66ecce2b7a6615a24f0ff345270d08aaf525"
+SRCREV_draminit = "1e5f063b3a79169662fc18cf71f0f2668f775d4b"
 SRCREV_xboot = "252f3162b028868ce6932d5d7c99e2f39f3dba15"
 
 SRC_URI = "\
