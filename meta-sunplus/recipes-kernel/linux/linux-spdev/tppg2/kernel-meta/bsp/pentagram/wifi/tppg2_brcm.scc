@@ -2,6 +2,7 @@ include features/wifi/wifi-common.scc
 kconf hardware sdio.cfg
 kconf hardware no_other_vendors.cfg
 kconf hardware tppg2_brcm.cfg
+kconf non-hardware wext.cfg
 
 #patch bmdhd.Kconfig.patch
 #patch bmdhd.Makefile.patch

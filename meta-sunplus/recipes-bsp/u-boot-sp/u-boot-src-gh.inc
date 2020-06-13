@@ -12,9 +12,6 @@ SRCREV = "212326214e985bf379090c6654521bf5e438e4c9"
 SRC_URI = "git://github.com/tibbotech/plus1_uboot.git;branch=master"
 
 SRC_URI += "file://libfdt.i.patch"
-#SRC_URI += "file://Makefile.add_hdr.patch"
-#SRC_URI += "file://Makefile.add_hdr2.patch"
-#SRC_URI += "file://Makefile.add_hdr3.patch"
 SRC_URI += "file://pentagram_common.h.sep_dtb.patch"
 
 S = "${WORKDIR}/git"

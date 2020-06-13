@@ -22,7 +22,6 @@ do_install() {
 }
 
 RDEPENDS_${PN} += "libstdc++"
-RDEPENDS_${PN} += "expect"
 RDEPENDS_${PN} += "tps-bash"
 
 INSANE_SKIP_${PN} = "ldflags"

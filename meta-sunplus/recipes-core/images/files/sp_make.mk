@@ -47,12 +47,12 @@ ${D0}/${OUTD}/xboot.img: ${D1}/${F_XBT}
 
 ${D0}/${OUTD}/nonos: ${D1}/${F_NON}
 	install -d ${D0}/${OUTD}/
-	export MKIMAGE=${D0}/sp_tools/mkimage;  ${D0}/sp_tools/add_uhdr.sh nonos_B $< $@ 0x10040 0x10040
+	export MKIMAGE=${D0}/sp_tools/mkimage;  ${D0}/sp_tools/add_uhdr.sh nonos_B $< $@ arm 0x10040 0x10040
 	@sz=`du -sb $@ |cut -f1`; printf "size: %d (hex %x)\n" $$sz $$sz
 
 ${D0}/${OUTD}/${F_UBT}: ${D0}/${F_UBT}
 	install -d ${D0}/${OUTD}/
-	export MKIMAGE=${D0}/sp_tools/mkimage; ${D0}/sp_tools/add_uhdr.sh "uboot_pentagram_board" $< $@ 0x200040 0x200040
+	export MKIMAGE=${D0}/sp_tools/mkimage; ${D0}/sp_tools/add_uhdr.sh "uboot_pentagram_board" $< $@ arm 0x200040 0x200040
 	@sz=`du -sb $@ |cut -f1`; printf "size: %d (hex %x)\n" $$sz $$sz
 	${D0}/sp_tools/secure_sign/gen_signature.sh ${D0}/${OUTD}/ ${F_UBT} 1
 	install ${D0}/${OUTD}/${F_UBT} ${D0}/${OUTD}/uboot0
@@ -78,8 +78,7 @@ ${D0}/${OUTD}/rootfs: ${D0}/${F_ROO}
 # implement for dtb
 #fi;
 
-${D0}/${OUTD}/ISPBOOOT.BIN: ${D0}/${OUTD}/xboot.img ${D0}/${OUTD}/nonos ${D0}/${OUTD}/${F_UBT} ${D0}/${OUTD}/${F_KRN} ${D0}/${OUTD}/dtb ${D0}/${OUTD}/rootfs
-	which mkimage
+${D0}/${OUTD}/ISPBOOOT.BIN: ${D0}/${OUTD}/xboot.img ${D0}/${OUTD}/nonos ${D0}/${OUTD}/${F_UBT} ${D0}/${OUTD}/${F_KRN} ${D0}/${OUTD}/dtb ${D0}/${OUTD}/rootfs ${D0}/sp_tools/mkimage
 	${D0}/sp_tools/isp pack_image ${D0}/${OUTD}/ISPBOOOT.BIN \
 	${D0}/${OUTD}/xboot0 \
 	${D0}/${OUTD}/uboot0 \
