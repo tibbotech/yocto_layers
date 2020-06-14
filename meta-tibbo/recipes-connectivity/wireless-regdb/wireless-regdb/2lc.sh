@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!/bin/sh
 
 echo "["
 grep "country " ${1} | sed -e 's/\:.*//' | while read x0 CD; do
