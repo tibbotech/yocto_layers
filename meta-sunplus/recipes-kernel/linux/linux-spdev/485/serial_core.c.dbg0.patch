@@ -1,0 +1,26 @@
+--- a/drivers/tty/serial/serial_core.c	2020-06-16 18:12:42.671173451 +0300
++++ a/drivers/tty/serial/serial_core.c	2020-06-17 01:09:00.434614568 +0300
+@@ -1312,19 +1312,23 @@
+ 
+ 	if (!port->rs485_config)
+ 		return -ENOIOCTLCMD;
++pr_info( "%s():%d\n", __FUNCTION__, __LINE__);
+ 
+ 	if (copy_from_user(&rs485, rs485_user, sizeof(*rs485_user)))
+ 		return -EFAULT;
+ 
++pr_info( "%s():%d\n", __FUNCTION__, __LINE__);
+ 	spin_lock_irqsave(&port->lock, flags);
+ 	ret = port->rs485_config(port, &rs485);
+ 	spin_unlock_irqrestore(&port->lock, flags);
+ 	if (ret)
+ 		return ret;
+ 
++pr_info( "%s():%d\n", __FUNCTION__, __LINE__);
+ 	if (copy_to_user(rs485_user, &port->rs485, sizeof(port->rs485)))
+ 		return -EFAULT;
+ 
++pr_info( "%s():%d\n", __FUNCTION__, __LINE__);
+ 	return 0;
+ }
+ 

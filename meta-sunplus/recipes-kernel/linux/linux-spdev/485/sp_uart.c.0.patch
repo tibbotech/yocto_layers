@@ -1,0 +1,51 @@
+--- a/drivers/tty/serial/sp_uart.c	2020-06-16 18:12:46.493173672 +0300
++++ a/drivers/tty/serial/sp_uart.c	2020-06-17 00:52:58.468559066 +0300
+@@ -1689,6 +1689,26 @@
+ 
+ struct platform_device *sunpluse_uart_platform_device;
+ 
++static int sunplus_uart_probe_485( struct platform_device *_pd, struct device_node *_dn) {
++ struct sunplus_uart_port *sup;
++ struct uart_port *up;
++ sup = &( sunplus_uart_ports[ _pd->id]);
++ up = &( sup->uport);
++ uart_get_rs485_mode( &( _pd->dev), &( up->rs485));
++ DBG_INFO( "%s():%d\n", __FUNCTION__, __LINE__);
++ if ( up->rs485.flags & SER_RS485_ENABLED) {
++   DBG_INFO( "%s():%d enabled\n", __FUNCTION__, __LINE__);
++   sup->DE_RE_dir = devm_gpiod_get( &( _pd->dev), "dir", GPIOD_OUT_LOW);
++   if ( !IS_ERR( sup->DE_RE_dir)) {
++     DBG_INFO("DE_RE is at G_MX[%d].\n", desc_to_gpio( sup->DE_RE_dir));
++     hrtimer_init( &( sup->CheckTXE), CLOCK_MONOTONIC, HRTIMER_MODE_REL);
++     sup->CheckTXE.function = Check_TXE;
++     hrtimer_init( &( sup->RtsDelay), CLOCK_MONOTONIC, HRTIMER_MODE_REL);
++     sup->RtsDelay.function = Rts_Delay;
++   }
++ }
++ return( 0);  }
++
+ static int sunplus_uart_platform_driver_probe_of(struct platform_device *pdev)
+ {
+ 	struct resource *res_mem;
+@@ -1821,20 +1841,7 @@
+ 	if (irq < 0)
+ 		return -ENODEV;
+ 
+-	uart_get_rs485_mode(&pdev->dev, &port->rs485);		
+-	if (port->rs485.flags & SER_RS485_ENABLED)
+-	{
+-		//DBG_INFO("delay_rts_before_send = %d \n",sunplus_uart_ports[pdev->id].uport.rs485.delay_rts_before_send);
+-		//DBG_INFO("delay_rts_after_send = %d \n",sunplus_uart_ports[pdev->id].uport.rs485.delay_rts_after_send);
+-		sunplus_uart_ports[pdev->id].DE_RE_dir = devm_gpiod_get(&pdev->dev, "dir", GPIOD_OUT_LOW);
+-		if (!IS_ERR(sunplus_uart_ports[pdev->id].DE_RE_dir)) {
+-			DBG_INFO("DE_RE is at G_MX[%d].\n", desc_to_gpio(sunplus_uart_ports[pdev->id].DE_RE_dir));
+-			hrtimer_init(&sunplus_uart_ports[pdev->id].CheckTXE, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+-			sunplus_uart_ports[pdev->id].CheckTXE.function = Check_TXE;
+-			hrtimer_init(&sunplus_uart_ports[pdev->id].RtsDelay, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+-			sunplus_uart_ports[pdev->id].RtsDelay.function = Rts_Delay;
+-		}
+-	}	
++	sunplus_uart_probe_485( pdev, pdev->dev.of_node);
+ 
+ #if 0
+ 	clk = devm_clk_get(&pdev->dev, NULL);
