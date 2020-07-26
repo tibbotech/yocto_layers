@@ -6,7 +6,7 @@ LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/Apache-2.0;md5
 
 inherit npm
 
-NPMPN = "${PN}"
+#NPMPN = "${PN}"
 
 S = "${WORKDIR}/git"
 

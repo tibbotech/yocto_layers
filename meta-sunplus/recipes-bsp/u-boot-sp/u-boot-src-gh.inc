@@ -6,7 +6,8 @@ LICENSE = "GPLv2+"
 LIC_FILES_CHKSUM = "file://Licenses/README;md5=30503fd321432fc713238f582193b78e"
 PE = "1"
 
-SRCREV = "a6e96cdbb2ec426f7219a9017dc4617ea88f547d"
+#SRCREV = "090de890a99792107d2492c9d8183c7668f2a270"
+SRCREV = "8a5008c2e2818ace51fd182d67d1ed4f36bdb9eb"
 
 SRC_URI = "git://github.com/tibbotech/plus1_uboot.git;branch=master"
 

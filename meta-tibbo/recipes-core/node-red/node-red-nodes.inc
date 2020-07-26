@@ -3,9 +3,12 @@ HOMEPAGE = "https://github.com/node-red/node-red-nodes"
 
 require node-red-module.inc
 
-SRCREV="${AUTOREV}"
+# has no serialport and sqlite
+#SRC_URI  = "git://github.com/node-red/node-red-nodes.git;protocol=git;tag=${PV}"
 
-SRC_URI  = "git://github.com/node-red/node-red-nodes.git;protocol=git"
+SRCREV="${AUTOREV}"
+SRC_URI  = "git://github.com/node-red/node-red-nodes.git;protocol=git;branch=master"
+
 
 CUR_DST="/usr/lib/node_modules/${PN}"
 

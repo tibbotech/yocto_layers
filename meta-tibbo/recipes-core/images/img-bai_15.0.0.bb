@@ -8,9 +8,9 @@ SRC_URI += "file://npm.patch"
 SRCREV_tibbo = "0c0dbbc9a8d5df22928cedead64f9f34b75de6c8"
 SRC_URI += "git://github.com/tibbotech/yocto_layers.git;branch=master;name=tibbo;destsuffix=xxx;"
 SRCREV_oe = "9e60d30669a2ad0598e9abf0cd15ee06b523986b"
-SRC_URI += "git://git.openembedded.org/meta-openembedded;branch=zeus;name=oe;destsuffix=xx0;"
+SRC_URI += "git://git.openembedded.org/meta-openembedded;branch=dunfell;name=oe;destsuffix=xx0;"
 SRCREV_qt5 = "6a9c0acbad3b9ac6b1e129c7c3c7b1648f4e4855"
-SRC_URI += "git://github.com/meta-qt5/meta-qt5.git;branch=zeus;name=qt5;destsuffix=xx1;"
+SRC_URI += "git://github.com/meta-qt5/meta-qt5.git;branch=dunfell;name=qt5;destsuffix=xx1;"
 SRC_URI += "file://builder_session.sh.patch"
 SRC_URI += "file://clear_sock.sh"
 
@@ -28,7 +28,7 @@ do_copy_tibbo_layers () {
  cp -R ${WORKDIR}/xxx/* ${WORKDIR}/git/
  cp -R ${WORKDIR}/xx0/* ${WORKDIR}/git/meta-openembedded/
  cp -R ${WORKDIR}/xx1/* ${WORKDIR}/git/meta-qt5/
- patch -d ${WORKDIR}/git/ -p1 < ${WORKDIR}/npm.patch
+ patch -d ${WORKDIR}/git/ -p1 < ${WORKDIR}/npm.dunfell.patch
 }
 
 IMAGE_INSTALL += "pstree mariadb-client mariadb-leftovers libmysqlclient-dev"

@@ -1,6 +1,6 @@
 # note: get rid of busybox: take "core-image-full-cmdline"
 
-inherit core-image distro_features_check extrausers
+inherit core-image features_check extrausers
 
 IMAGE_FEATURES += "ssh-server-openssh"
 #IMAGE_FEATURES += "package-management"

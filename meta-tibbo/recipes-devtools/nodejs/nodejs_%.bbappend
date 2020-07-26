@@ -13,7 +13,7 @@ do_install_append_class-nativesdk() {
 # to build ICU
 # SRC_URL += "file://node6gcc7.patch"
 
-SRC_URL += "file://inflate-shrinkwrap.js.patch"
+#SRC_URL += "file://inflate-shrinkwrap.js.patch"
 
-SRC_URI_append_class-target += "file://inflate-shrinkwrap.js.patch"
-SRC_URI_append_class-native += "file://inflate-shrinkwrap.js.patch"
+#SRC_URI_append_class-target += "file://inflate-shrinkwrap.js.patch"
+#SRC_URI_append_class-native += "file://inflate-shrinkwrap.js.patch"

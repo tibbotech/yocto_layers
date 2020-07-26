@@ -1,0 +1,11 @@
+--- poky/meta/classes/npm.bbclass	2020-07-26 02:24:40.167604374 +0300
++++ poky/meta/classes/npm.bbclass	2020-07-02 01:57:56.775306956 +0300
+@@ -296,7 +296,7 @@
+ 
+     # node(1) is using /usr/lib/node as default include directory and npm(1) is
+     # using /usr/lib/node_modules as install directory. Let's make both happy.
+-    ln -fs node_modules ${D}/${nonarch_libdir}/node
++    #ln -fs node_modules ${D}/${nonarch_libdir}/node
+ }
+ 
+ FILES_${PN} += " \

@@ -7,16 +7,18 @@ Read [Tibbo Yocto Layers Howto](https://tibbotech.github.io/plus1_layers/) for m
 
 ## Clonning layers
 ```
+rel="dunfell"
 git clone git://git.yoctoproject.org/poky.git
-cd poky; git checkout origin/zeus;
+cd poky; git checkout origin/${rel};
 git clone https://github.com/meta-qt5/meta-qt5.git
-cd meta-qt5; git checkout origin/zeus; cd ..
+cd meta-qt5; git checkout origin/${rel}; cd ..
 git clone git://git.openembedded.org/meta-openembedded
-cd meta-openembedded; git checkout origin/zeus; cd ..
+cd meta-openembedded; git checkout origin/${rel}; cd ..
 cd ..
 git clone https://github.com/tibbotech/yocto_layers.git ./poky.x
+cd poky.x; git checkout ${rel}; cd ..
 rsync -a --exclude=.git ./poky.x/ ./poky/
-patch -p0 < ./npm.patch
+patch -p0 < ./npm.${rel}.patch
 ```
 
 ## Pulling the updates from the GitHub
@@ -36,14 +38,14 @@ chmod 0777 /disk2
 ## Build
 ```
 cd ./poky/
-. oe-init-build-env c.tppg2
+. oe-init-build-env build.tppg2
 bitbake img-spmn
 ```
 
-After build /disk2/build.24/tmp/deploy/images/tppg2/ contains all required image components: bootloaders, kernel, rootfs images.
+After build /disk2/build.26/tmp/deploy/images/tppg2/ contains all required image components: bootloaders, kernel, rootfs images.
 Pack the final image:
 ```
-$ cd /disk2/build.24/tmp/deploy/images/tppg2/
+$ cd /disk2/build.26/tmp/deploy/images/tppg2/
 $ make -f ./sp_make.mk
 ```
 
@@ -59,7 +61,7 @@ meta-tibbo/conf/machine/include/tppg2-all-prefs.inc
 ### ISPBOOOT.BIN components
 are defined at
 ```
-/disk2/build.24/tmp/deploy/images/tppg2/sp_make.mk
+/disk2/build.26/tmp/deploy/images/tppg2/sp_make.mk
 ```
 Components to choose:
 * xboot and U-boot: for nand or emmc,

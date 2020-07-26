@@ -6,8 +6,9 @@ LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/Apache-2.0;md5
 
 inherit npm systemd useradd
 
-SRC_URI  = "https://github.com/${PN}/${PN}/releases/download/${PV}/${PN}-${PV}.zip;name=pkg"
-SRC_URI += "file://${PN}.service"
+SRC_URI  = "https://github.com/${BPN}/${BPN}/releases/download/${PV}/${BPN}-${PV}.zip;name=pkg"
+SRC_URI += "file://${BPN}.service"
+SRC_URI += "npmsw://${THISDIR}/${BPN}/npm-shrinkwrap.json"
 
 FILES_${PN} += "\
     ${bindir} \
@@ -38,3 +39,5 @@ USERADD_PARAM_${PN} = " \
     --groups capi-devs node-red"
 
 SYSTEMD_SERVICE_${PN} = "${PN}.service"
+
+RDEPENDS_${PN} += "bash"

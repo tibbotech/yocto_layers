@@ -9,7 +9,7 @@ DEPENDS += "kern-tools-native"
 
 inherit uboot-config uboot-extlinux-config uboot-sign deploy cml1
 
-DEPENDS += "swig-native python-native"
+DEPENDS += "swig-native python3-native"
 
 EXTRA_OEMAKE = 'CROSS_COMPILE=${TARGET_PREFIX} CC="${TARGET_PREFIX}gcc ${TOOLCHAIN_OPTIONS}" V=1'
 EXTRA_OEMAKE += 'HOSTCC="${BUILD_CC} ${BUILD_CFLAGS} ${BUILD_LDFLAGS}"'

@@ -8,16 +8,14 @@ LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/BSD-3-Clause;m
 
 inherit npm
 
-SRCREV="${AUTOREV}"
-
-SRC_URI  = "git://github.com/mapbox/node-sqlite3.git;protocol=git"
+SRC_URI  = "git://github.com/mapbox/node-sqlite3.git;protocol=git;tag=v${PV}"
 
 S = "${WORKDIR}/git"
 
 #FILES_${PN}-staticdev += "${prefix}/lib/node/sqlite3/build/Release/sqlite3.a"
 #FILES_${PN}-staticdev += "${prefix}/lib/node/sqlite3/build/Release/obj.target/deps/sqlite3.a"
 
-do_configure_append() {
+do_install_prepend() {
  rm -rf ${S}/tools/docker
  rm -rf ${S}/Dockerfile
 }

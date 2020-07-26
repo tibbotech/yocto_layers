@@ -5,28 +5,28 @@ KBRANCH_tppg2 = "master"
 #KBRANCH_tppg2 = "tibbo/noExportOTPfunc"
 #KBRANCH_tppg2 = "tibbo/otp"
 #KBRANCH_tppg2 = "kernel_4.12"
-KBRANCH_tppg2 = "kernel_4.19"
+#KBRANCH_tppg2 = "kernel_4.19"
 # mainline
 COMPATIBLE_MACHINE_tppg2 = "tppg2"
 
-SRC_URI = "git://git@113.196.136.131:22/qac628/linux/kernel;protocol=ssh;name=machine;branch=${KBRANCH};"
+SRC_URI = "git://git@113.196.136.131:22/qac628/linux/kernel;protocol=ssh;name=machine;branch=${KBRANCH}"
 # SRC_URI += "git://git.yoctoproject.org/yocto-kernel-cache;type=kmeta;name=meta;branch=yocto-4.12;destsuffix=${KMETA}"
 SRC_URI += "file://kernel-meta/*;type=kmeta;name=meta;destsuffix=${KMETA}"
 #SRC_URI += "file://kernel-meta/bsp/pentagram/pentagram-standard.scc"
 
-SRCREV = "2a286661044e3b3b1127e7bb07018992ee19ddcf"
+SRCREV = "71cfe171f5a27fe334b90e0977826fcf1a5a2f0a"
 # 4.12
 SRCREV_machine_tppg2 = "2e30599bd77bcfb6102ae45cdf47c40d7be55669"
 # 4.19
 SRCREV_machine_tppg2 = "eee6766b2540822a9b229f64549299793a903f41"
-## 5.4
-#SRCREV_machine_tppg2 = "2a286661044e3b3b1127e7bb07018992ee19ddcf"
+# 5.4
+SRCREV_machine_tppg2 = "71cfe171f5a27fe334b90e0977826fcf1a5a2f0a"
 
 # if using meta from master
 #SRCREV_meta ?= "cebe198870d781829bd997a188cc34d9f7a61023"
 #LINUX_VERSION = "4.12.14"
 LINUX_VERSION = "4.19.37"
-#LINUX_VERSION = "5.4.35"
+LINUX_VERSION = "5.4.35"
 
 #LINUX_KERNEL_TYPE = "debug"
 
@@ -47,6 +47,9 @@ SRC_URI += "file://sp7021-tpsgpio.dts.patch"
 #SRC_URI += "file://uart_gpio_rtscts/sp7021-tpsgpio.dts.4ugpio.patch"
 SRC_URI += "file://sdio_dbg/spsdv2.c.err.patch"
 #SRC_URI += "file://bcmdhd.ampak.patch"
+
+# FIXME!
+SRC_URI += "file://sp7021-common.dtsi.inc.patch"
 
 #do_patch_append() {
 # cp -r ${WORKDIR}/bcmdhd ${S}/drivers/net/wireless/bcmdhd

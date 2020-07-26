@@ -1,0 +1,103 @@
+--- a/main.c	2020-07-17 10:59:10.552725743 +0300
++++ a/main.c	2020-07-21 14:12:08.782319426 +0300
+@@ -78,89 +78,27 @@
+ 
+ }
+ 
+-#ifdef A_chip_only
+-int main(void)
+-{
+-
+-#ifdef I2C_TEST
+-    unsigned int test;
+-#endif
+-
+-
+-
+-	printf("Build @%s, %s\n", __DATE__, __TIME__);
+-
+-	hw_init();
+-	AV1_STC_init();
+-	
+-	/*initial interrupt vector table*/
+-	int_memcpy(0x00000000, __vectors_start, (unsigned)__vectors_end - (unsigned)__vectors_start);
+-
+-	mmu_init();
+-	HAL_DCACHE_ENABLE();
+-
+-	ipc_init();
+-#ifdef NOC_TEST
+-	noc_initial_settings();
+-#endif
+-
+-#ifdef QCH_TEST
+-	qch_initial_settings();
+-#endif
+-
+-	//cbdma_test_init();
+-	timer_test_init();
+-#ifdef AXI_MON
+-	axi_mon_test_init();
+-#endif
+-
+-#ifdef INTR_SAMPLE
+-	gpio_intr_test_init();
+-#endif
+-
+-#ifdef RS485_TEST
+-	AV1_STC_init();
+-	rs485_init(10,11,12);	//G_MX[10]_TX --> DI, G_MX[11]_RX --> RO ,G_MX[12]_RTS
+-#endif 
+-
+-	/* interrupt manager module init */
+-	sp_interrupt_setup();
+-	ipc_start();
+-
+-#ifdef I2C_TEST
+-	sp_i2c_master_init();
+-	sp_i2c_master_set_freq_khz(0, 100);
+-#endif
+-
+-	printf("NonOS boot OK!!!\n");
+-	task_dbg();
+-	while(1);
+-
+-	//Never get here
+-	return 0;
+-}
+-#endif 
+-
+ #ifdef A_and_B_chip
++
+ int main(void)
+ {
+ #ifdef I2C_TEST
+     unsigned int test;
+ #endif
+ 
+-	printf("Build @%s, %s\n", __DATE__, __TIME__);
+-	ipc_init();
++    printf("Build @%s, %s\n", __DATE__, __TIME__);
++    ipc_init();
+ 
+ #ifdef RS485_TEST
+-	rs485_init(10,11,12);	//G_MX[10]_TX --> DI, G_MX[11]_RX --> RO ,G_MX[12]_RTS
++    rs485_init(10,11,12);	//G_MX[10]_TX --> DI, G_MX[11]_RX --> RO ,G_MX[12]_RTS
+ #endif 
+ 
+-	ipc_start();
+-	printf("NonOS boot OK!!!\n");
+-	task_dbg();
+-	while(1);
++    ipc_start();
++    printf("NonOS boot OK!!!\n");
++    task_dbg();
++    while(1);
+ 
+-	//Never get here
+-	return 0;
++    //Never get here
++    return 0;
+ }
+-#endif 
++#endif
