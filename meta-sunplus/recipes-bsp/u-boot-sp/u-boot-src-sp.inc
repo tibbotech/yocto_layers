@@ -6,8 +6,7 @@ LICENSE = "GPLv2+"
 LIC_FILES_CHKSUM = "file://Licenses/README;md5=30503fd321432fc713238f582193b78e"
 PE = "1"
 
-#SRCREV = "090de890a99792107d2492c9d8183c7668f2a270"
-SRCREV = "8a5008c2e2818ace51fd182d67d1ed4f36bdb9eb"
+SRCREV = "aea855b6b23aa7600fac598891bfc6538a855178"
 
 SRC_URI = "git://git@113.196.136.131:22/qac628/boot/uboot;protocol=ssh;branch=master;"
 

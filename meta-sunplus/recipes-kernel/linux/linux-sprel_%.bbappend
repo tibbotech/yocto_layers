@@ -14,13 +14,13 @@ SRC_URI = "git://github.com/tibbotech/plus1_kernel.git;branch=${KBRANCH}"
 SRC_URI += "file://kernel-meta/*;type=kmeta;name=meta;destsuffix=${KMETA}"
 #SRC_URI += "file://kernel-meta/bsp/pentagram/pentagram-standard.scc"
 
-SRCREV = "71cfe171f5a27fe334b90e0977826fcf1a5a2f0a"
+SRCREV = "3d7cc651ca9ad659b0812d4a50cdce8cbf8f5495"
 # 4.12
 SRCREV_machine_tppg2 = "2e30599bd77bcfb6102ae45cdf47c40d7be55669"
 # 4.19
 SRCREV_machine_tppg2 = "eee6766b2540822a9b229f64549299793a903f41"
 # 5.4
-SRCREV_machine_tppg2 = "71cfe171f5a27fe334b90e0977826fcf1a5a2f0a"
+SRCREV_machine_tppg2 = "3d7cc651ca9ad659b0812d4a50cdce8cbf8f5495"
 
 # if using meta from master
 #SRCREV_meta ?= "cebe198870d781829bd997a188cc34d9f7a61023"

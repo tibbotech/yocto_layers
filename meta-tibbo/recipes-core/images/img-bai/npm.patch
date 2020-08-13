@@ -1,0 +1,11 @@
+--- poky/meta/classes/npm.bbclass	2020-05-14 11:10:50.920541874 +0300
++++ poky/meta/classes/npm.bbclass	2020-05-14 11:10:54.592541839 +0300
+@@ -55,7 +55,7 @@
+ 	mkdir -p ${D}${libdir}/node_modules
+ 	local NPM_PACKFILE=$(npm pack .)
+ 	npm install --prefix ${D}${prefix} -g --arch=${NPM_ARCH} --target_arch=${NPM_ARCH} --production --no-registry ${NPM_PACKFILE}
+-	ln -fs node_modules ${D}${libdir}/node
++#	ln -fs node_modules ${D}${libdir}/node
+ 	find ${D}${NPM_INSTALLDIR} -type f \( -name "*.a" -o -name "*.d" -o -name "*.o" \) -delete
+ 	if [ -d ${D}${prefix}/etc ] ; then
+ 		# This will be empty

@@ -3,13 +3,13 @@ include img-bai_15.0.0.inc
 
 IMAGE_ROOTFS_EXTRA_SPACE = "104857600"
 
-SRC_URI += "file://npm.patch"
+SRC_URI += "file://npm.dunfell.patch"
 
-SRCREV_tibbo = "e5448bdd9504cbe2eec8c3a346608a7901af472a"
+SRCREV_tibbo = "abc7fecf5dce7d9777a90df42b7a87e6e5696c7e"
 SRC_URI += "git://github.com/tibbotech/yocto_layers.git;branch=dunfell;name=tibbo;destsuffix=xxx;"
-SRCREV_oe = "9e60d30669a2ad0598e9abf0cd15ee06b523986b"
+SRCREV_oe = "ba11b6e210267bdf4858c5ced2c497efd3f72269"
 SRC_URI += "git://git.openembedded.org/meta-openembedded;branch=dunfell;name=oe;destsuffix=xx0;"
-SRCREV_qt5 = "6a9c0acbad3b9ac6b1e129c7c3c7b1648f4e4855"
+SRCREV_qt5 = "fdd19517e17240b0b61765bd02fc483a1bde986f"
 SRC_URI += "git://github.com/meta-qt5/meta-qt5.git;branch=dunfell;name=qt5;destsuffix=xx1;"
 SRC_URI += "file://builder_session.sh.patch"
 SRC_URI += "file://clear_sock.sh"
