@@ -1,0 +1,54 @@
+--- a/arch/arm/boot/dts/sp7021-ublox.dts	2020-08-26 16:10:35.756975095 +0300
++++ a/arch/arm/boot/dts/sp7021-ublox.dts	2020-08-28 16:43:54.063308088 +0300
+@@ -0,0 +1,51 @@
++/*
++ * Linux TPP3 Gen 2 - LTPP3g2 base board definition
++ * Copyright (C) 2020 Tibbo Tech. - http://tibbo.com/tps/
++ * License: GPLv2 or later
++ */
++/dts-v1/;
++
++#include "sp7021-ltpp3g2revD.dtsi"
++
++/ {
++        model = "SP7021 TPPs3 Gen 2 Base";
++};
++
++&l2sw {  mode = <1>;  };
++&sdio {  status = "okay";  };
++/* wm6256 (SDIO) on sga */
++&uart4 {
++ status = "okay";
++ pinctrl-0 = <&pins_btuart &pins_bt_reset>;
++};
++/* 02 (UART) on s1 */
++&uart1 {  status = "okay";  pinctrl-names = "default";  pinctrl-0 = <&pins_uart1>;  tps-sock = "s1";  };
++/* hw I2C on s3 */
++&i2cm0 {  status = "okay";  pinctrl-names = "default";  pinctrl-0 = <&pins_i2cm0>;
++ clock-frequency = <400000>;
++ tps-sock = "s3";  };
++
++
++&pctl {
++/* 02 (UART) on s1 */
++ pins_uart1: pins_uart1 {
++ sppctl,pins = <
++      SPPCTL_IOPAD(8,SPPCTL_PCTL_G_PMUX,MUXF_UA1_TX,0)
++      SPPCTL_IOPAD(9,SPPCTL_PCTL_G_PMUX,MUXF_UA1_RX,0)
++    >;
++ };
++ /* 14 (I2C) on s3 */
++ pins_i2cm0: pins_i2cm0 {
++ sppctl,pins = <
++      SPPCTL_IOPAD(12,SPPCTL_PCTL_G_PMUX,MUXF_I2CM0_CLK,0)
++      SPPCTL_IOPAD(13,SPPCTL_PCTL_G_PMUX,MUXF_I2CM0_DAT,0)
++    >;
++ };
++
++};
++
++/ {
++    soc@B {
++
++    };
++};

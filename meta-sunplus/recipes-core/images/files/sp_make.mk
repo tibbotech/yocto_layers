@@ -16,7 +16,9 @@ OUTD=sp_out
 F_XBT=xboot-emmc.bin
 
 ###### xxx No-OS (arm926,Chip-B): main binary [optional]
-F_NON=a926.bin
+#F_NON=a926.bin
+# a926 firmware ipc_* makes emmc unstable now
+F_NON=a926-empty.bin
 
 ###### *** U-Boot (A7,Chip-A): bootloader #2
 #F_UBT=u-boot-a7021_emmc-sp-r0.img
@@ -29,6 +31,8 @@ F_DTB=sp7021-ltpp3g2revD.dtb
 
 ###### xxx Kernel (A7,Chip-A): Linux kernel
 F_KRN=uImage
+# use kernel with initrd for FS repair functions
+F_KRN=uImage-initramfs-tppg2.bin
 
 ###### *** rootfs
 #F_ROO=img-sp-tiny-tppg2.ext4

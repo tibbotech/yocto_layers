@@ -14,13 +14,15 @@ SRC_URI = "git://git@113.196.136.131:22/qac628/linux/kernel;protocol=ssh;name=ma
 SRC_URI += "file://kernel-meta/*;type=kmeta;name=meta;destsuffix=${KMETA}"
 #SRC_URI += "file://kernel-meta/bsp/pentagram/pentagram-standard.scc"
 
-SRCREV = "3d7cc651ca9ad659b0812d4a50cdce8cbf8f5495"
+SRCREV = "aa6fb62789772b93c1df5f47b5e8ba06df587a7d"
+#SRCREV = "8ad0335e986f28e4282a969a14de9807f12bfca3"
 # 4.12
 SRCREV_machine_tppg2 = "2e30599bd77bcfb6102ae45cdf47c40d7be55669"
 # 4.19
 SRCREV_machine_tppg2 = "eee6766b2540822a9b229f64549299793a903f41"
 # 5.4
-SRCREV_machine_tppg2 = "3d7cc651ca9ad659b0812d4a50cdce8cbf8f5495"
+SRCREV_machine_tppg2 = "aa6fb62789772b93c1df5f47b5e8ba06df587a7d"
+#SRCREV_machine_tppg2 = "8ad0335e986f28e4282a969a14de9807f12bfca3"
 
 # if using meta from master
 #SRCREV_meta ?= "cebe198870d781829bd997a188cc34d9f7a61023"
@@ -37,19 +39,19 @@ KMETA="kernel-meta"
 
 #SRC_URI += "file://defconfig"
 
-SRC_URI += "file://pentagram-sp7021-achip-ttt.dts.patch"
+SRC_URI += "file://dts/sp7021-ttt.dts.patch"
 #SRC_URI += "file://pinctrl_dbg/sppctl.c.err.patch"
 #SRC_URI += "file://pinctrl_dbg/sp7021_gpio_ops.c.Fdbg.patch"
-SRC_URI += "file://sp7021-tpsgpio.dts.patch"
+SRC_URI += "file://dts/sp7021-tpsgpio.dts.patch"
 # for gpio-driven rts/cts
 #SRC_URI += "file://uart_gpio_rtscts/sp_uart.c.dbg.patch"
 #SRC_URI += "file://uart_gpio_rtscts/sp7021-tpstest.dts.4ctsrts.patch"
 #SRC_URI += "file://uart_gpio_rtscts/sp7021-tpsgpio.dts.4ugpio.patch"
 SRC_URI += "file://sdio_dbg/spsdv2.c.err.patch"
-#SRC_URI += "file://bcmdhd.ampak.patch"
 
 # FIXME!
-SRC_URI += "file://sp7021-common.dtsi.inc.patch"
+SRC_URI += "file://dts/sp7021-common.dtsi.inc.patch"
+SRC_URI += "file://dts/sp7021-common.dtsi.nodma.patch"
 
 #do_patch_append() {
 # cp -r ${WORKDIR}/bcmdhd ${S}/drivers/net/wireless/bcmdhd

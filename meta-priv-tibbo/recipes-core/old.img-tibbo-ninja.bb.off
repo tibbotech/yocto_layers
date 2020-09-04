@@ -1,0 +1,6 @@
+DESCRIPTION = "Tibbo Ninja: base+ninja-module,ninja-udev"
+LICENSE = "MIT"
+PR = "r1"
+
+require img-tibbo-ninja.inc
+

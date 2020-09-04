@@ -1,0 +1,14 @@
+DESCRIPTION = "Tibbo Project System + Ninja"
+LICENSE = "MIT"
+PR = "r1"
+
+require img-tps.inc
+
+IMAGE_INSTALL += "\
+    ninja-module \
+    ninja-udev \
+"
+#    packagegroup-core-basic
+
+IMAGE_INIT_MANAGER  = "systemd"
+# use DISTRO_FEATURES += "systemd" ?

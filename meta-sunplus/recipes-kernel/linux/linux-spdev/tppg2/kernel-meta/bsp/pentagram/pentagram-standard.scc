@@ -52,6 +52,8 @@ include ui/vt.scc
 
 include features/can/can.scc
 
+include features/fuse/fuse.scc
+
 # temporary there
 #include debug/pins0.scc
 #include debug/pins9.scc

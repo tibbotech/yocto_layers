@@ -1,0 +1,48 @@
+IMAGE_FEATURES += "ssh-server-openssh"
+
+IMAGE_INSTALL = "\
+    packagegroup-core-boot \
+    kernel-modules \
+    linux-firmware \
+    dosfstools \
+    mtd-utils \
+    mtd-utils-ubifs \
+    gdbserver \
+    usbutils \
+    wget \
+    strace \
+    pstree \
+    mc \
+    iw \
+    wpa-supplicant \
+    crda \
+    ethtool \
+    tcpdump \
+    ninja-module \
+    ninja-udev \
+    minicom \
+    ${CORE_IMAGE_EXTRA_INSTALL} \
+    "
+
+#    crda
+#    wireless-tools
+#    marvell-wlan-module
+
+inherit core-image
+
+#KERNEL_IMAGETYPE="uImage"
+
+ROOTFS_POSTPROCESS_COMMAND += "dv_rootfs; "
+
+dv_rootfs() {
+ # we don't need the kernel in the image
+ rm -f ${IMAGE_ROOTFS}/boot/*Image*;
+ # clear rudiments
+ rm -f ${IMAGE_ROOTFS}/etc/dev.tar;
+ # mount
+ #mkdir ${IMAGE_ROOTFS}/data;
+ #echo '/dev/mmcblk0p1       /data        auto       defaults       0  0' >> ${IMAGE_ROOTFS}/etc/fstab;
+ # issue
+ echo 'Tibbo Ninja Beta Distro (\n)' > ${IMAGE_ROOTFS}/etc/issue;
+ cat ${IMAGE_ROOTFS}/etc/issue > ${IMAGE_ROOTFS}/etc/issue.net;
+}

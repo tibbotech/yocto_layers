@@ -29,6 +29,7 @@ DEPENDS += "oprofile"
 DEPENDS += "lsof"
 DEPENDS += "i2c-tools"
 DEPENDS += "psmisc"
+DEPENDS += "devmem2"
 
 # nodeJS
 #DEPENDS += "node-red"
