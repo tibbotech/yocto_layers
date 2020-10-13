@@ -20,6 +20,7 @@ unsigned char tpsid[ TPSID_LEN + 1];
 char *mac_read_sp7021_otp( struct device *_d) {
  char *ret = NULL;
  ssize_t otp_l = 0;
+ u8 i = 0, reverse = 0;
  struct nvmem_cell *c = nvmem_cell_get( _d, OTP_NAME);
  if ( IS_ERR_OR_NULL( c)) {
    dev_err( _d, "OTP read failure:%ld", PTR_ERR( c));
@@ -27,6 +28,13 @@ char *mac_read_sp7021_otp( struct device *_d) {
  ret = nvmem_cell_read( c, &otp_l);
  nvmem_cell_put( c);
  dev_dbg( _d, "%d bytes read from OTP", otp_l);
+ if ( otp_l < TPSID_LEN) {
+   dev_err( _d, "OTP %d len, < %d", otp_l, TPSID_LEN);
+   return( NULL);  }
+ if ( ret[ 5] == 0xFC && ret[ 4] == 0x4B && ret[ 3] == 0xBC &&
+    ( ret[ 0] != 0xFC || ret[ 1] != 0x4B || ret[ 2] != 0xBC)) reverse = 1;
+ for ( i = 0; i < otp_l && i < TPSID_LEN; i++) {
+   tpsid[ i] = ret[ ( reverse ? otp_l - i - 1 : i)];  }
  return( ret);  }
 
 void mac_read_am335x_efuse( void) {
