@@ -1,0 +1,11 @@
+--- a/drivers/net/wireless/bcmdhd/dhd_gpio.c	2020-09-27 01:43:34.111701278 +0300
++++ a/drivers/net/wireless/bcmdhd/dhd_gpio.c	2020-09-27 02:47:21.190664780 +0300
+@@ -249,7 +249,7 @@
+ 	/* Please check your schematic and fill right GPIO number which connected to
+ 	* WL_REG_ON and WL_HOST_WAKE.
+ 	*/
+-	gpio_wl_reg_on = 2;
++	gpio_wl_reg_on = 83; // reserved in MUX too
+ #ifdef CUSTOMER_OOB
+ 	gpio_wl_host_wake = -1;
+ #endif

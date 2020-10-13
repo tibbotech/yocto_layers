@@ -1,0 +1,11 @@
+--- a/drivers/pinctrl/sunplus/pinctrl_sunplus.h	2020-09-28 20:10:38.110890766 +0300
++++ a/drivers/pinctrl/sunplus/pinctrl_sunplus.h	2020-09-29 00:45:57.017733229 +0300
+@@ -5,7 +5,7 @@
+ 
+ 
+ #define pctl_err(fmt, arg...)            printf(fmt, ##arg)
+-#if 0
++#if 1
+ #define pctl_info(fmt, arg...)           printf(fmt, ##arg)
+ #else
+ #define pctl_info(fmt, arg...)

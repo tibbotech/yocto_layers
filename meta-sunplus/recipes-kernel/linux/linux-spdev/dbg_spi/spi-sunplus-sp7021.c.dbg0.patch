@@ -1,0 +1,13 @@
+--- a/drivers/spi/spi-sunplus-sp7021.c	2020-09-15 18:10:03.944302240 +0300
++++ a/drivers/spi/spi-sunplus-sp7021.c	2020-09-16 01:43:14.747633910 +0300
+@@ -27,8 +27,8 @@
+ 
+ /* ---------------------------------------------------------------------------------------------- */
+ 
+-//#define SPI_FUNC_DEBUG
+-//#define SPI_DBG_INFO
++#define SPI_FUNC_DEBUG
++#define SPI_DBG_INFO
+ #define SPI_DBG_ERR
+ 
+ #ifdef SPI_FUNC_DEBUG

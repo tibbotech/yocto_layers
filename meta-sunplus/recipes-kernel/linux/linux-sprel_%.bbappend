@@ -2,10 +2,8 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/linux-spdev:"
 
 KBRANCH_tppg2 = "master"
 #KBRANCH_tppg2 = "tibbo/muxZero"
-#KBRANCH_tppg2 = "tibbo/noExportOTPfunc"
-#KBRANCH_tppg2 = "tibbo/otp"
-#KBRANCH_tppg2 = "kernel_4.12"
 #KBRANCH_tppg2 = "kernel_4.19"
+#KBRANCH_tppg2 = "tibbo/spi_exp"
 # mainline
 COMPATIBLE_MACHINE_tppg2 = "tppg2"
 
@@ -15,18 +13,21 @@ SRC_URI += "file://kernel-meta/*;type=kmeta;name=meta;destsuffix=${KMETA}"
 #SRC_URI += "file://kernel-meta/bsp/pentagram/pentagram-standard.scc"
 
 SRCREV = "aa6fb62789772b93c1df5f47b5e8ba06df587a7d"
-#SRCREV = "8ad0335e986f28e4282a969a14de9807f12bfca3"
-# 4.12
-SRCREV_machine_tppg2 = "2e30599bd77bcfb6102ae45cdf47c40d7be55669"
+SRCREV = "8ad0335e986f28e4282a969a14de9807f12bfca3"
+SRCREV = "1bd62af97f31011fb6bf32e9eed0d478fb75db9c"
+SRCREV = "87e99d4a97da25e729d4679590b49e03b6ad7891"
+SRCREV = "e6b43dbff7a4fd6ed35a7f8a1731b187831c052d"
 # 4.19
 SRCREV_machine_tppg2 = "eee6766b2540822a9b229f64549299793a903f41"
 # 5.4
 SRCREV_machine_tppg2 = "aa6fb62789772b93c1df5f47b5e8ba06df587a7d"
-#SRCREV_machine_tppg2 = "8ad0335e986f28e4282a969a14de9807f12bfca3"
+SRCREV_machine_tppg2 = "8ad0335e986f28e4282a969a14de9807f12bfca3"
+SRCREV_machine_tppg2 = "1bd62af97f31011fb6bf32e9eed0d478fb75db9c"
+SRCREV_machine_tppg2 = "87e99d4a97da25e729d4679590b49e03b6ad7891"
+SRCREV_machine_tppg2 = "e6b43dbff7a4fd6ed35a7f8a1731b187831c052d"
 
 # if using meta from master
 #SRCREV_meta ?= "cebe198870d781829bd997a188cc34d9f7a61023"
-#LINUX_VERSION = "4.12.14"
 LINUX_VERSION = "4.19.37"
 LINUX_VERSION = "5.4.35"
 
@@ -48,7 +49,9 @@ SRC_URI += "file://dts/sp7021-tpsgpio.dts.patch"
 #SRC_URI += "file://uart_gpio_rtscts/sp_uart.c.dbg.patch"
 #SRC_URI += "file://uart_gpio_rtscts/sp7021-tpstest.dts.4ctsrts.patch"
 #SRC_URI += "file://uart_gpio_rtscts/sp7021-tpsgpio.dts.4ugpio.patch"
-SRC_URI += "file://sdio_dbg/spsdv2.c.err.patch"
+# SDIO debug
+#SRC_URI += "file://sdio_dbg/spsdv2.c.err.patch"
+#SRC_URI += "file://sdio_dbg/spsdv2.c.inf.patch"
 # FIXME
 #SRC_URI += "file://spi-sp_controller.c.dbg0.patch"
 #SRC_URI += "file://485/sp_uart.c.0.patch"
@@ -56,8 +59,36 @@ SRC_URI += "file://sdio_dbg/spsdv2.c.err.patch"
 
 # test
 #SRC_URI += "file://sp7021.c.dbg.patch"
-SRC_URI += "file://sp7021.c.nowhile.patch"
-SRC_URI += "file://dts/sp7021-common.dtsi.nodma.patch"
+#SRC_URI += "file://sp7021.c.nowhile.patch"
+#SRC_URI += "file://dts/sp7021-common.dtsi.nodma.patch"
+
+# tmp: spi debug
+SRC_URI += "file://dbg_spi/spi-sunplus-sp7021.c.dbg0.patch"
+SRC_URI += "file://dbg_spi/spi-sunplus-sp7021.c.dbg1.patch"
+#SRC_URI += "file://dbg_spi/spi-sunplus-sp7021.c.csdeb.patch"
+#SRC_URI += "file://dbg_spi/spi-sunplus-sp7021.c.cstst.patch"
+#SRC_URI += "file://dbg_spi/spi-sunplus-sp7021.c.numcsdbg.patch"
+#SRC_URI += "file://dbg_spi/spi-sunplus-sp7021.c.enpol.patch"
+
+#SRC_URI += "file://dbg_spi/spi.c.dbg0.patch"
+SRC_URI += "file://dbg_can/mcp251x.c.dbg0.patch"
+#SRC_URI += "file://dbg_can/mcp251x.c.dbg1.patch"
+#SRC_URI += "file://dbg_can/mcp251x.c.dbg2.patch"
+SRC_URI += "file://dbg_can/mcp251x.c.clk0.patch"
+
+# set GPIO to 83 for ltpp3g2
+SRC_URI += "file://bcmdhd/dhd_gpio.c.gpio.patch"
+
+# mcp25xxfd driver
+#SRC_URI += "git://github.com/msperl/linux-rpi.git;branch=upstream-5.2-master-80f23-mcp25xxfd-v8.2;subpath=linux-rpi/drivers/net/can/spi/mcp25xxfd;destsuffix=drivers/net/can/spi/"
+SRC_URI += "file://mcp25xxfd/mcp25xxfd.tar.gz"
+SRC_URI += "file://mcp25xxfd/Kconfig.mcp25xxfd.patch"
+SRC_URI += "file://mcp25xxfd/Makefile.mcp25xxfd.patch"
+
+# mcp25xxfd driver
+do_patch_append() {
+ cp -r ${WORKDIR}/mcp25xxfd ${S}/drivers/net/can/spi/
+}
 
 #do_patch_append() {
 # cp -r ${WORKDIR}/bcmdhd ${S}/drivers/net/wireless/bcmdhd
@@ -82,5 +113,4 @@ RDEPENDS_kernel-module-bcmdhd += "broadcom-bcmdhd-firmware"
 #KERNEL_FEATURES_append += "cfg/rpi-ovls/ovls-4.12.scc"
 KERNEL_FEATURES_append += "cfg/rpi-ovls/ovls-4.19.scc"
 
-LIC_FILES_CHKSUM = "file://COPYING;md5=d7810fab7487fb0aad327b76f1be7cd7"
 LIC_FILES_CHKSUM = "file://COPYING;md5=bbea815ee2795b2f4230826c0c6b8814"

@@ -1,0 +1,6 @@
+define KFEATURE_DESCRIPTION "Enable SunPlus SPI NOR and NAND flash"
+define KFEATURE_COMPATIBILITY board
+
+kconf hardware spi.cfg
+kconf hardware sp_nor.cfg
+kconf hardware sp_nand.cfg

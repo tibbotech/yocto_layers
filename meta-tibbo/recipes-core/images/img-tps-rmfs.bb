@@ -1,5 +1,5 @@
 
-include img-tps-base.bb
+include img-tps-free.bb
 
 VIRTUAL-RUNTIME_dev_manager ?= "busybox-mdev"
 

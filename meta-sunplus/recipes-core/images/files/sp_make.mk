@@ -96,16 +96,16 @@ ${D0}/${OUTD}/ISPBOOOT.BIN: ${D0}/${OUTD}/xboot.img ${D0}/${OUTD}/nonos ${D0}/${
 	${D0}/${OUTD}/kernel 0x2000000 \
 	${D0}/${OUTD}/rootfs 0x1E000000
 	
-	install -d ${D0}/${OUTD}/boot2linux
-	install -d ${D0}/${OUTD}/boot2linux_SDcard
-
-	${D0}/sp_tools/isp extract4boot2linux \
-	${D0}/${OUTD}/ISPBOOOT.BIN \
-	${D0}/${OUTD}/boot2linux/ISPBOOOT.BIN
-
-	${D0}/sp_tools/isp extract4boot2linux_sdcardboot \
-	${D0}/${OUTD}/ISPBOOOT.BIN \
-	${D0}/${OUTD}/boot2linux_SDcard/ISPBOOOT.BIN
+#	install -d ${D0}/${OUTD}/boot2linux
+#	install -d ${D0}/${OUTD}/boot2linux_SDcard
+#
+#	${D0}/sp_tools/isp extract4boot2linux \
+#	${D0}/${OUTD}/ISPBOOOT.BIN \
+#	${D0}/${OUTD}/boot2linux/ISPBOOOT.BIN
+#
+#	${D0}/sp_tools/isp extract4boot2linux_sdcardboot \
+#	${D0}/${OUTD}/ISPBOOOT.BIN \
+#	${D0}/${OUTD}/boot2linux_SDcard/ISPBOOOT.BIN
 
 .PHONY: all
 

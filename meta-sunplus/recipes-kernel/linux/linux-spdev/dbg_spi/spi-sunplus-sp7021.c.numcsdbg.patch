@@ -1,0 +1,10 @@
+--- a/drivers/spi/spi-sunplus-sp7021.c	2020-09-18 18:56:13.533132198 +0300
++++ a/drivers/spi/spi-sunplus-sp7021.c	2020-09-19 14:17:01.638543213 +0300
+@@ -1978,6 +1978,7 @@
+ 		dev_err(&pdev->dev, "spi_register_master fail\n");
+ 		goto free_rx_dma;
+ 	}
++dev_info(&pdev->dev, "dv: num_cs:%d\n", ctlr->num_chipselect);
+ 
+ #ifdef CONFIG_PM_RUNTIME_SPI
+ 	pm_runtime_set_autosuspend_delay(&pdev->dev,5000);

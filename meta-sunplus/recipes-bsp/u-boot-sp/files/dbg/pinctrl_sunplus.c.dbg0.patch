@@ -1,0 +1,11 @@
+--- a/drivers/pinctrl/sunplus/pinctrl_sunplus.c	2020-09-28 19:52:48.436900967 +0300
++++ a/drivers/pinctrl/sunplus/pinctrl_sunplus.c	2020-09-28 20:08:16.079892120 +0300
+@@ -12,7 +12,7 @@
+ 
+ DECLARE_GLOBAL_DATA_PTR;
+ 
+-//#define PINCTRL_DEBUG
++#define PINCTRL_DEBUG
+ 
+ #ifdef CONFIG_PINCTRL_SUNPLUS
+ #define SUPPORT_PINMUX

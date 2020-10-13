@@ -1,0 +1,20 @@
+--- a/drivers/spi/spi.c	2020-09-19 16:23:11.272913936 +0300
++++ a/drivers/spi/spi.c	2020-09-20 14:09:08.611751486 +0300
+@@ -778,7 +778,9 @@
+ 	if (spi->mode & SPI_CS_HIGH)
+ 		enable = !enable;
+ 
++printk( KERN_INFO "%s(%d):%d\n", __FUNCTION__, enable, __LINE__);
+ 	if (spi->cs_gpiod || gpio_is_valid(spi->cs_gpio)) {
++printk( KERN_INFO "%s(%d):%d\n", __FUNCTION__, enable, __LINE__);
+ 		/*
+ 		 * Honour the SPI_NO_CS flag and invert the enable line, as
+ 		 * active low is default for SPI. Execution paths that handle
+@@ -787,6 +789,7 @@
+ 		 * double inversion through the code above.
+ 		 */
+ 		if (!(spi->mode & SPI_NO_CS)) {
++printk( KERN_INFO "%s(%d):%d %X %X\n", __FUNCTION__, enable, __LINE__, spi->cs_gpiod, spi->cs_gpio);
+ 			if (spi->cs_gpiod)
+ 				gpiod_set_value_cansleep(spi->cs_gpiod,
+ 							 !enable);

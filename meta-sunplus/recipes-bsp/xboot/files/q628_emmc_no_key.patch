@@ -1,0 +1,8 @@
+--- a/configs/q628_Rev2_EMMC_defconfig	2020-10-13 00:07:43.699529410 +0300
++++ a/configs/q628_Rev2_EMMC_defconfig	2020-10-13 01:27:49.439806682 +0300
+@@ -37,4 +37,4 @@
+ # Experiments
+ #
+ # CONFIG_LOAD_LINUX is not set
+-CONFIG_SECURE_BOOT_SIGN=y
++# CONFIG_SECURE_BOOT_SIGN=y

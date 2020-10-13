@@ -5,6 +5,7 @@ DEPENDS += "mariadb"
 # multimedia
 DEPENDS += "opencv"
 DEPENDS += "ncnn"
+#DEPENDS += "tensorflow"
 DEPENDS += "v4l-utils"
 DEPENDS += "gstreamer1.0-plugins-base"
 DEPENDS += "gstreamer1.0-plugins-good"

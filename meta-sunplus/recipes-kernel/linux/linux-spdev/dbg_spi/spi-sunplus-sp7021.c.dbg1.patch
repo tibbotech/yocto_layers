@@ -1,0 +1,11 @@
+--- a/drivers/spi/spi-sunplus-sp7021.c	2020-09-16 14:04:32.964812230 +0300
++++ a/drivers/spi/spi-sunplus-sp7021.c	2020-09-16 18:12:33.276540993 +0300
+@@ -8,7 +8,7 @@
+  * it under the terms of the GNU General Public License version 2 as
+  * published by the Free Software Foundation.
+  */
+-//#define DEBUG
++#define DEBUG
+ #include <linux/module.h>
+ #include <linux/interrupt.h>
+ #include <linux/of.h>

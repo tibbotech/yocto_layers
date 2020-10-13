@@ -2,14 +2,14 @@
 
 . /opt/tps-shared/bash/pins
 
-btn_isON="1"
+btn_isON="${GPIODEFIN}"
 
 logger "Reset configuration daemon started"
 
 mdbt_p=$(pins_pin "CRST")
 pin_ex ${mdbt_p}
 
-if [ $? -ne 0 ]; then  echo "OUT:export pin#${mdbt_p}(MD)";  exit 1;  fi;
+if [ $? -ne 0 ]; then  echo "OUT:export pin#${mdbt_p}(CRST)";  exit 1;  fi;
 
 # $1 = secs
 wait_press() {
@@ -47,9 +47,9 @@ while [ "1" == "1" ]; do
   if [ ${x} == 0 ]; then continue;  fi;
   logger "ret#0:${x}"
   # beep 2 secs if waiting...
-  /home/root/dvtests/beep_bell 10
+  /opt/tps-beeper/beep_bell 10
   usleep 100000;
-  /home/root/dvtests/beep_bell 0
+  /opt/tps-beeper/beep_bell 0
 
 #  sleep 2;
 #  # beep 2 secs while waiting for press#1

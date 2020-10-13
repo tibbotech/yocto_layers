@@ -1,5 +1,8 @@
 
 gpio_io="/sys/class/gpio"
+f_pins="/opt/tps-shared/hwini/pins.ini"
+
+GPIODEFIN=`grep -i "GPIODEFIN" $f_pins | sed -e 's/.*=\s*//'`
 
 pin_ex() {
  if [ -d "${gpio_io}/gpio${1}" ]; then
@@ -31,15 +34,18 @@ pin_set() {
 
 pin_get() {
  echo "in" > "${gpio_io}/gpio${1}/direction"
- t=`cat "${gpio_io}/gpio${1}/value"`
- return $t
+ t1=`cat "${gpio_io}/gpio${1}/value"`
+ t0=${GPIODEFIN}
+ if [ ${t0} -eq 0 ]; then return $t1;  fi;
+ return $((1-${t1}))
 }
 pin_get_i() {
  echo "in" > "${gpio_io}/gpio${1}/direction"
- cat "${gpio_io}/gpio${1}/value"
+ t1=`cat ${gpio_io}/gpio${1}/value`
+ t0=${GPIODEFIN}
+ if [ ${t0} -eq 0 ]; then echo "${t1}";  fi;
+ printf "%d\n" $((1-${t1}))
 }
-
-f_pins="/opt/tps-shared/hwini/pins.ini"
 
 pins_pin() {
  grep -i "${1}" $f_pins | grep -v GPIO | grep "=" | sed -e 's/.*=\s*//'

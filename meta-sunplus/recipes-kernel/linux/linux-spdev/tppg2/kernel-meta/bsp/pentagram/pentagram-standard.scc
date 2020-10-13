@@ -26,8 +26,7 @@ include usb/customers.scc
 include wifi/tppg2_brcm.scc
 include bt/bt.scc
 
-include spi/sp.scc
-include spi/spi.scc
+include spi/sp_nornand.scc
 include spi/sp_spi.scc
 
 # ICM
@@ -57,3 +56,5 @@ include features/fuse/fuse.scc
 # temporary there
 #include debug/pins0.scc
 #include debug/pins9.scc
+include debug/dyndbg.scc
+include debug/printk.scc

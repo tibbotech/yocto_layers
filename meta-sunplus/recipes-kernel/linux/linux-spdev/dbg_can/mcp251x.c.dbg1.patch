@@ -1,0 +1,31 @@
+--- a/drivers/net/can/spi/mcp251x.c	2020-09-17 16:25:37.119458201 +0300
++++ a/drivers/net/can/spi/mcp251x.c	2020-09-17 16:23:29.338451943 +0300
+@@ -1000,6 +1000,28 @@
+ 	if (IS_ERR(clk))
+ 		return PTR_ERR(clk);
+ 
++printk(KERN_INFO "[%s] clkp:%p\n", __FILE__, clk);
++printk(KERN_INFO "[%s] dev_id:%d con_id\n", __FILE__, clk->dev_id, clk->con_id);
++printk(KERN_INFO "[%s] min_rate:%d ma[_rate:%d\n", __FILE__, clk->min_rate, clk->max_rate);
++printk(KERN_INFO "[%s] clk->devp:%p\n", __FILE__, clk->device);
++printk(KERN_INFO "[%s] clk->core:%p\n", __FILE__, clk->core);
++printk(KERN_INFO "[%s] clk->core->name:%s\n", __FILE__, clk->core->name);
++printk(KERN_INFO "[%s] clk->core->name:%s\n", __FILE__, clk->core->name);
++printk(KERN_INFO "[%s] clk->core->name:%s\n", __FILE__, clk->core->name);
++printk(KERN_INFO "[%s] clk->core->name:%s\n", __FILE__, clk->core->name);
++printk(KERN_INFO "[%s] clk->core->name:%s\n", __FILE__, clk->core->name);
++printk(KERN_INFO "[%s] clk->core->name:%s\n", __FILE__, clk->core->name);
++printk(KERN_INFO "[%s] clk->core->name:%s\n", __FILE__, clk->core->name);
++printk(KERN_INFO "[%s] clk->core->name:%s\n", __FILE__, clk->core->name);
++printk(KERN_INFO "[%s] clk->core->name:%s\n", __FILE__, clk->core->name);
++printk(KERN_INFO "[%s] clk->core->name:%s\n", __FILE__, clk->core->name);
++printk(KERN_INFO "[%s] clk->core->name:%s\n", __FILE__, clk->core->name);
++printk(KERN_INFO "[%s] clk->core->name:%s\n", __FILE__, clk->core->name);
++printk(KERN_INFO "[%s] clk->core->name:%s\n", __FILE__, clk->core->name);
++printk(KERN_INFO "[%s] clk->core->name:%s\n", __FILE__, clk->core->name);
++printk(KERN_INFO "[%s] clk->core->name:%s\n", __FILE__, clk->core->name);
++printk(KERN_INFO "[%s] clk->core->name:%s\n", __FILE__, clk->core->name);
++printk(KERN_INFO "[%s] clk->core->name:%s\n", __FILE__, clk->core->name);
+ 	freq = clk_get_rate(clk);
+ 	if (freq == 0 && pdata)
+ 		freq = pdata->oscillator_frequency;

@@ -5,7 +5,7 @@ LICENSE = "GPLv2+"
 LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/GPL-2.0;md5=801f80980d171dd6425610833a22dbe6"
 
 SRCREV_draminit = "f4c682ad6fcce95161c3a4c112bfa6eadd4ac5b9"
-SRCREV_xboot = "cca6e0824936f849981a1d7a0130233435085df2"
+SRCREV_xboot = "3e3ef267faae0f4a8b3b8ec3989e49f4a2166907"
 
 SRC_URI = "\
 git://git@113.196.136.131:22/qac628/boot/draminit;protocol=ssh;name=draminit;branch=master;destsuffix=draminit; \

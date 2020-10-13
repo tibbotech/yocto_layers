@@ -1,0 +1,95 @@
+--- a/drivers/net/can/spi/mcp251x.c	2020-09-17 23:05:13.292632433 +0300
++++ a/drivers/net/can/spi/mcp251x.c	2020-09-17 23:06:33.090636342 +0300
+@@ -575,12 +575,14 @@
+ 
+ 	/* Wait for oscillator startup timer after power up */
+ 	mdelay(MCP251X_OST_DELAY_MS);
++printk(KERN_INFO "[%s] %s():%d\n", __FILE__, __FUNCTION__, __LINE__);
+ 
+ 	priv->spi_tx_buf[0] = INSTRUCTION_RESET;
+ 	ret = mcp251x_spi_trans(spi, 1);
+ 	if (ret)
+ 		return ret;
+ 
++printk(KERN_INFO "[%s] %s():%d\n", __FILE__, __FUNCTION__, __LINE__);
+ 	/* Wait for oscillator startup timer after reset */
+ 	mdelay(MCP251X_OST_DELAY_MS);
+ 
+@@ -609,6 +611,7 @@
+ 	if (ret)
+ 		return ret;
+ 
++printk(KERN_INFO "[%s] %s():%d\n", __FILE__, __FUNCTION__, __LINE__);
+ 	ctrl = mcp251x_read_reg(spi, CANCTRL);
+ 
+ 	dev_dbg(&spi->dev, "CANCTRL 0x%02x\n", ctrl);
+@@ -993,10 +996,12 @@
+ 	int freq, ret;
+ 
+ 	clk = devm_clk_get_optional(&spi->dev, NULL);
++printk(KERN_INFO "[%s] %s():%d clkp:%p %X\n", __FILE__, __FUNCTION__, __LINE__, clk, clk);
+ 	if (IS_ERR(clk))
+ 		return PTR_ERR(clk);
+ 
+ 	freq = clk_get_rate(clk);
++printk(KERN_INFO "[%s] %s():%d freq:%d\n", __FILE__, __FUNCTION__, __LINE__, freq);
+ 	if (freq == 0 && pdata)
+ 		freq = pdata->oscillator_frequency;
+ 
+@@ -1006,9 +1011,11 @@
+ 
+ 	/* Allocate can/net device */
+ 	net = alloc_candev(sizeof(struct mcp251x_priv), TX_ECHO_SKB_MAX);
++printk(KERN_INFO "[%s] %s():%d %p\n", __FILE__, __FUNCTION__, __LINE__, net);
+ 	if (!net)
+ 		return -ENOMEM;
+ 
++printk(KERN_INFO "[%s] %s():%d\n", __FILE__, __FUNCTION__, __LINE__);
+ 	ret = clk_prepare_enable(clk);
+ 	if (ret)
+ 		goto out_free;
+@@ -1016,6 +1023,7 @@
+ 	net->netdev_ops = &mcp251x_netdev_ops;
+ 	net->flags |= IFF_ECHO;
+ 
++printk(KERN_INFO "[%s] %s():%d\n", __FILE__, __FUNCTION__, __LINE__);
+ 	priv = netdev_priv(net);
+ 	priv->can.bittiming_const = &mcp251x_bittiming_const;
+ 	priv->can.do_set_mode = mcp251x_do_set_mode;
+@@ -1037,10 +1045,12 @@
+ 		spi->max_speed_hz = spi->max_speed_hz ? : 5 * 1000 * 1000;
+ 	else
+ 		spi->max_speed_hz = spi->max_speed_hz ? : 10 * 1000 * 1000;
++printk(KERN_INFO "[%s] %s():%d\n", __FILE__, __FUNCTION__, __LINE__);
+ 	ret = spi_setup(spi);
+ 	if (ret)
+ 		goto out_clk;
+ 
++printk(KERN_INFO "[%s] %s():%d\n", __FILE__, __FUNCTION__, __LINE__);
+ 	priv->power = devm_regulator_get_optional(&spi->dev, "vdd");
+ 	priv->transceiver = devm_regulator_get_optional(&spi->dev, "xceiver");
+ 	if ((PTR_ERR(priv->power) == -EPROBE_DEFER) ||
+@@ -1049,6 +1059,7 @@
+ 		goto out_clk;
+ 	}
+ 
++printk(KERN_INFO "[%s] %s():%d\n", __FILE__, __FUNCTION__, __LINE__);
+ 	ret = mcp251x_power_enable(priv->power, 1);
+ 	if (ret)
+ 		goto out_clk;
+@@ -1073,6 +1084,7 @@
+ 	SET_NETDEV_DEV(net, &spi->dev);
+ 
+ 	/* Here is OK to not lock the MCP, no one knows about it yet */
++printk(KERN_INFO "[%s] %s():%d\n", __FILE__, __FUNCTION__, __LINE__);
+ 	ret = mcp251x_hw_probe(spi);
+ 	if (ret) {
+ 		if (ret == -ENODEV)
+@@ -1081,6 +1093,7 @@
+ 		goto error_probe;
+ 	}
+ 
++printk(KERN_INFO "[%s] %s():%d\n", __FILE__, __FUNCTION__, __LINE__);
+ 	mcp251x_hw_sleep(spi);
+ 
+ 	ret = register_candev(net);
