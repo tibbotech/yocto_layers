@@ -1,9 +1,0 @@
---- a/drivers/irqchip/Kconfig	2017-09-20 09:25:38.000000000 +0300
-+++ a/drivers/irqchip/Kconfig	2018-11-12 06:42:53.000000000 +0300
-@@ -301,3 +301,6 @@
- 	help
- 	  Say yes here to add support for the IRQ combiner devices embedded
- 	  in Qualcomm Technologies chips.
-+
-+config SP_INTC
-+	bool "Sunplus interrupt controller"

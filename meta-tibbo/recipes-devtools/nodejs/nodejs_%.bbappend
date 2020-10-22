@@ -17,3 +17,5 @@ do_install_append_class-nativesdk() {
 
 #SRC_URI_append_class-target += "file://inflate-shrinkwrap.js.patch"
 #SRC_URI_append_class-native += "file://inflate-shrinkwrap.js.patch"
+
+DEPENDS_class-nativesdk += "nativesdk-icu"

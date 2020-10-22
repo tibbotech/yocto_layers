@@ -1,4 +1,0 @@
-config USB_BC
-	bool "Support Gemini USB Battery Charge"
-	depends on USB
-	default n

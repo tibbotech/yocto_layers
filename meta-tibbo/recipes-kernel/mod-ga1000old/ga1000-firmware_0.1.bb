@@ -5,19 +5,18 @@ SECTION = "kernel"
 PRIORITY = "optional"
 LICENSE = "LGPL-2.0"
 PR = "r1"
-
 SRCREV="${AUTOREV}"
 
 # src in /files/ga1000-firmware/*
-S = "${WORKDIR}/${PN}/"
+S = "${WORKDIR}/git/"
 
 inherit base allarch
 
-SRC_URI  = "file://*"
+SRC_URI = "git://github.com/tibbotech/ga1000-linux-fw.git;branch=master;protocol=git"
 
 do_install() {
  install -d ${D}/lib/firmware/libertas
- install -m 0644 ${S}/libertas/*.bin ${D}/lib/firmware/libertas/
+ install -m 0644 ${S}/*.bin ${D}/lib/firmware/libertas/
 }
 
 FILES_${PN} += "/lib"

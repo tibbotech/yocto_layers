@@ -4,18 +4,18 @@ MAINTAINER = "Dvorkin Dmitry <dvorkin@tibbo.com>"
 AUTHOR = "Dvorkin Dmitry <dvorkin@tibbo.com>"
 SECTION = "kernel/modules"
 PRIORITY = "optional"
-LICENSE = "LGPL-2.0"
+LICENSE = "LGPL-2.1"
 PR = "r1"
+SRCREV="${AUTOREV}"
 
 PACKAGES =+ "${PN}-includes"
 PACKAGE_ARCH_${PN}-includes = "all"
 
-# src in /files/kern-mod-ga1000v0/*
-S = "${WORKDIR}/${PN}"
+S = "${WORKDIR}/git"
 
 inherit module
 
-SRC_URI = "file://*"
+SRC_URI = "git://github.com/tibbotech/kern-mod-ga1000v0.git;branch=main;protocol=git"
 
 #MAKE_TARGETS = "KERNEL_PATH=${STAGING_KERNEL_DIR} MAKE='make -e' -C ${STAGING_KERNEL_DIR} SUBDIRS=${S} modules"
 

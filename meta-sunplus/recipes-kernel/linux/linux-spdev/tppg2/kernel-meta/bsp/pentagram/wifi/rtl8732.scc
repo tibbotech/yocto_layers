@@ -1,6 +1,0 @@
-include features/wifi/wifi-common.scc
-include hw_sdio.scc
-
-patch rtl8723bs.Kconfig.coex.patch
-patch rtl8723bs.Makefile.patch
-patch rtl8723bs.Kconfig.patch

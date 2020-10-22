@@ -1,7 +1,0 @@
---- a/drivers/net/ethernet/Makefile	2017-09-20 09:25:38.000000000 +0300
-+++ a/drivers/net/ethernet/Makefile	2018-11-12 06:42:54.000000000 +0300
-@@ -92,3 +92,4 @@
- obj-$(CONFIG_NET_VENDOR_XILINX) += xilinx/
- obj-$(CONFIG_NET_VENDOR_XIRCOM) += xircom/
- obj-$(CONFIG_NET_VENDOR_SYNOPSYS) += synopsys/
-+obj-$(CONFIG_L2SW_DRIVER) += sp/

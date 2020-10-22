@@ -3,28 +3,24 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/linux-spdev:"
 KBRANCH_tppg2 = "master"
 #KBRANCH_tppg2 = "tibbo/muxZero"
 #KBRANCH_tppg2 = "kernel_4.19"
-#KBRANCH_tppg2 = "tibbo/spi_exp"
+KBRANCH_tppg2 = "tibbo/spi_exp"
 # mainline
 COMPATIBLE_MACHINE_tppg2 = "tppg2"
 
 SRC_URI = "git://github.com/tibbotech/plus1_kernel.git;branch=${KBRANCH}"
 # SRC_URI += "git://git.yoctoproject.org/yocto-kernel-cache;type=kmeta;name=meta;branch=yocto-4.12;destsuffix=${KMETA}"
 SRC_URI += "file://kernel-meta/*;type=kmeta;name=meta;destsuffix=${KMETA}"
-#SRC_URI += "file://kernel-meta/bsp/pentagram/pentagram-standard.scc"
 
-SRCREV = "aa6fb62789772b93c1df5f47b5e8ba06df587a7d"
-SRCREV = "8ad0335e986f28e4282a969a14de9807f12bfca3"
-SRCREV = "1bd62af97f31011fb6bf32e9eed0d478fb75db9c"
-SRCREV = "87e99d4a97da25e729d4679590b49e03b6ad7891"
-SRCREV = "e6b43dbff7a4fd6ed35a7f8a1731b187831c052d"
+# 5.4 master
+SRCREV = "e58c1790eb68099d5cbf08e368be84b7007bd076"
+# 5.4 tibbo/spi_exp
+SRCREV = "9a797a8dfef2bcbebb2bbc4ad266b08ddaabc923"
 # 4.19
 SRCREV_machine_tppg2 = "eee6766b2540822a9b229f64549299793a903f41"
-# 5.4
-SRCREV_machine_tppg2 = "aa6fb62789772b93c1df5f47b5e8ba06df587a7d"
-SRCREV_machine_tppg2 = "8ad0335e986f28e4282a969a14de9807f12bfca3"
-SRCREV_machine_tppg2 = "1bd62af97f31011fb6bf32e9eed0d478fb75db9c"
-SRCREV_machine_tppg2 = "87e99d4a97da25e729d4679590b49e03b6ad7891"
-SRCREV_machine_tppg2 = "e6b43dbff7a4fd6ed35a7f8a1731b187831c052d"
+# 5.4 master
+SRCREV_machine_tppg2 = "e58c1790eb68099d5cbf08e368be84b7007bd076"
+# 5.4 tibbo/spi_exp
+SRCREV_machine_tppg2 = "9a797a8dfef2bcbebb2bbc4ad266b08ddaabc923"
 
 # if using meta from master
 #SRCREV_meta ?= "cebe198870d781829bd997a188cc34d9f7a61023"
@@ -53,18 +49,15 @@ SRC_URI += "file://dts/sp7021-tpsgpio.dts.patch"
 #SRC_URI += "file://sdio_dbg/spsdv2.c.err.patch"
 #SRC_URI += "file://sdio_dbg/spsdv2.c.inf.patch"
 # FIXME
-#SRC_URI += "file://spi-sp_controller.c.dbg0.patch"
 #SRC_URI += "file://485/sp_uart.c.0.patch"
 #SRC_URI += "file://485/serial_core.c.dbg0.patch"
 
 # test
-#SRC_URI += "file://sp7021.c.dbg.patch"
-#SRC_URI += "file://sp7021.c.nowhile.patch"
 #SRC_URI += "file://dts/sp7021-common.dtsi.nodma.patch"
 
 # tmp: spi debug
-SRC_URI += "file://dbg_spi/spi-sunplus-sp7021.c.dbg0.patch"
-SRC_URI += "file://dbg_spi/spi-sunplus-sp7021.c.dbg1.patch"
+#SRC_URI += "file://dbg_spi/spi-sunplus-sp7021.c.dbg0.patch"
+#SRC_URI += "file://dbg_spi/spi-sunplus-sp7021.c.dbg1.patch"
 #SRC_URI += "file://dbg_spi/spi-sunplus-sp7021.c.csdeb.patch"
 #SRC_URI += "file://dbg_spi/spi-sunplus-sp7021.c.cstst.patch"
 #SRC_URI += "file://dbg_spi/spi-sunplus-sp7021.c.numcsdbg.patch"
@@ -90,11 +83,8 @@ do_patch_append() {
  cp -r ${WORKDIR}/mcp25xxfd ${S}/drivers/net/can/spi/
 }
 
-#do_patch_append() {
-# cp -r ${WORKDIR}/bcmdhd ${S}/drivers/net/wireless/bcmdhd
-#}
-#RDEPENDS_kernel-module-bcmdhd += "${@bb.utils.contains('DISTRO_FEATURES', 'wifi', 'broadcom-bcmdhd-firmware', '', d)}"
-RDEPENDS_kernel-module-bcmdhd += "broadcom-bcmdhd-firmware"
+#RDEPENDS_kernel-module-bcmdhd += "${@bb.utils.contains('DISTRO_FEATURES', 'wifi', 'bcmdhd-firmware', '', d)}"
+RDEPENDS_kernel-module-bcmdhd += "bcmdhd-firmware"
 
 #KBUILD_DEFCONFIG="pentagram_sc7021_achip_emu_defconfig"
 #KERNEL_CONFIG_COMMAND = "oe_runmake_call -C ${S} O=${B} pentagram_sc7021_achip_emu_defconfig"

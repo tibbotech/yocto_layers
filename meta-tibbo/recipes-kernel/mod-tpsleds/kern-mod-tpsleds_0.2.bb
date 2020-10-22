@@ -1,23 +1,20 @@
 DESCRIPTION = "Tibbo LEDS kernel-level interface module"
-HOMEPAGE = "http://tibbo.com/"
+HOMEPAGE = "https://github.com/tibbotech/kern-mod-tpsleds/"
 MAINTAINER = "Dvorkin Dmitry <dvorkin@tibbo.com>"
 AUTHOR = "Dvorkin Dmitry <dvorkin@tibbo.com>"
 SECTION = "kernel/modules"
 PRIORITY = "optional"
 LICENSE = "LGPL-2.0"
-PR = "r1"
+SRCREV="${AUTOREV}"
 
 PACKAGES =+ "${PN}-includes"
 PACKAGE_ARCH_${PN}-includes = "all"
 
-# src in /files/kern-mod-tpsleds/*
-S = "${WORKDIR}/${PN}"
+S = "${WORKDIR}/git"
 
 inherit module
 
-SRC_URI = "file://*"
-
-#MAKE_TARGETS = "KERNEL_PATH=${STAGING_KERNEL_DIR} MAKE='make -e' -C ${STAGING_KERNEL_DIR} SUBDIRS=${S} modules"
+SRC_URI = "git://github.com/tibbotech/kern-mod-tpsleds.git;branch=main;protocol=git"
 
 do_install() {
  install -m 0755 -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/3rdparty

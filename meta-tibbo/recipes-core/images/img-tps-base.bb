@@ -5,7 +5,7 @@ PR = "r1"
 require inc-tps-tin.inc
 require inc-tps-depends.inc
 require inc-tps-privdeps.inc
-#require inc-i-sdkdev.inc
+require inc-i-sdkdev.inc
 
 IMAGE_FEATURES = ""
 

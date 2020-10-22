@@ -1,3 +1,0 @@
-dev=`echo "$1" | /bin/sed -e 's/.*\///'`
-/sbin/iw phy $dev interface add moni0 type monitor
-/sbin/ifconfig moni0 up

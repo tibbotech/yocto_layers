@@ -1,3 +1,0 @@
-# wifi automatically go to monitor mode on attach
-#SUBSYSTEM=="ieee80211", ACTION=="add", STARTUP="1", PROGRAM="/bin/sh /home/root/ninja-udev-run_monitor %p"
-SUBSYSTEM=="ieee80211", ACTION=="add", PROGRAM="/bin/sh /home/root/ninja-udev-run_monitor %p"

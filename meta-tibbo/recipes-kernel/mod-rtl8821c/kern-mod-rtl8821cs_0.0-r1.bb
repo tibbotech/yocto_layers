@@ -1,5 +1,5 @@
 DESCRIPTION = "Realtek SDIO Wi-Fi driver for rtl8821cs"
-#HOMEPAGE = "pr"
+HOMEPAGE = "https://github.com/tibbotech/rtl8xxx-dev"
 MAINTAINER = "Dvorkin Dmitry <dvorkin@tibbo.com>"
 SECTION = "kernel/modules"
 PRIORITY = "optional"
@@ -11,17 +11,11 @@ SRCREV="${AUTOREV}"
 PACKAGES =+ "${PN}-includes"
 PACKAGE_ARCH_${PN}-includes = "all"
 
-# src in /files/rtl8821cs/*
-S = "${WORKDIR}/rtl8821cs"
+S = "${WORKDIR}/git"
 
 inherit module
 
-SRC_URI = "file://*"
-
-#MAKE_TARGETS = "KERNEL_PATH=${STAGING_KERNEL_DIR} MAKE='make -e' -C ${S} SUBDIRS=${S} TopDIR=${S} modules"
-#MAKE_TARGETS = "KERNEL_PATH=${STAGING_KERNEL_DIR} MAKE='make -e' -C ${STAGING_KERNEL_DIR} SUBDIRS=${S} TopDIR=${S} modules"
-#MAKE_TARGETS = "-C ${STAGING_KERNEL_DIR} TopDIR=${S} modules"
-#MAKE_TARGETS = " "
+SRC_URI = "git://github.com/tibbotech/rtl8xxx-dev.git;branch=master;protocol=git"
 
 do_install() {
  install -m 0755 -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/3rdparty

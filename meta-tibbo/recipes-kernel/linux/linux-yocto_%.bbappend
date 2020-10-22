@@ -176,17 +176,6 @@ SRC_URI_append_tppg1 += "\
 SRC_URI_append_tppg1 += "\
  file://cfg/wifi.cfg \
 "
-SRC_URI_append_tppg1 += "\
- file://rtl8723bs.Kconfig.patch \
- file://Kconfig.rtlbtcoex.patch  \
- file://rtl8723bs.Makefile.patch \
- file://rtl8723bs \
-"
-#SRC_URI_append_tppg1 += "\
-# file://rtl8821cs.Kconfig.patch \
-# file://rtl8821cs.Makefile.patch \
-# file://rtl8821cs/* \
-#"
 # tmp /
 
 # ade7758 power meter patch to show the freq
@@ -208,22 +197,8 @@ SRC_URI_append_tppg1 += "\
 
 SRC_URI_append_tppg1 += "file://tilcdc.reset.patch"
 
-# file://rtl8723bs.int.Makefile.patch
-
 # SunPlus
 #SRC_URI_append_tppg2 += "file://SP/*"
-
-require srcs_tppg2.inc
-
-# tmp
-do_patch_append_tppg1() {
- cp -r ${WORKDIR}/rtl8723bs ${S}/drivers/staging/
-# cp -r ${WORKDIR}/rtl8821cs ${S}/drivers/staging/
-# cd ${WORKDIR}/linux/
-# find ./ -type f ! -name "*.patch" -exec cp -r {} ${S}/ \;
-# cp -r ${WORKDIR}/SP/* ${S}/
-}
-# tmp /
 
 # Functionality flags
 #KERNEL_FEATURES_append_tppg1 += " cape-3.19/cape.scc"

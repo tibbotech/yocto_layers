@@ -29,6 +29,7 @@ DEPENDS += "valgrind"
 DEPENDS += "oprofile"
 DEPENDS += "lsof"
 DEPENDS += "i2c-tools"
+DEPENDS += "can-utils"
 DEPENDS += "psmisc"
 DEPENDS += "devmem2"
 

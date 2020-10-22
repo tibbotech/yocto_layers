@@ -5,7 +5,7 @@
 #TOOLCHAIN_TARGET_TASK_append += " fltk-staticdev"
 
 # NodeJS
-TOOLCHAIN_TARGET_TASK_append += " nodejs"
+#TOOLCHAIN_TARGET_TASK_append += " nodejs"
 TOOLCHAIN_HOST_TASK_append += " nativesdk-swig"
 #TOOLCHAIN_HOST_TASK_append += " nativesdk-nodejs nativesdk-nodejs-npm"
 
