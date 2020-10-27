@@ -5,6 +5,6 @@
  
  cd /home/builder/poky
 -. ./oe-init-build-env
-+. ./oe-init-build-env c.tppg2
++. ./oe-init-build-env build.tppg2
  
  matchbox-terminal&
