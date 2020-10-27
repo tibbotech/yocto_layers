@@ -9,9 +9,9 @@ inherit allarch
 
 LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/GPL-2.0;md5=801f80980d171dd6425610833a22dbe6"
 
-S = "${WORKDIR}/${PN}"
+S = "${WORKDIR}"
 
-SRC_URI  = "file://*"
+SRC_URI  = "file://pins.ini"
 
 FILES_${PN}  = "/opt/tps-shared/*"
 
@@ -22,3 +22,5 @@ do_install() {
 
 RPROVIDES_${PN} += "${PN}"
 RPROVIDES_${PN} += "virtual/pinsini"
+
+COMPATIBLE_HOST = "(arm.*-linux)"

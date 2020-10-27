@@ -6,9 +6,11 @@ SECTION = "base"
 
 LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/GPL-2.0;md5=801f80980d171dd6425610833a22dbe6"
 
-S = "${WORKDIR}/${PN}"
+S = "${WORKDIR}"
 
-SRC_URI  = "file://*"
+SRC_URI  = "file://pins"
+SRC_URI += "file://lcdb"
+SRC_URI += "file://rpmsbase.sh"
 
 FILES_${PN}  = "/opt/tps-shared/*"
 FILES_${PN} += "/etc/profile.d/*"
@@ -22,3 +24,5 @@ do_install() {
 }
 
 RDEPENDS_${PN} += "virtual/pinsini"
+
+COMPATIBLE_HOST = "(arm.*-linux)"

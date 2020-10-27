@@ -14,13 +14,13 @@ SRC_URI += "file://kernel-meta/*;type=kmeta;name=meta;destsuffix=${KMETA}"
 # 5.4 master
 SRCREV = "e58c1790eb68099d5cbf08e368be84b7007bd076"
 # 5.4 tibbo/spi_exp
-SRCREV = "9a797a8dfef2bcbebb2bbc4ad266b08ddaabc923"
+SRCREV = "5cd489883fb501fa87d067fdb30c036c9eb9aad7"
 # 4.19
 SRCREV_machine_tppg2 = "eee6766b2540822a9b229f64549299793a903f41"
 # 5.4 master
 SRCREV_machine_tppg2 = "e58c1790eb68099d5cbf08e368be84b7007bd076"
 # 5.4 tibbo/spi_exp
-SRCREV_machine_tppg2 = "9a797a8dfef2bcbebb2bbc4ad266b08ddaabc923"
+SRCREV_machine_tppg2 = "5cd489883fb501fa87d067fdb30c036c9eb9aad7"
 
 # if using meta from master
 #SRCREV_meta ?= "cebe198870d781829bd997a188cc34d9f7a61023"

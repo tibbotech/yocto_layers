@@ -1,5 +1,9 @@
+DESCRIPTION = "TPS RamFs"
+LICENSE = "MIT"
+PR = "r1"
 
-include img-tps-free.bb
+#include img-tps-free.bb
+inherit core-image
 
 VIRTUAL-RUNTIME_dev_manager ?= "busybox-mdev"
 
