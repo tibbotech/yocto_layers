@@ -5,7 +5,7 @@ IMAGE_ROOTFS_EXTRA_SPACE = "104857600"
 
 SRC_URI += "file://npm.dunfell.patch"
 
-SRCREV_tibbo = "96fc58f71bf351681d93ec367777f885400479f9"
+SRCREV_tibbo = "690267cf3556a1708db85dff240c71ff7dea3571"
 SRC_URI += "git://github.com/tibbotech/yocto_layers.git;branch=dunfell;name=tibbo;destsuffix=xxx;"
 SRCREV_oe = "2a5c534d2b9f01e9c0f39701fccd7fc874945b1c"
 SRC_URI += "git://git.openembedded.org/meta-openembedded;branch=dunfell;name=oe;destsuffix=xx0;"
