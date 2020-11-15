@@ -4,6 +4,7 @@ KBRANCH_tppg2 = "master"
 #KBRANCH_tppg2 = "tibbo/muxZero"
 #KBRANCH_tppg2 = "kernel_4.19"
 KBRANCH_tppg2 = "tibbo/spi_exp"
+KBRANCH_tppg2 = "tibbo/spi_exp2"
 # mainline
 COMPATIBLE_MACHINE_tppg2 = "tppg2"
 
@@ -12,15 +13,17 @@ SRC_URI = "git://git@113.196.136.131:22/qac628/linux/kernel;protocol=ssh;name=ma
 SRC_URI += "file://kernel-meta/*;type=kmeta;name=meta;destsuffix=${KMETA}"
 
 # 5.4 master
-SRCREV = "e58c1790eb68099d5cbf08e368be84b7007bd076"
+SRCREV = "27aab3d75ad566e8b0b60c9e459cc0040084c1fc"
 # 5.4 tibbo/spi_exp
-SRCREV = "5cd489883fb501fa87d067fdb30c036c9eb9aad7"
+SRCREV = "a921bad2facfeda37b8c7e2562139838e179a4c6"
+SRCREV = "2d94f44148c02fee3a6ace24a62d00ccfe6303c4"
 # 4.19
 SRCREV_machine_tppg2 = "eee6766b2540822a9b229f64549299793a903f41"
 # 5.4 master
-SRCREV_machine_tppg2 = "e58c1790eb68099d5cbf08e368be84b7007bd076"
+SRCREV_machine_tppg2 = "27aab3d75ad566e8b0b60c9e459cc0040084c1fc"
 # 5.4 tibbo/spi_exp
-SRCREV_machine_tppg2 = "5cd489883fb501fa87d067fdb30c036c9eb9aad7"
+SRCREV_machine_tppg2 = "a921bad2facfeda37b8c7e2562139838e179a4c6"
+SRCREV_machine_tppg2 = "2d94f44148c02fee3a6ace24a62d00ccfe6303c4"
 
 # if using meta from master
 #SRCREV_meta ?= "cebe198870d781829bd997a188cc34d9f7a61023"
@@ -55,14 +58,9 @@ SRC_URI += "file://dts/sp7021-common.dtsi.inc.patch"
 # tmp: spi debug
 #SRC_URI += "file://dbg_spi/spi-sunplus-sp7021.c.dbg0.patch"
 #SRC_URI += "file://dbg_spi/spi-sunplus-sp7021.c.dbg1.patch"
-#SRC_URI += "file://dbg_spi/spi-sunplus-sp7021.c.csdeb.patch"
-#SRC_URI += "file://dbg_spi/spi-sunplus-sp7021.c.cstst.patch"
-#SRC_URI += "file://dbg_spi/spi-sunplus-sp7021.c.numcsdbg.patch"
-#SRC_URI += "file://dbg_spi/spi-sunplus-sp7021.c.enpol.patch"
+
 #SRC_URI += "file://dbg_spi/spi.c.dbg0.patch"
 SRC_URI += "file://dbg_can/mcp251x.c.dbg0.patch"
-#SRC_URI += "file://dbg_can/mcp251x.c.dbg1.patch"
-#SRC_URI += "file://dbg_can/mcp251x.c.dbg2.patch"
 SRC_URI += "file://dbg_can/mcp251x.c.clk0.patch"
 
 # set GPIO to 83 for ltpp3g2

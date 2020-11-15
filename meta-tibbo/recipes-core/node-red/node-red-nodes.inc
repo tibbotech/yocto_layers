@@ -8,7 +8,9 @@ require node-red-module.inc
 
 SRCREV="${AUTOREV}"
 SRC_URI  = "git://github.com/node-red/node-red-nodes.git;protocol=git;branch=master"
+#SRC_URI += "npmsw://${THISDIR}/${BPN}/npm-shrinkwrap.json"
 
+#NPM_SHRINKWRAP := "${THISDIR}/${PN}/npm-shrinkwrap.json"
 
 CUR_DST="/usr/lib/node_modules/${PN}"
 

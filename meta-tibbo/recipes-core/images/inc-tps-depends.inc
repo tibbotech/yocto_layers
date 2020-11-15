@@ -34,7 +34,7 @@ DEPENDS += "psmisc"
 DEPENDS += "devmem2"
 
 # nodeJS
-DEPENDS += "node-red"
+#DEPENDS += "node-red"
 #DEPENDS += "node-sqlite3"
 #DEPENDS += "node-serialport"
 #DEPENDS += "node-modbus-serial"
