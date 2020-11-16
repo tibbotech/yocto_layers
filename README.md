@@ -18,7 +18,7 @@ cd ..
 git clone https://github.com/tibbotech/yocto_layers.git ./poky.x
 cd poky.x; git checkout ${rel}; cd ..
 rsync -a --exclude=.git ./poky.x/ ./poky/
-patch -p0 < ./npm.${rel}.patch
+patch -p0 < ./poky/npm.${rel}.patch
 ```
 
 ## Pulling the updates from the GitHub
