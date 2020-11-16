@@ -20,7 +20,7 @@ IMAGE_INSTALL += "resize-helper"
 IMAGE_INSTALL += "u-boot-fw-utils"
 IMAGE_INSTALL += "tzdata-asia"
 
-#IMAGE_INSTALL += "tps-wan"
+IMAGE_INSTALL += "tps-wan"
 IMAGE_INSTALL += "c103app"
 
 IMAGE_INSTALL += "fuse-exfat exfat-utils"
