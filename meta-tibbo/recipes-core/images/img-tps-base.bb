@@ -4,7 +4,6 @@ PR = "r1"
 
 require inc-tps-tin.inc
 require inc-tps-depends.inc
-require inc-tps-privdeps.inc
 require inc-i-sdkdev.inc
 
 IMAGE_FEATURES = ""
@@ -25,3 +24,7 @@ IMAGE_INSTALL += "tzdata-asia"
 IMAGE_INSTALL += "tps-wan"
 IMAGE_INSTALL += "tps-tios-sp7021"
 IMAGE_INSTALL += "tps-resetconf"
+
+# AggreGate
+DEPENDS += "tps-ag-stable"
+DEPENDS += "tps-agent"

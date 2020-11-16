@@ -4,7 +4,6 @@ PR = "r1"
 
 require inc-tps-tin.inc
 require inc-tps-depends.inc
-require inc-tps-privdeps.inc
 
 IMAGE_FEATURES = ""
 
@@ -21,9 +20,10 @@ IMAGE_INSTALL += "resize-helper"
 IMAGE_INSTALL += "u-boot-fw-utils"
 IMAGE_INSTALL += "tzdata-asia"
 
-IMAGE_INSTALL += "tps-wan"
-#IMAGE_INSTALL += "tps-tios-sp7021"
+#IMAGE_INSTALL += "tps-wan"
 IMAGE_INSTALL += "c103app"
 
-IMAGE_INSTALL += "fuse-exfat"
-IMAGE_INSTALL += "exfat-utils"
+IMAGE_INSTALL += "fuse-exfat exfat-utils"
+
+DEPENDS += "c103app"
+DEPENDS += "c103app-web-adv"
