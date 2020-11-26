@@ -34,6 +34,7 @@ PACKAGECONFIG = " \
     hibernate \
     hostnamed \
     kmod \
+    localed \
     logind \
     machined \
     myhostname \

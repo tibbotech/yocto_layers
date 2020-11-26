@@ -75,6 +75,10 @@ SRC_URI += "file://mcp25xxfd/mcp25xxfd.tar.gz"
 SRC_URI += "file://mcp25xxfd/Kconfig.mcp25xxfd.patch"
 SRC_URI += "file://mcp25xxfd/Makefile.mcp25xxfd.patch"
 
+# +dts
+SRC_URI += "file://sp7021-dsx.dts.patch"
+SRC_URI += "file://sp7021-dsx.dtsi.patch"
+
 # mcp25xxfd driver
 do_patch_append() {
  cp -r ${WORKDIR}/mcp25xxfd ${S}/drivers/net/can/spi/

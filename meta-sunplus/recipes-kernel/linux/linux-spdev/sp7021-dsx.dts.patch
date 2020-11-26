@@ -1,0 +1,15 @@
+--- /dev/null	2020-11-10 14:03:43.514010481 +0300
++++ a/arch/arm/boot/dts/sp7021-dsx.dts	2020-11-17 02:37:30.339635316 +0300
+@@ -0,0 +1,12 @@
++/*
++ * {desc_long}
++ * Copyright (C) 2020 Tibbo Tech. - http://tibbo.com/tps/
++ * License: GPLv2 or later
++ */
++/dts-v1/;
++
++#include "sp7021-dsx.dtsi"
++
++/ {
++	model = "SP7021 DSX Rev. A (empty sockets)";
++};

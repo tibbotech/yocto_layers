@@ -7,6 +7,7 @@
 # NodeJS
 #TOOLCHAIN_TARGET_TASK_append += " nodejs"
 TOOLCHAIN_HOST_TASK_append += " nativesdk-swig"
+# better to install NodeJS from https://nodejs.org/en/download/releases/
 #TOOLCHAIN_HOST_TASK_append += " nativesdk-nodejs nativesdk-nodejs-npm"
 
 TOOLCHAIN_HOST_TASK_append += " nativesdk-rpm-build"

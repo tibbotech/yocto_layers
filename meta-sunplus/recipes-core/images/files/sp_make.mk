@@ -3,6 +3,7 @@
 #D1=${TMPDIR}/deploy/images/${MACHINE}-arm5/
 D0=.
 D1=../tppg2-arm5
+PATH := ${D0}/sp_tools/:$(PATH)
 
 OUTD=sp_out
 
@@ -23,10 +24,12 @@ F_NON=a926-empty.bin
 ###### *** U-Boot (A7,Chip-A): bootloader #2
 #F_UBT=u-boot-a7021_emmc-sp-r0.img
 #F_UBT=u-boot.img-a7021_nand
+F_UBT=u-boot.bin-a7021_dsxe
 F_UBT=u-boot.bin-a7021_ppg2
 
 ###### *** DTS
-#F_DTB=pentagram-sp7021-achip-emu.dtb
+#F_DTB=sp7021-ev.dtb
+#F_DTB=sp7021-dsx.dtb
 F_DTB=sp7021-ltpp3g2revD.dtb
 
 ###### xxx Kernel (A7,Chip-A): Linux kernel
