@@ -17,6 +17,8 @@ SRCREV = "27aab3d75ad566e8b0b60c9e459cc0040084c1fc"
 # 5.4 tibbo/spi_exp
 SRCREV = "a921bad2facfeda37b8c7e2562139838e179a4c6"
 SRCREV = "2d94f44148c02fee3a6ace24a62d00ccfe6303c4"
+# newest
+SRCREV = "7b8f84834aba25d02728ed31c8db8166b35bbda6"
 # 4.19
 SRCREV_machine_tppg2 = "eee6766b2540822a9b229f64549299793a903f41"
 # 5.4 master
@@ -24,6 +26,8 @@ SRCREV_machine_tppg2 = "27aab3d75ad566e8b0b60c9e459cc0040084c1fc"
 # 5.4 tibbo/spi_exp
 SRCREV_machine_tppg2 = "a921bad2facfeda37b8c7e2562139838e179a4c6"
 SRCREV_machine_tppg2 = "2d94f44148c02fee3a6ace24a62d00ccfe6303c4"
+# newest
+SRCREV_machine_tppg2 = "7b8f84834aba25d02728ed31c8db8166b35bbda6"
 
 # if using meta from master
 #SRCREV_meta ?= "cebe198870d781829bd997a188cc34d9f7a61023"
@@ -53,7 +57,6 @@ SRC_URI += "file://dts/sp7021-tpsgpio.dts.patch"
 
 # FIXME!
 SRC_URI += "file://dts/sp7021-common.dtsi.inc.patch"
-#SRC_URI += "file://dts/sp7021-common.dtsi.nodma.patch"
 
 # tmp: spi debug
 #SRC_URI += "file://dbg_spi/spi-sunplus-sp7021.c.dbg0.patch"
