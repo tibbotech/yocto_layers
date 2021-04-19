@@ -1,0 +1,7 @@
+--- a/drivers/net/can/spi/Makefile	2020-10-04 16:05:35.157087137 +0300
++++ a/drivers/net/can/spi/Makefile	2020-10-04 16:52:25.217060338 +0300
+@@ -6,3 +6,4 @@
+ 
+ obj-$(CONFIG_CAN_HI311X)	+= hi311x.o
+ obj-$(CONFIG_CAN_MCP251X)	+= mcp251x.o
++obj-$(CONFIG_CAN_MCP251XFD)	+= mcp251xfd/

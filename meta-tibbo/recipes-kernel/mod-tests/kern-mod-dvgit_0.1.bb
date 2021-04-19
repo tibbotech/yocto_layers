@@ -15,7 +15,9 @@ S = "${WORKDIR}/${PN}"
 
 inherit module
 
-SRC_URI = "file://*"
+SRC_URI  = "file://NOTE.txt"
+SRC_URI += "file://dv-git.c"
+SRC_URI += "file://Makefile"
 
 #MAKE_TARGETS = "KERNEL_PATH=${STAGING_KERNEL_DIR} MAKE='make -e' -C ${STAGING_KERNEL_DIR} SUBDIRS=${S} modules"
 

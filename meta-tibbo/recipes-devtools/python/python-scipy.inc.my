@@ -1,0 +1,16 @@
+SUMMARY = "Fundamental Python library for scientific computing"
+HOMEPAGE = "https://www.scipy.org/scipylib/index.html"
+SECTION = "devel/python"
+LICENSE = "MIT"
+LIC_FILES_CHKSUM = "file://PKG-INFO;md5=80badad287a044d0e6ba7cd29045603e"
+
+inherit pypi setuptools3
+
+#RDEPENDS_${PN} += "${PYTHON_PN}-numpy ${PYTHON_PN}-pybind11"
+RDEPENDS_${PN} += "${PYTHON_PN}-numpy"
+DEPENDS += "${PYTHON_PN}-numpy-native ${PYTHON_PN}-pybind11"
+#DEPENDS += "${PYTHON_PN}-numpy-native"
+
+BBCLASSEXTEND = "native nativesdk"
+
+#do_configure[noexec] = "1"

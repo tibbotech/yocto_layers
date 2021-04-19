@@ -65,6 +65,6 @@ static void __exit my_exit( void) {
 module_init( my_init);
 module_exit( my_exit);
 
-MODULE_AUTHOR("Jeff Lance");
-MODULE_DESCRIPTION("CM register read/write");
+MODULE_AUTHOR("Dvorkin Dmitry");
+MODULE_DESCRIPTION("Change pins mode");
 MODULE_LICENSE("GPL v2");

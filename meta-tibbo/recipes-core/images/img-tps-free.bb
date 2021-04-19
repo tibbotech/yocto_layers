@@ -1,4 +1,4 @@
-DESCRIPTION = "Tibbo Project System (free)"
+DESCRIPTION = "Tibbo Project System (open-source only)"
 LICENSE = "MIT"
 PR = "r1"
 
@@ -23,3 +23,6 @@ IMAGE_INSTALL += "tzdata-asia"
 #IMAGE_INSTALL += "tps-wan"
 #IMAGE_INSTALL += "tps-tios-sp7021"
 IMAGE_INSTALL += "tps-resetconf"
+
+# temporary there
+IMAGE_INSTALL += "devmem2 ethtool"

@@ -1,2 +1,0 @@
-http://beagleboard.org/linux
-https://github.com/jadonk/kernel/commit/d60d5f20e67a527aaa1813af2391894ffbfd4af4

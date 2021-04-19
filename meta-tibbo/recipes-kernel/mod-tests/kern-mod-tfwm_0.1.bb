@@ -15,7 +15,8 @@ S = "${WORKDIR}/${PN}"
 
 inherit module
 
-SRC_URI = "file://*"
+SRC_URI  = "file://Makefile"
+SRC_URI += "file://tpstfwm.c"
 
 #MAKE_TARGETS = "KERNEL_PATH=${STAGING_KERNEL_DIR} MAKE='make -e' -C ${STAGING_KERNEL_DIR} SUBDIRS=${S} modules"
 

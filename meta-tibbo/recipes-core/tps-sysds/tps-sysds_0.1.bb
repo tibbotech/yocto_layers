@@ -4,16 +4,15 @@ MAINTAINER = "Dmitry Dvorkin <dvorkin@tibbo.com>"
 LICENSE = "LGPLv2+"
 SECTION = "libs"
 PACKAGES = "${PN}-dbg ${PN}-dev ${PN}-test ${PN}-node ${PN}"
+SRCREV="${AUTOREV}"
 
 SUMMARY_${PN}-node = "SystemD interface NodeJs object"
 
-LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/GPL-2.0;md5=801f80980d171dd6425610833a22dbe6"
-
 inherit autotools npm
 
-S = "${WORKDIR}/${PN}"
+S = "${WORKDIR}/git"
 
-SRC_URI  = "file://*"
+SRC_URI = "git://github.com/tibbotech/ltps-sysds.git;branch=master;protocol=git"
 
 FILES_${PN}-node  += "/usr/lib/node_modules/"
 FILES_${PN}-test  = "/home/root/*"
@@ -56,3 +55,5 @@ DEPENDS_${PN}-node += "systemd-dev"
 DEPENDS_${PN}-node += "nativesdk-swig"
 DEPENDS_${PN}-node += "node-gyp-native"
 DEPENDS_${PN}-node += "nodejs nodejs-native"
+
+LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/GPL-2.0;md5=801f80980d171dd6425610833a22dbe6"

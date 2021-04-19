@@ -1,0 +1,20 @@
+--- a/drivers/spi/spi-sunplus-sp7021.c	2020-12-19 18:10:08.225512115 +0300
++++ a/drivers/spi/spi-sunplus-sp7021.c	2020-12-19 18:23:20.033163862 +0300
+@@ -449,7 +449,7 @@
+ 	int i;
+ 	for ( i = 0; i < _len; i++) {
+ 		_m->rx_data_buf[ _m->rx_cur_len] = readl( &sr->FIFO_DATA);
+-		DBG_INF( "RX 0x%x _cur_len = %d", _m->rx_data_buf[ _m->rx_cur_len], _m->rx_cur_len);
++		//DBG_INF( "RX 0x%x _cur_len = %d", _m->rx_data_buf[ _m->rx_cur_len], _m->rx_cur_len);
+ 		_m->rx_cur_len++;
+ 	}
+ }
+@@ -457,7 +457,7 @@
+ 	SPI_MAS* sr = ( SPI_MAS *)_m->mas_base;
+ 	int i;
+ 	for ( i = 0; i < _len; i++) {
+-		DBG_INF( "TX 0x%02x _cur_len %d", _m->tx_data_buf[_m->tx_cur_len], _m->tx_cur_len);
++		//DBG_INF( "TX 0x%02x _cur_len %d", _m->tx_data_buf[_m->tx_cur_len], _m->tx_cur_len);
+ 		writel( _m->tx_data_buf[_m->tx_cur_len], &sr->FIFO_DATA);
+ 		_m->tx_cur_len++;
+ 	}

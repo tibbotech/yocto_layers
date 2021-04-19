@@ -10,7 +10,15 @@ require tps-www-user.inc
 
 S = "${WORKDIR}/${PN}-${PV}"
 
-SRC_URI  = "file://*"
+SRC_URI  = "file://html/dt.php"
+SRC_URI += "file://html/index.php"
+SRC_URI += "file://html/http_errs/404.html"
+SRC_URI += "file://html/http_errs/50x.html"
+SRC_URI += "file://html/index.html"
+SRC_URI += "file://conf/php-fpm-tpsa.service"
+SRC_URI += "file://conf/nginx.conf"
+SRC_URI += "file://conf/.htpasswd"
+SRC_URI += "file://conf/php-fpm-tpsa.conf"
 
 do_install() {
  install -d ${D}/var/www/tpsa-www/

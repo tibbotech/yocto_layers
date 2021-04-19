@@ -15,7 +15,13 @@ S = "${WORKDIR}/${PN}"
 
 inherit module
 
-SRC_URI = "file://*"
+SRC_URI  = "file://intltest_defs.h"
+SRC_URI += "file://intltest.h"
+SRC_URI += "file://intltest_main.c"
+SRC_URI += "file://intltest_procfs.c"
+SRC_URI += "file://intltest_procfs.h"
+SRC_URI += "file://intltest_syshdrs.h"
+SRC_URI += "file://Makefile"
 
 #MAKE_TARGETS = "KERNEL_PATH=${STAGING_KERNEL_DIR} MAKE='make -e' -C ${STAGING_KERNEL_DIR} SUBDIRS=${S} modules"
 

@@ -1,0 +1,37 @@
+---  a/drivers/net/wireless/bcmdhd/dhd_gpio.c	2021-02-20 21:13:56.871703950 +0300
++++  a/drivers/net/wireless/bcmdhd/dhd_gpio.c	2021-02-21 01:31:28.755573541 +0300
+@@ -9,6 +9,9 @@
+ #include <linux/mmc/host.h>
+ #include <linux/mmc/sdio_func.h>
+ #endif /* defined(BUS_POWER_RESTORE) && defined(BCMSDIO) */
++// by Dv
++#include <linux/of_gpio.h>
++// by Dv /
+ 
+ #ifdef CONFIG_DHD_USE_STATIC_BUF
+ extern void *dhd_wlan_mem_prealloc(int section, unsigned long size);
+@@ -250,6 +253,24 @@
+ 	* WL_REG_ON and WL_HOST_WAKE.
+ 	*/
+ 	gpio_wl_reg_on = 82; // reserved in MUX too
++// by Dv
++int dv_i = -1;
++//struct device_node *dv_dn = of_find_node_by_name( NULL, "sdio");
++struct device_node *dv_dn = of_find_node_by_name( NULL, "bcrmf");
++//struct device_node *dv_dn0 = NULL;
++//while ( ( dv_dn0 = of_get_next_child( dv_dn, dv_dn0))) printf( "xcxx:%s\n", dv_dn0->name);
++//if ( dv_dn) printf( "%s():%d %s\n", __FUNCTION__, __LINE__, dv_dn->name);
++	if ( dv_dn) {
++	   dv_i = of_get_named_gpio( dv_dn, "reset-gpios", 0);
++	   printf( "%s: got reset-gpios:%d\n", __FUNCTION__, dv_i);
++	}
++	if ( !gpio_is_valid( dv_i)) {
++	  printf( "%s: can't get reset-gpios\n", __FUNCTION__);
++	  dv_i = -1;
++	}
++	if ( dv_i >= 0) gpio_wl_reg_on = dv_i;
++// by Dv /
++
+ #ifdef CUSTOMER_OOB
+ 	gpio_wl_host_wake = -1;
+ #endif

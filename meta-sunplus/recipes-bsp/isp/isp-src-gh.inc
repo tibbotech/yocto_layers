@@ -1,4 +1,4 @@
 
-SRCREV = "7e3dfa126409109fa428a75ff49c29ab70d03de6"
+SRCREV = "48a0a8c6b880a30d27d3a4953777b34efc53a489"
 
 SRC_URI  = "git://github.com/tibbotech/plus1_isp.git;branch=master;"

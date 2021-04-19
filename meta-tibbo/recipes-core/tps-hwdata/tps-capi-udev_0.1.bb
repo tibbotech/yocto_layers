@@ -10,7 +10,7 @@ LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/GPL-2.0;md5=80
 
 S = "${WORKDIR}/${PN}"
 
-SRC_URI  = "file://*"
+SRC_URI  = "file://capi-devs.rules"
 
 FILES_${PN} += "/etc/*"
 

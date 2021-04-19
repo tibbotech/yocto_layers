@@ -1,5 +1,5 @@
---- a/configs/q628_Rev2_EMMC_defconfig	2020-10-13 00:07:43.699529410 +0300
-+++ a/configs/q628_Rev2_EMMC_defconfig	2020-10-13 01:25:47.622799654 +0300
+--- a/configs/q628_Rev2_EMMC_defconfig	2021-01-20 17:20:24.290495846 +0300
++++ a/configs/q628_Rev2_EMMC_defconfig	2021-01-20 17:19:39.348121440 +0300
 @@ -13,7 +13,7 @@
  # CONFIG_BOOT_ON_CSIM is not set
  CONFIG_HAVE_UART_BOOTSTRAP=y

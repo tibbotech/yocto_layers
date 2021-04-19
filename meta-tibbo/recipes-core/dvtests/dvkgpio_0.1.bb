@@ -4,12 +4,11 @@ MAINTAINER = "Dmitry Dvorkin <dvorkin@tibbo.com>"
 LICENSE = "LGPLv2+"
 SECTION = "console/utils"
 PACKAGES = "${PN}-dbg ${PN}"
+SRCREV="${AUTOREV}"
 
-LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/GPL-2.0;md5=801f80980d171dd6425610833a22dbe6"
+S = "${WORKDIR}/git"
 
-S = "${WORKDIR}/${PN}"
-
-SRC_URI  = "file://*"
+SRC_URI = "git://github.com/tibbotech/ltps-dvkgpio.git;branch=master;protocol=git"
 
 FILES_${PN}  = "/home/root/${PN}/*"
 FILES_${PN}-dbg  = "/home/root/${PN}/.debug/*"
@@ -19,3 +18,6 @@ do_install() {
 }
 
 INSANE_SKIP_${PN} = "ldflags"
+
+LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/GPL-2.0;md5=801f80980d171dd6425610833a22dbe6"
+

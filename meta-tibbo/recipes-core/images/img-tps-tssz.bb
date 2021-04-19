@@ -1,4 +1,4 @@
-DESCRIPTION = "Tibbo Project System (+gstreamer)"
+DESCRIPTION = "Tibbo Project System (img size test)"
 LICENSE = "MIT"
 PR = "r1"
 

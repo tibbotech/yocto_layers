@@ -2,15 +2,16 @@
 D0 = "${TMPDIR}/deploy/images/${MACHINE}/"
 D1 = "${TMPDIR}/deploy/images/${MACHINE}-arm5/"
 
-SRC_URI += "file://sp_make.mk"
+SRC_URI += "file://sp_make*.mk"
 
 do_install() {
  echo "DV3:${TMPDIR}/deploy/images/${MACHINE}/"
- install ${WORKDIR}/sp_make.mk ${D0}/
+ install ${WORKDIR}/sp_make*.mk ${D0}/
 }
 
 DEPENDS += "vim-native"
 DEPENDS += "u-boot-tools-native"
+DEPENDS += "xboot-tools-native"
 
 #DEPENDS += "packagegroup-core-sdk"
 

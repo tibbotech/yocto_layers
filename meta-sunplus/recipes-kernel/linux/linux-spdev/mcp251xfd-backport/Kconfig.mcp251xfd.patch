@@ -1,0 +1,9 @@
+--- a/drivers/net/can/spi/Kconfig	2020-10-04 16:05:35.157087137 +0300
++++ a/drivers/net/can/spi/Kconfig	2020-10-04 16:53:38.620059638 +0300
+@@ -15,4 +15,6 @@
+ 	  Driver for the Microchip MCP251x and MCP25625 SPI CAN
+ 	  controllers.
+ 
++source "drivers/net/can/spi/mcp251xfd/Kconfig"
++
+ endmenu

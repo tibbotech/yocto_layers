@@ -8,9 +8,12 @@ inherit allarch systemd
 
 LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/GPL-2.0;md5=801f80980d171dd6425610833a22dbe6"
 
-S = "${WORKDIR}/${PN}"
+S = "${WORKDIR}"
 
-SRC_URI  = "file://*"
+SRC_URI  = "file://systemd/network/wlan0.network"
+SRC_URI += "file://wpa_supplicant/wlan0.conf.orig"
+SRC_URI += "file://wpa_supplicant/wlan0.conf"
+SRC_URI += "file://lib/systemd/system/tps-wpa@.service"
 
 FILES_${PN}  = "/etc/*"
 FILES_${PN} += "/lib/*"

@@ -1,8 +1,8 @@
---- a/include/configs/pentagram_common.h	2020-08-18 23:35:42.744857912 +0300
-+++ a/include/configs/pentagram_common.h	2020-08-19 00:01:07.380945878 +0300
-@@ -282,6 +282,7 @@
+--- a/include/configs/pentagram_common.h	2021-03-02 02:05:25.679123874 +0300
++++ a/include/configs/pentagram_common.h	2021-03-02 02:06:24.106288316 +0300
+@@ -291,6 +291,7 @@
  #define CONFIG_EXTRA_ENV_SETTINGS \
- "b_c=console=ttyS0,115200 earlyprintk\0" \
+ "b_c=console=tty1 console=ttyS0,115200 earlyprintk\0" \
  "emmc_root=root=/dev/mmcblk0p8 rw rootwait\0" \
 +"args_kern=quiet loglevel=3 rd.systemd.show_status=auto rd.udev.log_priority=3\0" \
  "stdin=" STDIN_CFG "\0" \

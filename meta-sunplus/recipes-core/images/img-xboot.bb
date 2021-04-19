@@ -36,7 +36,6 @@ python tinyinitrd () {
 #QB_KERNEL_CMDLINE_APPEND += "debugshell=3 init=/bin/busybox sh init"
 
 IMAGE_INSTALL = "xboot"
-DEPENDS += "xboot-tools-native"
 DEPENDS += "xboot-nand"
 DEPENDS += "xboot-emmc"
 DEPENDS += "bnoos"

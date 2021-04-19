@@ -1,0 +1,2 @@
+include features/iio/iio.scc
+kconf hardware 42.cfg

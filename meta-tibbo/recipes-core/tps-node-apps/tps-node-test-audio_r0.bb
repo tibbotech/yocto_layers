@@ -14,7 +14,7 @@ S = "${WORKDIR}/git"
 DV_BR="master"
 
 SRC_URI  = "https://git@bitbucket.org/tibbotech/audio-tibbit-test.git;branch=${DV_BR}"
-SRC_URI += "file://*"
+SRC_URI += "file://test-audio/conf/napp-test-audio.service"
 
 do_install() {
  install -d ${D}${NAPPS_PFX}/test-audio/site/

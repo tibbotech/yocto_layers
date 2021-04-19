@@ -11,8 +11,12 @@ TOOLCHAIN_HOST_TASK_append += " nativesdk-swig"
 #TOOLCHAIN_HOST_TASK_append += " nativesdk-nodejs nativesdk-nodejs-npm"
 
 TOOLCHAIN_HOST_TASK_append += " nativesdk-rpm-build"
+TOOLCHAIN_HOST_TASK_append += " nativesdk-make"
 
 TOOLCHAIN_TARGET_TASK_append += " kernel-devsrc"
 
 TOOLCHAIN_TARGET_TASK_append += " boost-dev"
 TOOLCHAIN_TARGET_TASK_append += " boost-staticdev"
+
+TOOLCHAIN_TARGET_TASK_append += " log4cpp-dev"
+#TOOLCHAIN_TARGET_TASK_append += " dlib-dev"

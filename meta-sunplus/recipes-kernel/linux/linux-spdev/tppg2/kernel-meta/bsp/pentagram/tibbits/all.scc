@@ -1,0 +1,5 @@
+define KFEATURE_DESCRIPTION "Enable Tibbits native drivers"
+define KFEATURE_COMPATIBILITY board
+
+include 40_2.scc
+include 42.scc

@@ -8,10 +8,8 @@ MACHINE_EXTRA_RRECOMMENDS = " kernel-modules kernel-devicetree"
 
 EXTRA_IMAGEDEPENDS += "u-boot"
 EXTRA_IMAGEDEPENDS += "dtc-native"
-EXTRA_IMAGEDEPENDS += "isp-native"
+do_image_wic[depends] += "isp-native:do_deploy"
 
-#IMAGE_FSTYPES += "tar.bz2 ubi ext4 f2fs "
-#IMAGE_FSTYPES += "tar.bz2 ubi ext4 btrfs "
 IMAGE_FSTYPES += "tar.bz2 ext4 squashfs ubi"
 UBI_VOLNAME="rootfs"
 #MKUBIFS_ARGS = "-F -m 2048 -e 126976 -c 4036"
@@ -20,6 +18,10 @@ UBI_VOLNAME="rootfs"
 MKUBIFS_ARGS = "-F -m 2048 -e 126976 -c 2030"
 #UBINIZE_ARGS = "-m 2048 -p 128KiB -s 2048"
 UBINIZE_ARGS = "-m 2048 -p 124KiB -s 2048"
+
+# SDcard image
+IMAGE_FSTYPES += "wic wic.bz2"
+WKS_FILE = "sdimage.tppg2.wks"
 
 SERIAL_CONSOLES ?= "115200;ttyS0"
 
@@ -57,3 +59,10 @@ UBOOT_LOADADDRESS = "0x00308000"
 
 #IMAGE_BOOT_FILES ?= "u-boot.${UBOOT_SUFFIX} MLO"
 IMAGE_BOOT_FILES ?= "u-boot.${UBOOT_SUFFIX}"
+
+IMAGE_BOOT_FILES  = "u-boot.bin-a7021_emmc;u-boot.img"
+IMAGE_BOOT_FILES += "sdcard_uEnv.txt;uEnv.txt"
+#IMAGE_BOOT_FILES += "a926.img"
+#IMAGE_BOOT_FILES += "${KERNEL_IMAGETYPE}"
+IMAGE_BOOT_FILES += "${KERNEL_IMAGETYPE}-initramfs-tppg2.img;${KERNEL_IMAGETYPE}"
+#IMAGE_BOOT_FILES += "ISPBOOOT.BIN"

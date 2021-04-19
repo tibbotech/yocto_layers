@@ -10,6 +10,7 @@ SRC_URI += "file://Makefile.autoc.patch"
 #SRC_URI += "file://q628_Rev2_EMMC_defconfig.nonor.patch"
 
 SRC_URI += "file://q628_emmc_no_otp.patch"
+SRC_URI += "file://q628_nand_no_otp.patch"
 SRC_URI += "file://q628_emmc_no_key.patch"
 
 S = "${WORKDIR}/xboot"
@@ -34,6 +35,9 @@ do_install() {
 do_deploy() {
  echo "DV deploy:${DEPLOY_DIR_IMAGE}"
  install -m0644 ${S}/bin/xboot.bin ${DEPLOY_DIR_IMAGE}/${PN}.bin
+ install -m0644 ${S}/bin/xboot.bin ${DEPLOY_DIR_IMAGE}/${PN}.sig
+ ${DEPLOY_DIR_IMAGE}/sp_tools/secure_sign/gen_signature.sh ${DEPLOY_DIR_IMAGE} ${PN}.sig 0
+ ${S}/add_xhdr.sh ${DEPLOY_DIR_IMAGE}/${PN}.sig ${DEPLOY_DIR_IMAGE}/${PN}.img 1
 }
 
 FILES_${PN} += "*"

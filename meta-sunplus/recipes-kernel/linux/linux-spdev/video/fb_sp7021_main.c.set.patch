@@ -1,0 +1,136 @@
+--- a/drivers/video/fbdev/sunplus/fb_sp7021/fb_sp7021_main.c	2021-03-18 15:26:08.762926209 +0300
++++ a/drivers/video/fbdev/sunplus/fb_sp7021/fb_sp7021_main.c	2021-03-29 16:29:05.941739528 +0300
+@@ -84,6 +84,8 @@
+ 
+ static int _sp7021_fb_remove(struct platform_device *pdev);
+ static int _sp7021_fb_probe(struct platform_device *pdev);
++static int _sp7021_fb_check_var(struct fb_var_screeninfo *_v, struct fb_info *_i);
++static int _sp7021_fb_set_par( struct fb_info *info);
+ 
+ /**************************************************************************
+  * Global Data
+@@ -98,6 +100,9 @@
+ 	.fb_fillrect    	= cfb_fillrect,
+ 	.fb_copyarea    	= cfb_copyarea,
+ 	.fb_imageblit   	= cfb_imageblit,
++///
++	.fb_check_var   	= _sp7021_fb_check_var,
++	.fb_set_par   		= _sp7021_fb_set_par,
+ };
+ 
+ static const struct of_device_id _sp7021_fb_dt_ids[] = {
+@@ -120,6 +125,56 @@
+ /**************************************************************************
+  * Function Implementations
+  **************************************************************************/
++static int _sp7021_fb_check_var(struct fb_var_screeninfo *_v, struct fb_info *_i) {
++ pr_info( "%s()\n", __FUNCTION__);
++ pr_info( "v->... == i. ...\n");
++ pr_info( "res: %dx%d == %dx%d\n", _v->xres, _v->yres, _i->var.xres, _i->var.yres);
++ pr_info( "rev: %dx%d == %dx%d\n", _v->xres_virtual, _v->yres_virtual, _i->var.xres_virtual, _i->var.yres_virtual);
++ pr_info( "off: %dx%d == %dx%d\n", _v->xoffset, _v->yoffset, _i->var.xoffset, _i->var.yoffset);
++ pr_info( "bpp/grayscale: %d/%d == %d/%d\n", _v->bits_per_pixel, _v->grayscale, _i->var.bits_per_pixel, _i->var.grayscale);
++ pr_info( "red: %d,%d,%d == %d,%d,%d\n",
++          _v->red.offset, _v->red.length, _v->red.msb_right,
++          _i->var.red.offset, _i->var.red.length, _i->var.red.msb_right);
++ pr_info( "green: %d,%d,%d == %d,%d,%d\n",
++          _v->green.offset, _v->green.length, _v->green.msb_right,
++          _i->var.green.offset, _i->var.green.length, _i->var.green.msb_right);
++ pr_info( "blue: %d,%d,%d == %d,%d,%d\n",
++          _v->blue.offset, _v->blue.length, _v->blue.msb_right,
++          _i->var.blue.offset, _i->var.blue.length, _i->var.blue.msb_right);
++ pr_info( "transp: %d,%d,%d == %d,%d,%d\n",
++          _v->transp.offset, _v->transp.length, _v->transp.msb_right,
++          _i->var.transp.offset, _i->var.transp.length, _i->var.transp.msb_right);
++ pr_info( "nonstd: %d == %d\n", _v->nonstd, _i->var.nonstd);
++ pr_info( "HxW: %dx%d == %dx%d\n", _v->height, _v->width, _i->var.height, _i->var.width);
++ pr_info( "accel_flags: %d == %d\n", _v->accel_flags, _i->var.accel_flags);
++ pr_info( "pc: %d == %d\n", _v->pixclock, _i->var.pixclock);
++ pr_info( "hsync_len: %d == %d\n", _v->hsync_len, _i->var.hsync_len);
++ pr_info( "vsync_len: %d == %d\n", _v->vsync_len, _i->var.vsync_len);
++ pr_info( "sync: %d == %d\n", _v->sync, _i->var.sync);
++ pr_info( "vmode: %d == %d\n", _v->vmode, _i->var.vmode);
++ pr_info( "rotate: %d == %d\n", _v->rotate, _i->var.rotate);
++ pr_info( "colorspace: %d == %d\n", _v->colorspace, _i->var.colorspace);
++ pr_info( "%s() /\n", __FUNCTION__);
++ // ignore some settings
++ _v->vmode = FB_VMODE_NONINTERLACED;
++ if ( _v->sync != 0) _v->sync = 0;
++ // fake setting fps 59.94
++ _v->left_margin = 60;  /* HBProch */
++ _v->right_margin = 16; /* HFPorch */
++ _v->upper_margin = 30; /* VBPorch */
++ _v->lower_margin = 10; /* VFPorch */
++ 
++ if ( _v->vsync_len != 0) _v->vsync_len = 0;
++ if ( _v->vsync_len != 0) _v->vsync_len = 0;
++ // rotate?
++ 
++ // sync
++ return( 0);  }
++ 
++static int _sp7021_fb_set_par( struct fb_info *info) {
++    
++ return( 0);  }
++
+ static int _sp7021_fb_create_device(struct platform_device *pdev,
+ 		struct UI_FB_Info_t *Info)
+ {
+@@ -338,21 +393,26 @@
+ 	unsigned short trans = ~0;
+ 	unsigned int *palette = (unsigned int *)info->pseudo_palette;
+ 
++pr_info( "%s():%d par:%p\n", __FUNCTION__, __LINE__, info->par);
+ 	if (!palette)
+ 		return -1;
+ 
++pr_info( "%s():%d\n", __FUNCTION__, __LINE__);
+ 	red = cmap->red;
+ 	green = cmap->green;
+ 	blue = cmap->blue;
+ 	transp = cmap->transp;
+ 
++pr_info( "%s():%d start:%d len:%d len2:%d\n", __FUNCTION__, __LINE__, cmap->start, cmap->len, FB_PALETTE_LEN / sizeof(unsigned int));
+ 	for (i = cmap->start;
+-			(i < (cmap->start + cmap->len)) ||
+-				(i < (FB_PALETTE_LEN / sizeof(unsigned int)));
++			(i < (cmap->start + cmap->len))/* ||
++				(i < (FB_PALETTE_LEN / sizeof(unsigned int)))*/;
+ 			++i) {
++pr_info( "%s():%d i:%d %p\n", __FUNCTION__, __LINE__, i, transp);
+ 		if (transp)
+ 			trans = *(transp++);
+ 
++pr_info( "%s():%d cfmt:%X\n", __FUNCTION__, __LINE__, fb_par->ColorFmt);
+ 		if (fb_par->ColorFmt == DRV_OSD_REGION_FORMAT_ARGB_8888) {
+ 			palette[i] = 0xff000000;
+ 			palette[i] |= sp7021_fb_chan_by_field((unsigned char)*(red++),
+@@ -373,14 +433,20 @@
+ 		}		
+ 		else if ( (fb_par->ColorFmt == DRV_OSD_REGION_FORMAT_8BPP) || 
+ 					(fb_par->ColorFmt == DRV_OSD_REGION_FORMAT_RGB_565) ) {
++pr_info( "%s():%d palette:%p\n", __FUNCTION__, __LINE__, palette);
++pr_info( "%s():%d trans:%p\n", __FUNCTION__, __LINE__, transp);
+ 			palette[i] = sp7021_fb_chan_by_field((unsigned char)trans,
+ 					&info->var.transp);
++pr_info( "%s():%d red:%p\n", __FUNCTION__, __LINE__, red);
+ 			palette[i] |= sp7021_fb_chan_by_field((unsigned char)*(red++),
+ 					&info->var.red);
++pr_info( "%s():%d green:%p\n", __FUNCTION__, __LINE__, green);
+ 			palette[i] |= sp7021_fb_chan_by_field((unsigned char)*(green++),
+ 					&info->var.green);
++pr_info( "%s():%d blue:%p\n", __FUNCTION__, __LINE__, blue);
+ 			palette[i] |= sp7021_fb_chan_by_field((unsigned char)*(blue++),
+ 					&info->var.blue);
++pr_info( "%s():%d\n", __FUNCTION__, __LINE__);
+ 		}
+ 		else if (fb_par->ColorFmt == DRV_OSD_REGION_FORMAT_ARGB_4444) {
+ 			palette[i] = 0xf000f000;
+@@ -411,6 +477,7 @@
+ 		}
+ 	}
+ 
++pr_info( "%s():%d\n", __FUNCTION__, __LINE__);
+ 	if (fb_par->ColorFmt == DRV_OSD_REGION_FORMAT_YUY2) {
+ 		palette[0] = 0x80008000; //V Y U Y (black)
+ 		palette[1] = 0x7213D513; //V Y U Y

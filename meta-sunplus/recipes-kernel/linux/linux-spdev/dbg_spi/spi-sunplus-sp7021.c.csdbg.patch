@@ -1,0 +1,10 @@
+--- a/drivers/spi/spi-sunplus-sp7021.c	2021-02-25 17:24:01.172070514 +0300
++++ a/drivers/spi/spi-sunplus-sp7021.c	2021-02-25 18:00:33.982574710 +0300
+@@ -306,6 +306,7 @@
+  if ( !(  _s->cs_gpiod)) return;
+  FUNC_DBG( "%d gpiod:%s", _on, desc_to_gpio( _s->cs_gpiod));
+  if ( _s->mode & SPI_CS_HIGH) _on = !_on;
++ dev_err( &( _s->dev), "%d gpiod:%s\n", _on, desc_to_gpio( _s->cs_gpiod));
+  gpiod_set_value_cansleep( _s->cs_gpiod, !_on);
+ }
+ 

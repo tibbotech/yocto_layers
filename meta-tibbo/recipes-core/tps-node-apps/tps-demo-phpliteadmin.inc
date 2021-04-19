@@ -11,7 +11,11 @@ require tps-node-apps-perm.inc
 
 S = "${WORKDIR}/${PN}"
 
-SRC_URI = "file://*"
+SRC_URI  = "file://site/phpliteadmin.config.php"
+SRC_URI += "file://conf/php-fpm.conf"
+SRC_URI += "file://conf/nginx.conf"
+SRC_URI += "file://conf/.htpasswd"
+SRC_URI += "file://conf/napp-demo-phpliteadmin.service"
 
 do_install() {
  install -d ${D}${NAPPS_PFX}/demo-phpliteadmin/

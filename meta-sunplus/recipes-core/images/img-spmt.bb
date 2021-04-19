@@ -11,6 +11,7 @@ do_install[mcdepends] += "multiconfig::tpp-${MACHINE}-arm5:img-xboot:do_image_co
 
 # actual TPS image
 do_install[mcdepends] += "multiconfig::tpp-${MACHINE}:img-tps-base:do_image_complete"
+do_install[mcdepends] += "multiconfig::tpp-${MACHINE}:img-tps-basd:do_image_complete"
 do_install[mcdepends] += "multiconfig::tpp-${MACHINE}:img-tps-tini:do_image_complete"
 do_install[mcdepends] += "multiconfig::tpp-${MACHINE}:img-tps-tssz:do_image_complete"
 do_install[mcdepends] += "multiconfig::tpp-${MACHINE}:img-tps-ublx:do_image_complete"

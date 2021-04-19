@@ -12,7 +12,7 @@ require tps-node-apps-perm.inc
 
 S = "${WORKDIR}/${PN}"
 
-SRC_URI = "file://*"
+SRC_URI = "file://PERMS.txt"
 
 do_install() {
  install -d ${D}${NAPPS_PFX}

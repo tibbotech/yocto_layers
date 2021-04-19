@@ -1,0 +1,4 @@
+#deb https://tibbo.com/downloads/LTPS/repd tppg2 all cortexa9hf-neon tppg2
+deb [arch=armhf] https://tibbo.com/downloads/LTPS/repd tppg2 all
+deb [arch=armhf] https://tibbo.com/downloads/LTPS/repd tppg2 cortexa9hf-neon
+deb [arch=armhf] https://tibbo.com/downloads/LTPS/repd tppg2 tppg2

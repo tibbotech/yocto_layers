@@ -9,7 +9,7 @@ LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/GPL-2.0;md5=80
 inherit allarch useradd
 require tps-node-apps-perm.inc
 
-SRC_URI = "file://*"
+SRC_URI = "file://README.txt"
 
 S="${WORKDIR}/${PN}"
 

@@ -71,6 +71,8 @@ DEPENDS += "sysbench"
 DEPENDS += "tinymembench"
 DEPENDS += "tiobench"
 DEPENDS += "whetstone"
+# requires gtk2
+#DEPENDS += "hardinfo"
 
 # cli tools
 DEPENDS += "mc"
@@ -83,3 +85,25 @@ DEPENDS += "fuse-exfat exfat-utils"
 
 #TOOLCHAIN_HOST_TASK_append += " nativesdk-dlib-dev"
 #TOOLCHAIN_HOST_TASK_append += " log4cpp-dev"
+
+DEPENDS += "apt"
+DEPENDS += "dstat"
+DEPENDS += "nmap"
+DEPENDS += "zabbix"
+DEPENDS += "grafana"
+DEPENDS += "prometheus"
+DEPENDS += "prometheus-node-exporter"
+DEPENDS += "python3-prometheus-client"
+
+# GUI
+DEPENDS += "openbox"
+DEPENDS += "twm"
+#DEPENDS += "matchbox-wm"
+#DEPENDS += "matchbox-desktop"
+DEPENDS += "packagegroup-core-x11-base"
+DEPENDS += "packagegroup-core-x11-sato"
+#DEPENDS += "packagegroup-xfce-base"
+
+DEPENDS += "epiphany"
+DEPENDS += "surf"
+DEPENDS += "fbset"

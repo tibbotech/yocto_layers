@@ -1,0 +1,9 @@
+[Unit]
+Description=Prometheus systems and service monitoring system: Node Exporter
+
+[Service]
+Restart=on-failure
+ExecStart=/opt/prometheus-node-exporter/node_exporter
+
+[Install]
+WantedBy=multi-user.target

@@ -5,7 +5,18 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 SRC_URI_append_class-native += "\
  file://upd.mk \
  file://sync.sh \
- file://*.its \
+ file://upd_bad.its \
+ file://upd_b_KLM601.its \
+ file://upd_b_tpp.its \
+ file://upd_fwuploader.its \
+ file://upd_KLM601-revB-b.its \
+ file://upd_KLM601-revB.its \
+ file://upd_KLM601-revC.its \
+ file://upd_KLM601-revT.its \
+ file://upd_TPS3-agent.its \
+ file://upd_TPS3-db.its \
+ file://upd_TPS3-node.its \
+ file://upd_TPS3-rlp.its \
 "
 
 inherit deploy

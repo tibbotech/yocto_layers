@@ -8,10 +8,9 @@ LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/GPL-2.0;md5=80
 
 S = "${WORKDIR}/${PN}"
 
-SRC_URI  = "file://*"
+SRC_URI  = "file://asound.conf"
 
 CONFFILES_${PN}  = "${sysconfdir}/asound.conf"
-#FILES_${PN} += "/etc/profile.d/*"
 
 do_install() {
   install -d ${D}/etc/

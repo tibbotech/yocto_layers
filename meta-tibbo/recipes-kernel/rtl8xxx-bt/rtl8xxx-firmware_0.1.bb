@@ -13,7 +13,8 @@ S = "${WORKDIR}/rtk_hciattach"
 
 inherit base
 
-SRC_URI  = "file://*"
+SRC_URI  = "file://rtl8821c_config"
+SRC_URI += "file://rtl8821c_fw"
 
 do_install() {
  install -d ${D}/lib/firmware/rtl_bt2

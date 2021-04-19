@@ -1,0 +1,22 @@
+--- a/drivers/spi/spi-sunplus-sp7021.c	2021-03-16 17:30:03.119619819 +0300
++++ a/drivers/spi/spi-sunplus-sp7021.c	2021-03-18 15:11:43.258423625 +0300
+@@ -474,7 +474,7 @@
+ 	struct pentagram_spi_master *pspim = (struct pentagram_spi_master *)_dev;
+ 	SPI_MAS* sr = ( SPI_MAS *)pspim->mas_base;
+ 	u32 fd_status = 0;
+-	unsigned int tx_len, rx_cnt, tx_cnt;
++	unsigned int tx_len, rx_cnt, tx_cnt, len;
+ 	bool isrdone = false;
+ 
+ 	FUNC_DBG();
+@@ -484,8 +484,9 @@
+ 	fd_status = readl( &sr->SPI_FD_STATUS);
+ 	tx_cnt = GET_TX_CNT( fd_status);
+ 	tx_len = GET_TX_LEN( fd_status);
++	len = GET_LEN( fd_status);
+ 
+-	if ( ( fd_status & TX_EMP_FLAG) && ( fd_status & RX_EMP_FLAG) || (tx_len == 0)) goto fin_irq;
++	if ( ( fd_status & TX_EMP_FLAG) && ( fd_status & RX_EMP_FLAG) || (len == 0)) goto fin_irq;
+ 
+ 	if ( fd_status & FINISH_FLAG) DBG_INF( "FINISH_FLAG");
+ 	if ( fd_status & TX_EMP_FLAG) DBG_INF( "TX_EMP_FLAG");

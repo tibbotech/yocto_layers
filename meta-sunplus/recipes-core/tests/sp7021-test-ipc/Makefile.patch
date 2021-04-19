@@ -1,0 +1,11 @@
+--- a/Makefile	2021-01-31 17:01:03.170060489 +0300
++++ a/Makefile	2021-01-31 17:05:10.332283813 +0300
+@@ -1,6 +1,6 @@
+ #CROSS_COMPILE=../../../../../crossgcc/armv5-eabi--glibc--stable/bin/armv5-glibc-linux-
+-CROSS_COMPILE=../../../../../crossgcc/arm-linux-gnueabihf/bin/arm-linux-gnueabihf-
+-CC = $(CROSS_COMPILE)gcc
++#CROSS_COMPILE=../../../../../crossgcc/arm-linux-gnueabihf/bin/arm-linux-gnueabihf-
++#CC = $(CROSS_COMPILE)gcc
+ 
+ OUT := sp_ipc_test
+ 

@@ -8,7 +8,7 @@ PR = "r1"
 
 S = "${WORKDIR}/"
 
-SRC_URI = "file://*"
+SRC_URI = "file://sd8787_uapsta.bin"
 
 do_install() {
  install -m 0755 -d ${D}${base_libdir}/firmware

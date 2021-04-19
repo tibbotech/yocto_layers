@@ -11,7 +11,14 @@ require tps-node-apps-perm.inc
 
 S = "${WORKDIR}/${PN}"
 
-SRC_URI = "file://*"
+SRC_URI  = "file://demo1/site/app.js"
+SRC_URI += "file://demo1/conf/napp-demo1.service"
+SRC_URI += "file://demo0/site/index.html"
+SRC_URI += "file://demo0/site/dv.txt"
+SRC_URI += "file://demo0/site/app.js"
+SRC_URI += "file://demo0/conf/napp-demo0.service"
+SRC_URI += "file://demo0/conf/.htpasswd"
+SRC_URI += "file://demo0/conf/nginx.conf.off"
 
 do_install() {
  install -d ${D}${NAPPS_PFX}

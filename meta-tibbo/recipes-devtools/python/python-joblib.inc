@@ -2,7 +2,7 @@ SUMMARY = "Running Python functions as pipeline jobs"
 HOMEPAGE = "https://joblib.readthedocs.io/en/latest/"
 SECTION = "devel/python"
 LICENSE = "BSD-3-Clause"
-#LIC_FILES_CHKSUM = "file://BSD-3-Clause;md5=4a2bb4f4ec2b68ec46d5d1be3371b2c7"
+LIC_FILES_CHKSUM = "file://LICENSE.txt;md5=32b289008fb813a27c9025f02b59d03d"
 
 inherit pypi setuptools3
 

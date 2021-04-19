@@ -24,9 +24,14 @@ IMAGE_INSTALL += "${@bb.utils.contains("DISTRO_FEATURES", "wifi", "packagegroup-
 IMAGE_INSTALL += "${@bb.utils.contains("DISTRO_FEATURES", "wifi", "kernel-module-bcmdhd bcmdhd-firmware", "",d)}"
 IMAGE_INSTALL += "${@bb.utils.contains("DISTRO_FEATURES", "bluetooth", "brcm-patchram-plus", "",d)}"
 IMAGE_INSTALL += "u-boot-fw-utils"
-IMAGE_INSTALL += "kernel-module-mcp251x"
-IMAGE_INSTALL += "kernel-module-mcp25xxfd"
+#IMAGE_INSTALL += "kernel-module-mcp251x kernel-module-can-raw can-utils"
+#IMAGE_INSTALL += "kernel-module-mcp25xxfd kernel-module-can-raw can-utils"
+IMAGE_INSTALL += "kernel-module-mcp251xfd kernel-module-can-raw can-utils"
 IMAGE_INSTALL += "kernel-module-fuse"
+# tibbits #42, #40_2
+IMAGE_INSTALL += "kernel-module-rtc-ds3232 kernel-module-mcp4531"
+
+IMAGE_INSTALL_append_tppg2 += "sp7021-test-ipc"
 
 inherit core-image extrausers
 

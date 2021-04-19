@@ -1,0 +1,9 @@
+[Unit]
+Description=Prometheus systems and service monitoring system
+
+[Service]
+Restart=on-failure
+ExecStart=/opt/prometheus/prometheus --config.file=/opt/prometheusprometheus.yml
+
+[Install]
+WantedBy=multi-user.target

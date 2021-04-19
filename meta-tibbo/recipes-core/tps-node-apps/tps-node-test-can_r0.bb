@@ -14,7 +14,7 @@ S = "${WORKDIR}/git"
 DV_BR="master"
 
 SRC_URI  = "https://bitbucket.org/tibbotech/can-tibbit-test.git;branch=${DV_BR}"
-SRC_URI += "file://*"
+SRC_URI += "file://test-can/conf/napp-test-can.service"
 
 do_install() {
  install -d ${D}${NAPPS_PFX}/test-can/site/

@@ -5,7 +5,7 @@
  	* WL_REG_ON and WL_HOST_WAKE.
  	*/
 -	gpio_wl_reg_on = 2;
-+	gpio_wl_reg_on = 83; // reserved in MUX too
++	gpio_wl_reg_on = 82; // reserved in MUX too
  #ifdef CUSTOMER_OOB
  	gpio_wl_host_wake = -1;
  #endif
