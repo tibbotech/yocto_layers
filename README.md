@@ -40,6 +40,9 @@ chmod 0777 /disk2
 cd ./poky/
 . oe-init-build-env build.tppg2
 bitbake img-spmn
+// builds main CPU code + arm926 code or
+bitbake img-spmo
+// builds main CPU code only, arm926 code is taken from Tibbo website
 ```
 
 After build /disk2/build.26/tmp/deploy/images/tppg2/ contains all required image components: bootloaders, kernel, rootfs images.
