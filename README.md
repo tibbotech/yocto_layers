@@ -54,6 +54,11 @@ $ make -f ./sp_make.mk
 
 ISPBOOOT.BIN is in the ./sp_out/
 
+## How to reduce build time and resources
+
+1) build "img-spmo" - main CPU code only. XBoot and B-Chip firmware parts will be downloaded from Tibbo website
+2) use RPM or DEB only. Configured at build.tppg2/conf/local.conf#L116: https://github.com/tibbotech/yocto_layers/blob/a5bf3f0376836a1f83fd7cf74d232585c98534ed/build.tppg2/conf/local.conf#L116
+
 ## Customizations
 
 ### Bootloader and kernel source 
