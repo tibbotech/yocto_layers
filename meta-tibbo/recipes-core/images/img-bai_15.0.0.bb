@@ -5,9 +5,9 @@ IMAGE_ROOTFS_EXTRA_SPACE = "104857600"
 
 SRC_URI += "file://npm.dunfell.patch"
 
-SRCREV_tibbo = "690267cf3556a1708db85dff240c71ff7dea3571"
+SRCREV_tibbo = "b0cf6a9cc8c81cb41615c9d3294f89abf9edc47a"
 SRC_URI += "git://github.com/tibbotech/yocto_layers.git;branch=dunfell;name=tibbo;destsuffix=xxx;"
-SRCREV_oe = "2a5c534d2b9f01e9c0f39701fccd7fc874945b1c"
+SRCREV_oe = "8a72d29e0876830ffd96b85d7d0308302eb07a5d"
 SRC_URI += "git://git.openembedded.org/meta-openembedded;branch=dunfell;name=oe;destsuffix=xx0;"
 SRCREV_qt5 = "fdd19517e17240b0b61765bd02fc483a1bde986f"
 SRC_URI += "git://github.com/meta-qt5/meta-qt5.git;branch=dunfell;name=qt5;destsuffix=xx1;"
@@ -35,7 +35,7 @@ IMAGE_INSTALL += "pstree mariadb-client mariadb-leftovers libmysqlclient-dev"
 
 fakeroot do_xxx () {
  install -d -m 0777 -o builder -g builder ${IMAGE_ROOTFS}/disk2
- sed -i -e "s/oe-init-build-env/oe-init-build-env c.tppg2/" ${IMAGE_ROOTFS}/etc/mini_x/session.d/builder_session.sh
+ sed -i -e "s/oe-init-build-env/oe-init-build-env build.tppg2/" ${IMAGE_ROOTFS}/etc/mini_x/session.d/builder_session.sh
  cp -R ${WORKDIR}/clear_sock.sh ${IMAGE_ROOTFS}/home/builder/
 }
 
