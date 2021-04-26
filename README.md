@@ -35,24 +35,49 @@ mkdir /disk2
 chmod 0777 /disk2
 ```
 
-## Build
+## 2. Builds
+
+### 2.1 Building two parts separately
+
+Build small image without any additional dependencies (4300 recipes):
 ```
-cd ./poky/
-. oe-init-build-env build.tppg2
-bitbake img-spmn
-// builds main CPU code + arm926 code or
-bitbake img-spmo
-// builds main CPU code only, arm926 code is taken from Tibbo website
+$ bitbake mc:tpp-tppg2:img-sp-tiny
+```
+or build complete open-source test image with some additional software (8000 recipes):
+```
+$ bitbake mc:tpp-tppg2:img-tps-free
 ```
 
+Optionally: XBoot + arm926 test firmware (2900 recipes)
+```
+$ bitbake mc:tpp-tppg2-arm5:img-xboot
+```
+
+### 2.2 Building two parts at once (11000 recipes)
+```
+$ bitbake img-spmn
+```
+
+<sup>*</sup> First bitbake run is time-consuming. All subsequent builds 
+are incremental
+
+<sup>*</sup> Xboot + arm926 firmware is not required for ISPBOOOT assembly.
+Script will download this parts from Tibbo website.
+
 After build /disk2/build.26/tmp/deploy/images/tppg2/ contains all required image components: bootloaders, kernel, rootfs images.
+
+## 3. Assembling ISPBOOOT.BIN from built parts
+
+Deploy dir /disk2/build.26/tmp/deploy/images/ contains image components:
+
+bootloaders, kernel, rootfs images.
 Pack the final image:
 ```
 $ cd /disk2/build.26/tmp/deploy/images/tppg2/
 $ make -f ./sp_make.mk
 ```
 
-ISPBOOOT.BIN is in the ./sp_out/
+ISPBOOOT.BIN will be placed at ./sp_out/
 
 ## How to reduce build time and resources
 
