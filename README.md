@@ -5,7 +5,9 @@ Plus1 (sp7021): [A Linux Chip for IoT and Industrial Control Applications](https
 
 Read [Tibbo Yocto Layers Howto](https://tibbotech.github.io/plus1_layers/) for more details.
 
-## Clonning layers
+## 1. Preparing the ENV
+
+### 1.1 Clonning layers
 ```
 rel="dunfell"
 git clone git://git.yoctoproject.org/poky.git
@@ -21,7 +23,7 @@ rsync -a --exclude=.git ./poky.x/ ./poky/
 patch -p0 < ./poky/npm.${rel}.patch
 ```
 
-## Pulling the updates from the GitHub
+### 1.2 Pulling the updates from the GitHub
 ```
 cd ./poky.x/
 git pull
@@ -29,7 +31,7 @@ cd ..
 rsync -a --exclude=.git ./poky.x/ ./poky/
 ```
 
-## Prepare for builds
+### 1.3 disk2
 ```
 mkdir /disk2
 chmod 0777 /disk2
