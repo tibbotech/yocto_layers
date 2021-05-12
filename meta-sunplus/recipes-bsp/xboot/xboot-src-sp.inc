@@ -4,8 +4,8 @@ SECTION = "bootloaders"
 LICENSE = "GPLv2+"
 LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/GPL-2.0;md5=801f80980d171dd6425610833a22dbe6"
 
-SRCREV_draminit = "9fa9c091ec1f7c712f1c5f0205339adee87ca3c9"
-SRCREV_xboot = "309e04a7458b769bc189b7f9c70f7d00d36121aa"
+SRCREV_draminit = "31a770b7163b6ccf52545e2f0440c7fd68615ddd"
+SRCREV_xboot = "b2210ec08e53432c2d9f29b7dbed5e7ddcb56959"
 
 SRC_URI = "\
 git://git@113.196.136.131:22/qac628/boot/draminit;protocol=ssh;name=draminit;branch=master;destsuffix=draminit; \

@@ -14,17 +14,15 @@ SRC_URI += "file://kernel-meta/*;type=kmeta;name=meta;destsuffix=${KMETA}"
 #SRC_URI += "file://kernel-meta.tar.gz;type=kmeta;name=meta;destsuffix=${KMETA}"
 
 # 5.4 master
-SRCREV = "87a64c6ce5d983631d342a8ce6902ac45e5a1899"
-SRCREV = "fa872ffc6b5d4f365ee13d2a2da2cb46acb20d54"
+SRCREV = "3a0da63491307cfb9544ead4ee2056fb30b7bf46"
 ## 5.4 tibbo/spi_exp
 #SRCREV = "1cc820c8fb982b0dc359513dc069bba4e097fcd1"
 ## 5.4 tibbo/spi_exp2
 #SRCREV = "acd013f0a071284c010f25bc71b7b96d042bfcc1"
 # 4.19
 SRCREV_machine_tppg2 = "e81c7196d43ee83e0c05a9ac666cfe7a5fbd2ce9"
-SRCREV_machine_tppg2 = "fa872ffc6b5d4f365ee13d2a2da2cb46acb20d54"
 # 5.4 master
-SRCREV_machine_tppg2 = "87a64c6ce5d983631d342a8ce6902ac45e5a1899"
+SRCREV_machine_tppg2 = "3a0da63491307cfb9544ead4ee2056fb30b7bf46"
 ## 5.4 tibbo/spi_exp
 #SRCREV_machine_tppg2 = "1cc820c8fb982b0dc359513dc069bba4e097fcd1"
 ## 5.4 tibbo/spi_exp2
@@ -65,7 +63,8 @@ SRC_URI += "file://dts/sp7021-tpsgpio.dts.patch"
 #SRC_URI += "file://dbg_spi/spi-sunplus-sp7021.c.dbg1.patch"
 #SRC_URI += "file://dbg_spi/spi-sunplus-sp7021.c.norxtxdbg.patch"
 #SRC_URI += "file://dbg_spi/spi-sunplus-sp7021.c.csdbg.patch"
-SRC_URI += "file://dbg_spi/spi-sunplus-sp7021.c.len.patch"
+# test CAN without it
+#SRC_URI += "file://dbg_spi/spi-sunplus-sp7021.c.len.patch"
 
 #SRC_URI += "file://dbg_spi/spi.c.dbg0.patch"
 SRC_URI += "file://mcp251x-dbg/mcp251x.c.dbg0.patch"

@@ -6,13 +6,11 @@ LICENSE = "GPLv2+"
 LIC_FILES_CHKSUM = "file://Licenses/README;md5=30503fd321432fc713238f582193b78e"
 PE = "1"
 
-SRCREV = "50705cefff8aed360e1ada57119f6ba3da17ae48"
-SRCREV = "288bf45819dd93199be884707a9b6de12e6cc8a8"
+SRCREV = "517fa2570ac52b19ca944440c196b43e1d0e60cf"
 
 SRC_URI = "git://github.com/tibbotech/plus1_uboot.git;branch=master"
 
 SRC_URI += "file://libfdt.i.patch"
-SRC_URI += "file://pentagram_common.h.sep_dtb.patch"
 SRC_URI += "file://pentagram_common.h.quiet.patch"
 
 # u-boot mux debug

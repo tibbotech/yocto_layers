@@ -1,6 +1,6 @@
 
 # GUI
-#inherit populate_sdk_qt5
+inherit populate_sdk_qt5
 #TOOLCHAIN_TARGET_TASK_append += " fltk"
 #TOOLCHAIN_TARGET_TASK_append += " fltk-staticdev"
 

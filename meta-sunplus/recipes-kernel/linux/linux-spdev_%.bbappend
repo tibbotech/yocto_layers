@@ -15,8 +15,7 @@ SRC_URI = "git://git@113.196.136.131:22/qac628/linux/kernel;protocol=ssh;name=ma
 SRC_URI += "git://git.yoctoproject.org/yocto-kernel-cache;type=kmeta;name=meta;branch=yocto-4.12;destsuffix=${KMETA}"
 
 # 5.4 master
-SRCREV = "87a64c6ce5d983631d342a8ce6902ac45e5a1899"
-SRCREV = "fa872ffc6b5d4f365ee13d2a2da2cb46acb20d54"
+SRCREV = "3a0da63491307cfb9544ead4ee2056fb30b7bf46"
 ## 5.4 tibbo/spi_exp
 #SRCREV = "1cc820c8fb982b0dc359513dc069bba4e097fcd1"
 ## 5.4 tibbo/spi_exp2
@@ -24,8 +23,7 @@ SRCREV = "fa872ffc6b5d4f365ee13d2a2da2cb46acb20d54"
 # 4.19
 SRCREV_machine_tppg2 = "e81c7196d43ee83e0c05a9ac666cfe7a5fbd2ce9"
 # 5.4 master
-SRCREV_machine_tppg2 = "87a64c6ce5d983631d342a8ce6902ac45e5a1899"
-SRCREV_machine_tppg2 = "fa872ffc6b5d4f365ee13d2a2da2cb46acb20d54"
+SRCREV_machine_tppg2 = "3a0da63491307cfb9544ead4ee2056fb30b7bf46"
 ## 5.4 tibbo/spi_exp
 #SRCREV_machine_tppg2 = "1cc820c8fb982b0dc359513dc069bba4e097fcd1"
 ## 5.4 tibbo/spi_exp2
@@ -62,7 +60,8 @@ SRC_URI += "file://dts/sp7021-tpsgpio.dts.patch"
 #SRC_URI += "file://dbg_spi/spi-sunplus-sp7021.c.dbg1.patch"
 SRC_URI += "file://dbg_spi/spi-sunplus-sp7021.c.norxtxdbg.patch"
 #SRC_URI += "file://dbg_spi/spi-sunplus-sp7021.c.csdbg.patch"
-SRC_URI += "file://dbg_spi/spi-sunplus-sp7021.c.len.patch"
+# test CAN without it
+#SRC_URI += "file://dbg_spi/spi-sunplus-sp7021.c.len.patch"
 
 #SRC_URI += "file://dbg_spi/spi.c.dbg0.patch"
 SRC_URI += "file://mcp251x-dbg/mcp251x.c.dbg0.patch"
