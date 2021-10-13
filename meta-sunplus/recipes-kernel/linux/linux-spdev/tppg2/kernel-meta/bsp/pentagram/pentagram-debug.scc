@@ -10,4 +10,4 @@ include debug/printk.scc
 #include debug/pins0.scc
 #include debug/pins9.scc
 
-#include features/ftrace/ftrace.scc
+include features/ftrace/ftrace.scc
