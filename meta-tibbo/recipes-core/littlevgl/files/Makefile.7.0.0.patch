@@ -1,0 +1,11 @@
+--- a/Makefile	2021-06-21 19:53:56.491862057 +0300
++++ a/Makefile	2021-06-21 19:54:16.403609820 +0300
+@@ -31,7 +31,7 @@
+ all: default
+ 
+ %.o: %.c
+-	@$(CC)  $(CFLAGS) -c $< -o $@
++	@$(CC)  $(CFLAGS) -I$(LVGL_DIR) -c $< -o $@
+ 	@echo "CC $<"
+     
+ default: $(AOBJS) $(COBJS) $(MAINOBJ)

@@ -1,0 +1,95 @@
+--- a/drivers/tty/serial/sp_uart.c	2021-07-03 03:25:04.063618568 +0300
++++ a/drivers/tty/serial/sp_uart.c	2021-07-06 13:14:22.632237869 +0300
+@@ -20,10 +20,11 @@
+ #ifdef CONFIG_PM_RUNTIME_UART
+ #include <linux/pm_runtime.h>
+ #endif
+-#ifdef CONFIG_SOC_SP7021
++
+ #include <linux/gpio.h>
+ #include <linux/of.h>
+ #include <linux/of_gpio.h>
++#ifdef CONFIG_SOC_SP7021
+ #include <dt-bindings/pinctrl/sppctl-sp7021.h>
+ #endif
+ #include <linux/delay.h>
+@@ -86,7 +87,6 @@
+ extern unsigned int uart0_mask_tx;	/* Used for masking uart0 tx output */
+ #endif
+ 
+-
+ struct sunplus_uart_port {
+ 	char name[16];	/* Sunplus_UARTx */
+ 	struct uart_port uport;
+@@ -497,10 +497,8 @@
+ 		if (mctrl & TIOCM_RTS) {
+ 			if (((mcr & SP_UART_MCR_RTS) && (sp_port->uport.rs485.flags & SER_RS485_RTS_AFTER_SEND))
+ 				|| (sp_port->uport.rs485.flags & SER_RS485_RTS_ON_SEND)) {
+-				#ifdef CONFIG_SOC_SP7021
+ 				if ( !IS_ERR( sp_port->rts_gpio)) gpiod_set_value(sp_port->rts_gpio, 1);
+ 				dev_dbg( port->dev, "%s set rts_gpio=1\n", port->name);
+-				#endif
+ 				if (sp_port->uport.rs485.delay_rts_before_send == 0) {
+ 					ktime = ktime_set(0, 500000); //500us
+ 					hrtimer_start(&sp_port->CheckTXE, ktime, HRTIMER_MODE_REL);
+@@ -611,16 +609,17 @@
+ 
+ 	if (sp_port->uport.rs485.flags & SER_RS485_ENABLED) {
+ 		val = ( sp_port->uport.rs485.flags & SER_RS485_RTS_ON_SEND ? 1 : 0);
+-		#ifdef CONFIG_SOC_SP7021
+ 		if ( !IS_ERR( sp_port->rts_gpio)) gpiod_set_value( sp_port->rts_gpio, val);
+-		// set RTS line ?
+ 		dev_dbg( port->dev, "%s set rts_gpio=%d\n", sp_port->uport.name, val);
+-		#endif
+ 		if (sp_port->uport.rs485.delay_rts_before_send > 0) {
++#if 1
++			msleep_interruptible( sp_port->uport.rs485.delay_rts_before_send);
++#else
+ 			long nsec = sp_port->uport.rs485.delay_rts_before_send * 1000000;
+ 			ktime = ktime_set(0, nsec);
+ 			hrtimer_start(&sp_port->DelayRtsBeforeSend, ktime, HRTIMER_MODE_REL);
+ 			return;
++#endif
+ 		}
+ 	}
+ 	__start_tx(port);
+@@ -1637,9 +1636,7 @@
+ 	if (rs485->uport.rs485.flags & SER_RS485_RTS_ON_SEND) mcr |= SP_UART_MCR_RTS;
+ 	else mcr &= ~SP_UART_MCR_RTS;
+ 	if ( rs485->uport.rs485.flags & SER_RS485_ENABLED && !IS_ERR( rs485->rts_gpio)) {
+-		#ifdef CONFIG_SOC_SP7021
+ 		gpiod_set_value( rs485->rts_gpio, val);
+-		#endif
+ 		dev_dbg( rs485->uport.dev, "%s set rts_gpio=%d\n", rs485->uport.name, val);
+ 	} else {
+ 		sp_uart_set_modem_ctrl(rs485->uport.membase, mcr);
+@@ -1671,9 +1668,7 @@
+ 	if (rs485->uport.rs485.flags & SER_RS485_RTS_ON_SEND) mcr |= SP_UART_MCR_RTS;
+ 	else mcr &= ~SP_UART_MCR_RTS;
+ 	if ( rs485->uport.rs485.flags & SER_RS485_ENABLED && !IS_ERR( rs485->rts_gpio)) {
+-		#ifdef CONFIG_SOC_SP7021
+ 		gpiod_set_value( rs485->rts_gpio, val);
+-		#endif
+ 		dev_dbg( rs485->uport.dev, "%s set rts_gpio=%d\n", rs485->uport.name, val);
+ 	} else {
+ 		sp_uart_set_modem_ctrl(rs485->uport.membase, mcr);
+@@ -1738,9 +1733,7 @@
+    dev_dbg( _up->dev, "%s after_ send:%d (delay:%d)\n", _up->name, _rs485->flags & SER_RS485_RTS_AFTER_SEND, _rs485->delay_rts_after_send);
+    sunplus_uart_rs485_onn( _up, _sup);
+    val = ( _rs485->flags & SER_RS485_RTS_AFTER_SEND ? 1 : 0);
+-   #ifdef CONFIG_SOC_SP7021
+    gpiod_set_value( _sup->rts_gpio, val);
+-   #endif
+    dev_dbg( _up->dev, "%s set rts_gpio=%d\n", _up->name, val);
+  } else {
+    dev_dbg( _up->dev, "%s disabling rs485...\n", _up->name);
+@@ -1959,9 +1952,7 @@
+ 		return -ENODEV;
+ 
+ 	uart_get_rs485_mode(&pdev->dev, &port->rs485);
+-	#ifdef CONFIG_SOC_SP7021
+ 	sunplus_uart_ports[pdev->id].rts_gpio = devm_gpiod_get(&pdev->dev, "rts", GPIOD_OUT_LOW);
+-	#endif
+ 	port->rs485_config = sunplus_uart_config_rs485;
+ 	sunplus_uart_ports[pdev->id].CheckTXE.function = NULL;
+ 	sunplus_uart_ports[pdev->id].DelayRtsBeforeSend.function = NULL;

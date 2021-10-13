@@ -6,7 +6,7 @@ SRC_URI += "file://sp_make*.mk"
 
 do_install() {
  echo "DV3:${TMPDIR}/deploy/images/${MACHINE}/"
- install ${WORKDIR}/sp_make*.mk ${D0}/
+ install -p -m0644 ${WORKDIR}/sp_make*.mk ${D0}/
 }
 
 DEPENDS += "vim-native"

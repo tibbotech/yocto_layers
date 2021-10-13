@@ -46,8 +46,8 @@ include media/video_usb.scc
 include ui/vt.scc
 include ui/gconsole.scc
 
-#include sensors/thermal.scc
-#include sensors/hwmon.scc
+include sensors/hw_thermal.scc
+include sensors/hwmon.scc
 
 include features/can/can.scc
 
@@ -58,5 +58,8 @@ include features/fuse/fuse.scc
 #include debug/pins9.scc
 include debug/dyndbg.scc
 include debug/printk.scc
+
+include features/uio/uio.scc
+#include features/netfilter/netfilter.scc
 
 include tibbits/all.scc

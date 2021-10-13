@@ -1,0 +1,11 @@
+--- a/drivers/pinctrl/sunplus/sppctl_gpio_ops.c	2021-05-27 04:50:47.236624950 +0300
++++ a/drivers/pinctrl/sunplus/sppctl_gpio_ops.c	2021-05-29 15:01:10.266070402 +0300
+@@ -294,6 +294,8 @@
+ {
+ 	sppctlgpio_chip_t *pc = (sppctlgpio_chip_t *)gpiochip_get_data(_c);
+ 
++KINF(_c->parent, "i_map(%03d) ?:%d\n", _off, ( _off >= 8 && _off < 15 ? pc->irq[_off - 8] : -1));
+ 	if (_off >= 8 && _off < 15) return (pc->irq[_off - 8]);
++KINF(_c->parent, "i_map(%03d) ENXIO\n", _off);
+ 	return (-ENXIO);
+ }

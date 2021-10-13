@@ -1,0 +1,17 @@
+--- a/drivers/tty/serial/sp_uart.c	2021-08-01 02:36:00.595740245 +0300
++++ a/drivers/tty/serial/sp_uart.c	2021-08-01 03:30:57.812539254 +0300
+@@ -614,10 +614,14 @@
+ 		// set RTS line ?
+ 		dev_dbg( port->dev, "%s set rts_gpio=%d\n", sp_port->uport.name, val);
+ 		if (sp_port->uport.rs485.delay_rts_before_send > 0) {
++#if 1
++			mdelay( sp_port->uport.rs485.delay_rts_before_send);
++#else
+ 			long nsec = sp_port->uport.rs485.delay_rts_before_send * 1000000;
+ 			ktime = ktime_set(0, nsec);
+ 			hrtimer_start(&sp_port->DelayRtsBeforeSend, ktime, HRTIMER_MODE_REL);
+ 			return;
++#endif
+ 		}
+ 	}
+ 	__start_tx(port);

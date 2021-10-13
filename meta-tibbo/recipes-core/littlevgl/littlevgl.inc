@@ -11,7 +11,8 @@ SRCREV="${AUTOREV}"
 S = "${WORKDIR}/git"
 
 SRC_URI  = "gitsm://github.com/littlevgl/lv_port_linux_frame_buffer.git;branch=master;protocol=git;"
-SRC_URI += "file://display.mk.patch"
+#SRC_URI += "file://display.mk.patch"
+SRC_URI += "file://Makefile.7.0.0.patch"
 
 FILES_${PN}  = "demo"
 

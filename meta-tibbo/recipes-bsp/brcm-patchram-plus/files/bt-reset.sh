@@ -1,10 +1,17 @@
 #!/bin/sh
 
-gpfx="/sys/class/gpio"
+. /opt/tps-shared/bash/pins
 
-if [ ! -f ${gpfx}/P10_02/direction ]; then
-  echo 82 > ${gpfx}/export
+rpin=$(pins_pin "BTEN")
+if [ -z "${rpin}" ]; then
+  echo "Pin BTEN not found in pins.ini"
+  exit 1;
 fi;
-echo out > ${gpfx}/P10_02/direction
-echo 0 > ${gpfx}/P10_02/value
-echo 1 > ${gpfx}/P10_02/value
+pin_ex ${rpin}
+if [ $? -ne 0 ]; then
+  echo "BTEN:${rpin}:$(pin_name $rpin) export error"
+  exit 1;
+fi;
+pin_dir ${rpin} "out"
+pin_set ${rpin} "0"
+pin_set ${rpin} "1"

@@ -1,0 +1,11 @@
+--- a/twg_main.c	2021-06-05 18:19:19.357123639 +0300
++++ a/twg_main.c	2021-06-15 01:17:14.666477211 +0300
+@@ -89,7 +89,7 @@
+        printk( KERN_ERR "%s: W0 get irq failed\n", _p->name);
+        return( -EIO);  }
+      if ( request_threaded_irq( _p->irq_w0, twg_wX_ih, twg_wX_iht,
+-           IRQF_TRIGGER_FALLING | IRQF_ONESHOT, 
++           IRQF_TRIGGER_LOW | IRQF_ONESHOT, 
+           _p->name, _p)) {
+        printk( KERN_ERR "%s: W0 irq request failed\n", _p->name);
+        return( -EIO);  }

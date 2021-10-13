@@ -46,6 +46,7 @@ RDEPENDS_${PN} += "kernel-module-hci-uart"
 # now it compiled-in by _BREDR flag
 # RDEPENDS_${PN} += "kernel-module-sco"
 RDEPENDS_${PN} += "kernel-module-cmac"
+RDEPENDS_${PN} += "tps-bash"
 
 # can't parse @ - fix it
 SYSTEMD_SERVICE_brcm-patchram-plus = "brcm-patchram-plus@.service brcm-patchram-plus@S4"

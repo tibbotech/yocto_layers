@@ -13,7 +13,7 @@ IMAGE_FEATURES = ""
 IMAGE_FEATURES += "ssh-server-openssh"
 #IMAGE_FEATURES += "x11-base x11-sato"
 IMAGE_INSTALL += "openssh-sftp-server"
-IMAGE_INSTALL += "systemd-analyze"
+#IMAGE_INSTALL += "systemd-analyze"
 IMAGE_FEATURES += "package-management"
 
 
@@ -31,6 +31,8 @@ IMAGE_INSTALL += "tps-resetconf"
 # AggreGate
 DEPENDS += "tps-ag-stable"
 DEPENDS += "tps-agent"
+DEPENDS += "tps-capi"
+TOOLCHAIN_TARGET_TASK_append += " tps-capi-dev tps-capi-staticdev"
 
 # temporary there
 IMAGE_INSTALL += "devmem2 ethtool"

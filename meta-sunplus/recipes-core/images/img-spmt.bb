@@ -15,6 +15,7 @@ do_install[mcdepends] += "multiconfig::tpp-${MACHINE}:img-tps-basd:do_image_comp
 do_install[mcdepends] += "multiconfig::tpp-${MACHINE}:img-tps-tini:do_image_complete"
 do_install[mcdepends] += "multiconfig::tpp-${MACHINE}:img-tps-tssz:do_image_complete"
 do_install[mcdepends] += "multiconfig::tpp-${MACHINE}:img-tps-ublx:do_image_complete"
+do_install[mcdepends] += "multiconfig::tpp-${MACHINE}:img-tps-dsxe:do_image_complete"
 
 # Build Appliance
 #do_install[mcdepends] += "multiconfig::qemux86-64:img-bai:do_image_complete"

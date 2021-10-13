@@ -1,6 +1,7 @@
 
 # dbs
 DEPENDS += "mariadb"
+DEPENDS += "influxdb"
 
 # multimedia
 DEPENDS += "opencv"
@@ -18,6 +19,7 @@ DEPENDS += "mosquitto"
 DEPENDS += "freeradius"
 DEPENDS += "ethtool"
 DEPENDS += "usbutils"
+DEPENDS += "net-snmp"
 
 # development
 DEPENDS += "gdb"
@@ -56,6 +58,7 @@ DEPENDS += "python3-cython"
 
 # tests and benchmarks
 DEPENDS += "dvtests"
+DEPENDS += "twgtest"
 DEPENDS += "iperf3"
 DEPENDS += "stress-ng"
 DEPENDS += "bonnie++"
@@ -71,6 +74,7 @@ DEPENDS += "sysbench"
 DEPENDS += "tinymembench"
 DEPENDS += "tiobench"
 DEPENDS += "whetstone"
+DEPENDS += "serial-test"
 # requires gtk2
 #DEPENDS += "hardinfo"
 
@@ -107,3 +111,13 @@ DEPENDS += "packagegroup-core-x11-sato"
 DEPENDS += "epiphany"
 DEPENDS += "surf"
 DEPENDS += "fbset"
+
+DEPENDS += "tps-gprs"
+
+# OpenAMP
+DEPENDS += "${@bb.utils.contains("DISTRO_FEATURES", "openamp", "libmetal open-amp", "",d)}"
+DEPENDS += "${@bb.utils.contains("DISTRO_FEATURES", "openamp", "rpmsg-echo-test rpmsg-mat-mul rpmsg-proxy-app", "",d)}"
+# OpenAMP /
+
+DEPENDS += "soem"
+#DEPENDS += "soes"

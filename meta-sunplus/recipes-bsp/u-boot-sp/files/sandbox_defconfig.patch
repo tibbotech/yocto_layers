@@ -1,0 +1,9 @@
+--- a/configs/sandbox_defconfig	2021-10-08 03:30:24.715925605 +0300
++++ a/configs/sandbox_defconfig	2021-10-08 03:30:54.957159991 +0300
+@@ -283,3 +283,6 @@
+ CONFIG_UNIT_TEST=y
+ CONFIG_UT_TIME=y
+ CONFIG_UT_DM=y
++# by Dv
++CONFIG_DEBUG_UART_BASE=0x0
++CONFIG_DEBUG_UART_CLOCK=90000

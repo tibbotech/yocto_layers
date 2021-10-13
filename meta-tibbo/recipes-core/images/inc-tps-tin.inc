@@ -18,7 +18,7 @@ IMAGE_INSTALL = ""
 IMAGE_INSTALL += "${@bb.utils.contains("MACHINE_FEATURES", "tpsleds", "tpsled ", "",d)}"
 IMAGE_INSTALL += "packagegroup-core-boot"
 IMAGE_INSTALL += "kern-mod-tpsid"
-#IMAGE_INSTALL += "kern-mod-twg"
+IMAGE_INSTALL += "kern-mod-twg"
 #IMAGE_INSTALL += "${@bb.utils.contains("DISTRO_FEATURES", "wifi", "iw wpa-supplicant wireless-regdb-static", "",d)}"
 IMAGE_INSTALL += "${@bb.utils.contains("DISTRO_FEATURES", "wifi", "packagegroup-base-wifi", "",d)}"
 IMAGE_INSTALL += "${@bb.utils.contains("DISTRO_FEATURES", "wifi", "kernel-module-bcmdhd bcmdhd-firmware", "",d)}"
@@ -30,6 +30,8 @@ IMAGE_INSTALL += "kernel-module-mcp251xfd kernel-module-can-raw can-utils"
 IMAGE_INSTALL += "kernel-module-fuse"
 # tibbits #42, #40_2
 IMAGE_INSTALL += "kernel-module-rtc-ds3232 kernel-module-mcp4531"
+# OpenAMP
+IMAGE_INSTALL += "${@bb.utils.contains("DISTRO_FEATURES", "openamp", "kernel-module-uio-pdrv-genirq kernel-module-virtio-rpmsg-bus", "",d)}"
 
 IMAGE_INSTALL_append_tppg2 += "sp7021-test-ipc"
 

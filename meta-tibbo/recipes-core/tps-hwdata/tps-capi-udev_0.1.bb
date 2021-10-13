@@ -16,7 +16,7 @@ FILES_${PN} += "/etc/*"
 
 do_install() {
   install -d ${D}/etc/udev/rules.d
-  install -m 0644 ${S}/capi-devs.rules ${D}/etc/udev/rules.d/
+  install -m 0644 ${WORKDIR}/capi-devs.rules ${D}/etc/udev/rules.d/
 }
 
 USERADD_PACKAGES = "${PN}"

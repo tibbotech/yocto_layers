@@ -5,6 +5,8 @@ KBRANCH_tppg2 = "master"
 #KBRANCH_tppg2 = "kernel_4.19"
 #KBRANCH_tppg2 = "tibbo/spi_exp"
 #KBRANCH_tppg2 = "tibbo/spi_exp2"
+#KBRANCH_tppg2 = "tibbo/485"
+#KBRANCH_tppg2 = "tibbo/spi256"
 # mainline
 COMPATIBLE_MACHINE_tppg2 = "tppg2"
 
@@ -14,19 +16,23 @@ SRC_URI += "file://kernel-meta/*;type=kmeta;name=meta;destsuffix=${KMETA}"
 #SRC_URI += "file://kernel-meta.tar.gz;type=kmeta;name=meta;destsuffix=${KMETA}"
 
 # 5.4 master
-SRCREV = "3a0da63491307cfb9544ead4ee2056fb30b7bf46"
+SRCREV = "3d2a894c9d9038ab101e9b3917e8587365e689b7"
 ## 5.4 tibbo/spi_exp
 #SRCREV = "1cc820c8fb982b0dc359513dc069bba4e097fcd1"
 ## 5.4 tibbo/spi_exp2
 #SRCREV = "acd013f0a071284c010f25bc71b7b96d042bfcc1"
+# 5.4 master
+SRCREV = "b37cef136f721442d7daa36aab08079206d1d8e4"
 # 4.19
 SRCREV_machine_tppg2 = "e81c7196d43ee83e0c05a9ac666cfe7a5fbd2ce9"
 # 5.4 master
-SRCREV_machine_tppg2 = "3a0da63491307cfb9544ead4ee2056fb30b7bf46"
+SRCREV_machine_tppg2 = "3d2a894c9d9038ab101e9b3917e8587365e689b7"
 ## 5.4 tibbo/spi_exp
 #SRCREV_machine_tppg2 = "1cc820c8fb982b0dc359513dc069bba4e097fcd1"
 ## 5.4 tibbo/spi_exp2
 #SRCREV_machine_tppg2 = "acd013f0a071284c010f25bc71b7b96d042bfcc1"
+# 5.4 master
+SRCREV_machine_tppg2 = "b37cef136f721442d7daa36aab08079206d1d8e4"
 
 # if using meta from master
 #SRCREV_meta ?= "cebe198870d781829bd997a188cc34d9f7a61023"
@@ -46,6 +52,9 @@ SRC_URI += "file://dts/sp7021-ttt.dts.patch"
 SRC_URI += "file://dts/sp7021-ublox.dts.patch"
 #SRC_URI += "file://pinctrl_dbg/sppctl.c.err.patch"
 #SRC_URI += "file://pinctrl_dbg/sp7021_gpio_ops.c.Fdbg.patch"
+
+SRC_URI += "file://pinctrl_dbg/gpioirq.patch"
+
 SRC_URI += "file://dts/sp7021-tpsgpio.dts.patch"
 # for gpio-driven rts/cts
 #SRC_URI += "file://uart_gpio_rtscts/sp_uart.c.dbg.patch"
@@ -86,6 +95,9 @@ SRC_URI += "file://dts/sp7021-dsx.dtsi.patch"
 
 # FB patch
 SRC_URI += "file://video/fb_sp7021_main.c.set.patch"
+
+# 485 test
+SRC_URI += "file://uart_485/sp_uart.c.sleep1.patch"
 
 # mcp251xfd driver
 do_patch_append() {

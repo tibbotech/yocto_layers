@@ -1,12 +1,38 @@
 include sp_make.inc.mk
 
-all: ${D0}/${OUTD} ${D0}/${OUTD}/ISPBOOOT.BIN
+all: download ${D0}/${OUTD} ${D0}/${OUTD}/ISPBOOOT.BIN
+
+download:
+ifeq ("","$(wildcard ${D0}/${F_DTB})")
+	@echo "Downloading ${D0}/${F_DTB}"
+	wget https://tibbo.com/downloads/LTPS/FW/LTPPg2/parts/${F_DTB} -O ${D0}/${F_DTB} || exit 1
+endif
+ifeq ("","$(wildcard ${D0}/${F_ROO})")
+	@echo "Downloading ${D0}/${F_ROO}"
+	wget https://tibbo.com/downloads/LTPS/FW/LTPPg2/parts/${F_ROO} -O ${D0}/${F_ROO} || exit 1
+endif
+ifeq ("","$(wildcard ${D0}/${F_KRN})")
+	@echo "Downloading ${D0}/${F_KRN}"
+	wget https://tibbo.com/downloads/LTPS/FW/LTPPg2/parts/${F_KRN} -O ${D0}/${F_KRN} || exit 1
+endif
+ifeq ("","$(wildcard ${D0}/${F_UBT})")
+	@echo "Downloading ${D0}/${F_UBT}"
+	wget https://tibbo.com/downloads/LTPS/FW/LTPPg2/parts/${F_UBT} -O ${D0}/${F_UBT} || exit 1
+endif
+ifeq ("","$(wildcard ${D1}/${F_NON}.bin)")
+	@echo "Downloading ${D1}/${F_NON}.bin"
+	wget https://tibbo.com/downloads/LTPS/FW/LTPPg2/parts/${F_NON}.bin -O ${D1}/${F_NON}.bin || exit 1
+endif
+ifeq ("","$(wildcard ${D1}/${F_XBT}.bin)")
+	@echo "Downloading ${D1}/${F_XBT}.bin"
+	wget https://tibbo.com/downloads/LTPS/FW/LTPPg2/parts/${F_XBT}.bin -O ${D1}/${F_XBT}.bin || exit 1
+endif
 
 ${D0}/${OUTD}:
 	install -d ${D0}/${OUTD}
 
 ${D1}/${F_XBT}.img: ${D1}/${F_XBT}.sig
-	${D0}/sp_tools/add_xhdr.sh $< $@ 1
+	${D1}/sp_tools/add_xhdr.sh $< $@ 1
 
 ${D1}/${F_XBT}.sig: ${D1}/${F_XBT}.bin
 	install ${D1}/${F_XBT}.bin ${D1}/${F_XBT}.sig
@@ -66,8 +92,7 @@ ${D0}/${OUTD}/ISPBOOOT.BIN: ${D1}/${F_XBT}.img ${D0}/${OUTD}/nonos ${D0}/${OUTD}
 	${D0}/${OUTD}/kernel 0x2000000 \
 	${D0}/${OUTD}/rootfs 0x1E000000
 	
-# not done yet: direct SD boot
-	
+# temporary disabled
 #	install -d ${D0}/${OUTD}/boot2linux_SDC
 #	install ${D0}/${OUTD}/uboot0 ${D0}/${OUTD}/boot2linux_SDC/
 #	install ${D0}/${OUTD}/kernel ${D0}/${OUTD}/boot2linux_SDC/
@@ -75,8 +100,8 @@ ${D0}/${OUTD}/ISPBOOOT.BIN: ${D1}/${F_XBT}.img ${D0}/${OUTD}/nonos ${D0}/${OUTD}
 #	dd if=${D0}/${OUTD}/ISPBOOOT.BIN of=${D0}/${OUTD}/boot2linux_SDC/ISPBOOOT.BIN bs=1024 skip=0 count=64
 #	install ${D0}/sp_tools/sdcard_boot/uEnv.txt ${D0}/${OUTD}/boot2linux_SDC/
 #	${D0}/sp_tools/sdcard_boot/sdcard_boot.sh ${D0}/${OUTD}/boot2linux_SDC/
+# temporary disabled /
 
-# not done yet: direct boot to Linux
 #	install -d ${D0}/${OUTD}/boot2linux_USB
 #	${D0}/sp_tools/isp extract4boot2linux_usbboot ${D0}/${OUTD}/ISPBOOOT.BIN ${D0}/${OUTD}/boot2linux_USB/ISPBOOOT.BIN
 

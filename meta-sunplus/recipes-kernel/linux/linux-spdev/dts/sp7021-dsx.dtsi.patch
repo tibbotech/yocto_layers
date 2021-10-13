@@ -1,6 +1,6 @@
 --- /dev/null	2020-12-02 14:41:46.756023780 +0300
 +++ a/arch/arm/boot/dts/sp7021-dsx.dtsi	2020-12-10 02:22:47.099203480 +0300
-@@ -0,0 +1,337 @@
+@@ -0,0 +1,338 @@
 +/dts-v1/;
 +
 +#include "sp7021-ChipC.dtsi"
@@ -23,6 +23,7 @@
 +&sp_display {
 +    ui_width = <1280>;
 +    ui_height = <720>;
++    ui_format = <0x8>;
 +};
 +
 +&sp_spinor0 {  status = "disabled";  };
@@ -36,8 +37,7 @@
 + pinctrl-0 = <&pins_sdio &pins_sdio_reset>;
 + bus-width = <4>;
 + max-frequency = <40000000>; /* up to 52 */
-+ // this: enable
-+ status = "okay"; // "disabled";
++ status = "okay";
 + brcmf1: bcrmf@1 {
 +   reg = <1>;
 +   compatible = "android,bcmdhd_wlan";
@@ -46,8 +46,9 @@
 +};
 +
 +&l2sw {
-+ pinctrl-names = "default";  mode = <1>;
++ pinctrl-names = "default";
 + pinctrl-0 = <&ethA_pins &eth0_pins &eth1_pins>;
++ mode = <1>;
 +};
 +
 +&mmc0 {
@@ -80,13 +81,13 @@
 +};
 +&uart3 {
 + pinctrl-names = "default";
-+ pinctrl-0 = <&pins_uart3>;
-+ status = "disabled";
-+ // this: enable, pins_uart3
++ /* pinctrl-0 = <&pins_uart3>; */
++ pinctrl-0 = <&pins_simcom>;
++ status = "okay";
++ // this: enable (simcom), pins_uart3, pins_simcom
 +};
 +&uart4 {
 + pinctrl-names = "default";
-+ /* pinctrl-0 = <&pins_simcom>; */
 + pinctrl-0 = <&pins_btuart &pins_bt_reset>;
 + status = "okay";
 + // this: enable (bt) | enable (uart4), pins_uart4
