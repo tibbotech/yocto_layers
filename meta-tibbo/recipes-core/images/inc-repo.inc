@@ -6,34 +6,64 @@ DEPENDS += "influxdb"
 # multimedia
 DEPENDS += "opencv"
 DEPENDS += "ncnn"
+DEPENDS += "sox"
 #DEPENDS += "tensorflow"
 DEPENDS += "v4l-utils"
 DEPENDS += "gstreamer1.0-plugins-base"
 DEPENDS += "gstreamer1.0-plugins-good"
 DEPENDS += "gstreamer1.0-plugins-bad"
 DEPENDS += "gstreamer1.0-libav"
+#DEPENDS += "mjpg-streamer"
+DEPENDS += "ffmpeg"
+#DEPENDS += "live555"
+#DEPENDS += "minidlna"
+#DEPENDS += "gerbera"
+DEPENDS += "alsa-utils alsa-plugins alsa-tools ${VIRTUAL-RUNTIME_alsa-state}"
+
+# utility
+DEPENDS += "psmisc"
+DEPENDS += "mc"
+DEPENDS += "iproute2"
+DEPENDS += "nano"
+DEPENDS += "syslog-ng"
+DEPENDS += "logrotate"
+DEPENDS += "gptfdisk cifs-utils dosfstools e2fsprogs mtd-utils"
 
 # connectivity
+DEPENDS += "wget"
+DEPENDS += "lftp"
 DEPENDS += "shorewall"
 DEPENDS += "mosquitto"
 DEPENDS += "freeradius"
 DEPENDS += "ethtool"
-DEPENDS += "usbutils"
+DEPENDS += "usbutils usb-modeswitch"
 DEPENDS += "net-snmp"
+DEPENDS += "rp-pppoe"
+DEPENDS += "openvpn"
+#DEPENDS += "ddclient"
 
 # development
 DEPENDS += "gdb"
+DEPENDS += "tcf-agent"
 DEPENDS += "strace"
 DEPENDS += "tcpdump"
+DEPENDS += "git"
 DEPENDS += "minicom"
+DEPENDS += "picocom"
 DEPENDS += "statserial"
 DEPENDS += "valgrind"
 DEPENDS += "oprofile"
 DEPENDS += "lsof"
+DEPENDS += "atop"
+DEPENDS += "htop"
 DEPENDS += "i2c-tools"
 DEPENDS += "can-utils"
 DEPENDS += "psmisc"
 DEPENDS += "devmem2"
+DEPENDS += "lshw"
+# requires gtk2
+#DEPENDS += "hardinfo"
+DEPENDS += "lrzsz"
 
 # nodeJS
 #DEPENDS += "node-red"
@@ -57,8 +87,6 @@ DEPENDS += "python3-cython"
 #DEPENDS += "python3-scikit-learn"
 
 # tests and benchmarks
-DEPENDS += "dvtests"
-DEPENDS += "twgtest"
 DEPENDS += "iperf3"
 DEPENDS += "stress-ng"
 DEPENDS += "bonnie++"
@@ -75,22 +103,15 @@ DEPENDS += "tinymembench"
 DEPENDS += "tiobench"
 DEPENDS += "whetstone"
 DEPENDS += "serial-test"
-# requires gtk2
-#DEPENDS += "hardinfo"
 
-# cli tools
-DEPENDS += "mc"
-DEPENDS += "nano"
-DEPENDS += "syslog-ng"
-DEPENDS += "logrotate"
 DEPENDS += "log4cpp"
 
 DEPENDS += "fuse-exfat exfat-utils"
 
 #TOOLCHAIN_HOST_TASK_append += " nativesdk-dlib-dev"
-#TOOLCHAIN_HOST_TASK_append += " log4cpp-dev"
 
 DEPENDS += "apt"
+
 DEPENDS += "dstat"
 DEPENDS += "nmap"
 DEPENDS += "zabbix"
@@ -108,16 +129,23 @@ DEPENDS += "packagegroup-core-x11-base"
 DEPENDS += "packagegroup-core-x11-sato"
 #DEPENDS += "packagegroup-xfce-base"
 
+# graphics
 DEPENDS += "epiphany"
 DEPENDS += "surf"
 DEPENDS += "fbset"
+DEPENDS += "fbida"
 
-DEPENDS += "tps-gprs"
+# realtime protocols
 
 # OpenAMP
 DEPENDS += "${@bb.utils.contains("DISTRO_FEATURES", "openamp", "libmetal open-amp", "",d)}"
 DEPENDS += "${@bb.utils.contains("DISTRO_FEATURES", "openamp", "rpmsg-echo-test rpmsg-mat-mul rpmsg-proxy-app", "",d)}"
 # OpenAMP /
-
 DEPENDS += "soem"
 #DEPENDS += "soes"
+# iec-...
+DEPENDS += "forte"
+
+# tmp
+#DEPENDS += "linux-firmware"
+#DEPENDS += "dhcp"

@@ -38,6 +38,7 @@ KERNEL_DEVICETREE += "sp7021-ublox.dtb"
 KERNEL_EXTRA_ARGS += "LOADADDR=${UBOOT_ENTRYPOINT}"
 
 UBOOT_CONFIG ??= "a7021_emmc a7021_nand a7021_romt a7021_ppg2 a7021_dsxe"
+#UBOOT_CONFIG ??= "a7021_emmc a7021_ppg2 a7021_dsxe"
 #UBOOT_CONFIG ??= "tppg2"
 #UBOOT_CONFIG[tppg2] = "pentagram_sp7021_emmc_defconfig"
 UBOOT_CONFIG[a7021_emmc] = "sp7021_emmc_c_defconfig"
@@ -54,4 +55,4 @@ IMAGE_BOOT_FILES += "sdcard_uEnv.txt;uEnv.txt"
 IMAGE_BOOT_FILES += "${KERNEL_IMAGETYPE}-initramfs-tppg2.img;${KERNEL_IMAGETYPE}"
 #IMAGE_BOOT_FILES += "ISPBOOOT.BIN"
 
-PACKAGE_FEED_ARCHS = "all cortexa9hf_neon noarch ${MACHINE}"
+PACKAGE_FEED_ARCHS = "cortexa9hf_neon noarch ${MACHINE}"

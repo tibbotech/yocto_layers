@@ -149,6 +149,9 @@ RDEPENDS_kernel-module-bcmdhd += "bcmdhd-firmware"
 #KERNEL_FEATURES_append += "cfg/rpi-ovls/ovls-4.12.scc"
 KERNEL_FEATURES_append += "cfg/rpi-ovls/ovls-4.19.scc"
 
+KERNEL_FEATURES_append += "${@bb.utils.contains("MACHINE_FEATURES", "touchscreen", " custom/touchscreen/all.scc", "" ,d)}"
+KERNEL_FEATURES_append += "${@bb.utils.contains("MACHINE_FEATURES", "usbgadget", " features/usb/usb-gadgets.scc", "" ,d)}"
+
 LIC_FILES_CHKSUM = "file://COPYING;md5=bbea815ee2795b2f4230826c0c6b8814"
 
 DEPENDS += "isp-native"

@@ -1,0 +1,10 @@
+# SPDX-License-Identifier: MIT
+define KFEATURE_DESCRIPTION "Enable USB gadgets modules"
+define KFEATURE_COMPATIBILITY board
+
+include usb-base.scc
+
+# Some gadgets require one or more of the following:
+# NET, BLOCK, VIDEO_DEV
+
+kconf hardware usb-gadgets.cfg

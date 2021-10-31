@@ -1,6 +1,6 @@
 DESCRIPTION = "Universal InitRamFs"
+
 LICENSE = "MIT"
-PR = "r1"
 
 inherit core-image
 

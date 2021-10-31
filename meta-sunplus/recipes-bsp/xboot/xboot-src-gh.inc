@@ -4,8 +4,8 @@ SECTION = "bootloaders"
 LICENSE = "GPLv2+"
 LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/GPL-2.0;md5=801f80980d171dd6425610833a22dbe6"
 
-SRCREV_draminit = "8d81f22b434238434ff590bd99cd7865bdcd8392"
-SRCREV_xboot = "4ffd9f28e95463b5bb12d5fed4bf79d8d78838b0"
+SRCREV_draminit = "be6ab724da9ebccfb064445855360e5b9640da78"
+SRCREV_xboot = "008865111dd39ff44cea83594b76669dae5605ed"
 
 SRC_URI = "\
 git://github.com/tibbotech/plus1_draminit.git;name=draminit;branch=master;destsuffix=draminit; \

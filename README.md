@@ -10,60 +10,76 @@ Read [Tibbo Yocto Layers Howto](https://tibbotech.github.io/plus1_layers/) for m
 ### 1.1 Clonning layers
 ```
 rel="dunfell"
-git clone git://git.yoctoproject.org/poky.git
-cd poky; git checkout origin/${rel};
-git clone https://github.com/meta-qt5/meta-qt5.git
-cd meta-qt5; git checkout origin/${rel}; cd ..
-git clone git://git.openembedded.org/meta-openembedded
-cd meta-openembedded; git checkout origin/${rel}; cd ..
-cd ..
-git clone https://github.com/tibbotech/yocto_layers.git ./poky.x
-cd poky.x; git checkout ${rel}; cd ..
+git clone -b ${rel} git://git.yoctoproject.org/poky.git
+git clone -b ${rel} https://github.com/meta-qt5/meta-qt5.git ./poky/meta-qt5
+git clone https://github.com/OpenAMP/meta-openamp.git ./poky/meta-openamp
+git clone -b ${rel} git://git.openembedded.org/meta-openembedded ./poky/meta-openembedded
+git clone -b ${rel} https://github.com/tibbotech/yocto_layers.git ./poky.x
 rsync -a --exclude=.git ./poky.x/ ./poky/
 patch -p0 < ./poky/npm.${rel}.patch
+sed -i 's/"gatesgarth"/"rocko sumo thud zeus dunfell gatesgarth"/g' ./poky/meta-openamp/conf/layer.conf
 ```
 
 ### 1.2 Pulling the updates from the GitHub
 ```
-cd ./poky.x/
-git pull
-cd ..
+cd ./poky.x/;  git pull ; cd ..
 rsync -a --exclude=.git ./poky.x/ ./poky/
 ```
 
-### 1.3 disk2
+### 1.3 Creating separate disk directory for build (under root account)
 ```
-mkdir /disk2
-chmod 0777 /disk2
-```
-
-## 2. Builds
-
-### 2.1 Building two parts separately
-
-Build small image without any additional dependencies (4300 recipes):
-```
-$ bitbake mc:tpp-tppg2:img-sp-tiny
-```
-or build complete open-source test image with some additional software (8000 recipes):
-```
-$ bitbake mc:tpp-tppg2:img-tps-free
+# install -d -m 0777 /disk2
 ```
 
-Optionally: XBoot + arm926 test firmware (2900 recipes)
+## 2.0 Before builds (env initialization)
 ```
-$ bitbake mc:tpp-tppg2-arm5:img-xboot
-```
-
-### 2.2 Building two parts at once (11000 recipes)
-```
-$ bitbake img-spmn
+cd <subdir>/poky
+source oe-init-build-env build.tppg2
 ```
 
-<sup>*</sup> First bitbake run is time-consuming. All subsequent builds 
-are incremental
+## 2.1 Build the image
+'Make sure you did 2.0 step in this console. Then:
+```
+bitbake <imagename>
+```
+Final images and parts will be placed at
+/disk2/build.26/tmp/deploy/images/<machine>/
 
-<sup>*</sup> Xboot + arm926 firmware is not required for ISPBOOOT assembly.
+## machine, distro, imagename table for IMG
+
+| machine        | distro  | imagename    | command line                         | tasks  | comment                                      |
+| -------------- | ------- | ------------ | ------------------------------------ | ------ | ---------------------------------------------|
+| tpp-tppg2-arm5 | tps     | imgf-xboot   | bitbake mc:tpp-tppg2-arm5:imgf-xboot |  ~2800 | Builds several versions of XBoot and A926 FW |
+| tpp-tppg2      | tps     | img-tst-tini | bitbake mc::img-tst-tini             |  ~4800 | Small CLI systemd-only image                 |
+| tpp-tppg2      | tps     | img-tps-free | bitbake mc::img-tps-free             |  ~4950 | + package management, gdb, tcf-agent         |
+| tpp-tppg2      | tps     | img-tps-base | bitbake mc::img-tps-base             |  ~5400 | + TiOS, TPS-WAN, other closed-source apps    |
+| tpp-tppg2      | tps     | img-tps-repo | bitbake mc::img-tps-repo             |  ~9900 | Packages free + private collection           |
+| tppg2, -arm5   | tps     | imgm-spmn    | bitbake img-spmn                     |  ~7700 | img-tst-tini + img-tps-free + imgf-xboot     |
+| tppg2, -arm5   | tps     | imgm-spmt    | bitbake img-spmt                     |  ~8100 | img-tst-tini + img-tps-base + imgf-xboot
+| qemux86-64     | tps     | imgm-spba    | bitbake img-spba                     |  ~7000 | BuildApplience image                          |
+
+## 2.2 Build the SDK
+'Make sure you did 2.0 step in this console. Then:
+```
+bitbake -c populate_sdk <imagename>
+```
+SDK self-unpack image will be placed into
+/disk2/build.26/tmp/deploy/sdk/
+
+## cross-target, distro, imagename table for SDK
+
+| cross-target   | distro  | imagename    | command line                                         | comment                                      |
+| -------------- | ------- | ------------ | ---------------------------------------------------- | ---------------------------------------------|
+| tpp-tppg2-arm5 | tps     | imgf-xboot   | bitbake mc:tpp-tppg2-arm5:imgf-xboot -c populate_sdk | A926 SDK (cross-tools + libs)                |
+| tpp-tppg2      | tps     | img-tst-tini | bitbake mc::img-tst-tini -c populate_sdk             | A7 SDK                                       |
+| tpp-tppg2      | tps     | img-tps-free | bitbake mc::img-tps-free -c populate_sdk             | A7 SDK                                       |
+| tpp-tppg2      | tps     | img-tps-base | bitbake mc::img-tps-base -c populate_sdk             | A7 SDK                                       |
+| tpp-tppg2      | tps     | img-tps-repo | bitbake mc::img-tps-repo -c populate_sdk             | A7 SDK                                       |
+
+
+First bitbake run is time-consuming. All subsequent builds are incremental.
+
+Xboot + arm926 firmware is not required for ISPBOOOT assembly.
 Script will download this parts from Tibbo website.
 
 After build /disk2/build.26/tmp/deploy/images/tppg2/ contains all required image components: bootloaders, kernel, rootfs images.

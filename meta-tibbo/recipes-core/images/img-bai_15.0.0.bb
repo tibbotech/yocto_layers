@@ -5,12 +5,16 @@ IMAGE_ROOTFS_EXTRA_SPACE = "104857600"
 
 SRC_URI += "file://npm.dunfell.patch"
 
+SRCREV = "78fe96f3edf981285cb9b6a0286e45f44d8b4b21"
+
 SRCREV_tibbo = "0dad104c4b43f6a4ff56f5536606fd0317d320fb"
 SRC_URI += "git://github.com/tibbotech/yocto_layers.git;branch=dunfell;name=tibbo;destsuffix=xxx;"
-SRCREV_oe = "8a72d29e0876830ffd96b85d7d0308302eb07a5d"
+SRCREV_oe = "814eec96c2a29172da57a425a3609f8b6fcc6afe"
 SRC_URI += "git://git.openembedded.org/meta-openembedded;branch=dunfell;name=oe;destsuffix=xx0;"
-SRCREV_qt5 = "fdd19517e17240b0b61765bd02fc483a1bde986f"
+SRCREV_qt5 = "b4d24d70aca75791902df5cd59a4f4a54aa4a125"
 SRC_URI += "git://github.com/meta-qt5/meta-qt5.git;branch=dunfell;name=qt5;destsuffix=xx1;"
+SRCREV_amp = "bdbdb0b02af4800a0c7fc70edef33cfd55babbdd"
+SRC_URI += "git://github.com/OpenAMP/meta-openamp.git;branch=master;name=amp;destsuffix=xx2;"
 SRC_URI += "file://builder_session.sh.patch"
 SRC_URI += "file://clear_sock.sh"
 
@@ -23,11 +27,15 @@ do_copy_tibbo_layers () {
  rm -rf ${WORKDIR}/xxx/.git
  rm -rf ${WORKDIR}/xx0/.git
  rm -rf ${WORKDIR}/xx1/.git
+ rm -rf ${WORKDIR}/xx2/.git
  install -d ${WORKDIR}/git/meta-openembedded
  install -d ${WORKDIR}/git/meta-qt5
+ install -d ${WORKDIR}/git/meta-openamp
  cp -R ${WORKDIR}/xxx/* ${WORKDIR}/git/
  cp -R ${WORKDIR}/xx0/* ${WORKDIR}/git/meta-openembedded/
  cp -R ${WORKDIR}/xx1/* ${WORKDIR}/git/meta-qt5/
+ cp -R ${WORKDIR}/xx2/* ${WORKDIR}/git/meta-openamp/
+ sed -i 's/"gatesgarth"/"rocko sumo thud zeus dunfell gatesgarth"/g' ${WORKDIR}/git/meta-openamp/conf/layer.conf
  patch -d ${WORKDIR}/git/ -p1 < ${WORKDIR}/npm.dunfell.patch
 }
 

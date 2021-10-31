@@ -1,11 +1,11 @@
 DESCRIPTION = "Keytroller Xorg experimental"
-LICENSE = "MIT"
-PR = "r1"
 
-require inc-tps.inc
+LICENSE = "MIT"
+
+require inc-p-123.inc
+require inc-rootfs.inc
+require inc-tps-gen.inc
 IMAGE_FEATURES += "package-management"
-#require inc-i-video.inc
-#require inc-t-tibbo.inc
 
 # mandtory
 IMAGE_INSTALL += "tps-pinsini-lklm601"

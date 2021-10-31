@@ -1,17 +1,15 @@
 DESCRIPTION = "LKLM601"
-LICENSE = "MIT"
-PR = "r1"
 
-require inc-tps.inc
+LICENSE = "MIT"
+
+require inc-p-123.inc
+require inc-rootfs.inc
+require inc-tps-gen.inc
 
 IMAGE_FEATURES += "package-management"
-require inc-i-video.inc
-require inc-t-tibbo.inc
-require inc-i-sdkdev.inc
 
 IMAGE_INSTALL += "openssh-sftp-server"
 IMAGE_INSTALL += "git"
-IMAGE_INSTALL += "tps-node-demo"
 IMAGE_INSTALL += "node-tibbo-uartmode"
 IMAGE_INSTALL += "node-bufferutil"
 IMAGE_INSTALL += "node-utf-8-validate"
