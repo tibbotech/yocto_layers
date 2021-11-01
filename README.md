@@ -54,9 +54,9 @@ Final images and parts will be placed at
 | tpp-tppg2      | tps     | img-tps-free | bitbake mc::img-tps-free             |  ~4950 | + package management, gdb, tcf-agent         |
 | tpp-tppg2      | tps     | img-tps-base | bitbake mc::img-tps-base             |  ~5400 | + TiOS, TPS-WAN, other closed-source apps    |
 | tpp-tppg2      | tps     | img-tps-repo | bitbake mc::img-tps-repo             |  ~9900 | Packages free + private collection           |
-| tppg2, -arm5   | tps     | imgm-spmn    | bitbake img-spmn                     |  ~7700 | img-tst-tini + img-tps-free + imgf-xboot     |
-| tppg2, -arm5   | tps     | imgm-spmt    | bitbake img-spmt                     |  ~8100 | img-tst-tini + img-tps-base + imgf-xboot
-| qemux86-64     | tps     | imgm-spba    | bitbake img-spba                     |  ~7000 | BuildApplience image                          |
+| tppg2, -arm5   | tps     | imgm-spmn    | bitbake imgm-spmn                     |  ~7700 | img-tst-tini + img-tps-free + imgf-xboot     |
+| tppg2, -arm5   | tps     | imgm-spmt    | bitbake imgm-spmt                     |  ~8100 | img-tst-tini + img-tps-base + imgf-xboot
+| qemux86-64     | tps     | imgm-spba    | bitbake imgm-spba                     |  ~7000 | BuildApplience image                          |
 
 ## 2.2 Build the SDK
 'Make sure you did 2.0 step in this console. Then:
