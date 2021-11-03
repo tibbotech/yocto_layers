@@ -4,10 +4,10 @@ HOMEPAGE = "https://github.com/node-red/node-red-nodes"
 require node-red-module.inc
 
 # has no serialport and sqlite
-#SRC_URI  = "git://github.com/node-red/node-red-nodes.git;protocol=git;tag=${PV}"
+#SRC_URI  = "git://github.com/node-red/node-red-nodes.git;protocol=https;tag=${PV}"
 
 SRCREV="${AUTOREV}"
-SRC_URI  = "git://github.com/node-red/node-red-nodes.git;protocol=git;branch=master"
+SRC_URI  = "git://github.com/node-red/node-red-nodes.git;protocol=https;branch=master"
 #SRC_URI += "npmsw://${THISDIR}/${BPN}/npm-shrinkwrap.json"
 
 #NPM_SHRINKWRAP := "${THISDIR}/${PN}/npm-shrinkwrap.json"

@@ -8,7 +8,7 @@ PE = "1"
 
 SRCREV = "e0740f7c8c518a699501a149d46910753bee640b"
 
-SRC_URI = "git://github.com/tibbotech/plus1_uboot.git;branch=master"
+SRC_URI = "git://github.com/tibbotech/plus1_uboot.git;protocol=https;branch=master"
 
 SRC_URI += "file://libfdt.i.patch"
 SRC_URI += "file://pentagram_common.h.quiet.patch"

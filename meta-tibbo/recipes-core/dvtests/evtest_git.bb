@@ -8,8 +8,8 @@ SRCREV="${AUTOREV}"
 
 inherit autotools
 
-#SRC_URI  = "git://anongit.freedesktop.org/evtest.git;branch=master;protocol=git"
-SRC_URI  = "git://github.com/freedesktop-unofficial-mirror/evtest.git;branch=master;protocol=git"
+#SRC_URI  = "git://anongit.freedesktop.org/evtest.git;protocol=https;branch=master"
+SRC_URI  = "git://github.com/freedesktop-unofficial-mirror/evtest.git;protocol=https;branch=master"
 
 S = "${WORKDIR}/git"
 

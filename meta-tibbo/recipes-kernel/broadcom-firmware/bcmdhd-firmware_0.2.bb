@@ -2,7 +2,7 @@ SUMMARY = "Broadcom bcmdhd firmware files"
 DESCRIPTION = "Firmware for Broadcom BCMDHD (development AP6255)."
 SRCREV="${AUTOREV}"
 
-SRC_URI  = "git://github.com/tibbotech/bcmdhd-firmware.git;branch=master;protocol=git"
+SRC_URI  = "git://github.com/tibbotech/bcmdhd-firmware.git;protocol=https;branch=master"
 
 S = "${WORKDIR}/git"
 

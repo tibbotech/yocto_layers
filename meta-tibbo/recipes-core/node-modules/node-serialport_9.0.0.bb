@@ -10,7 +10,7 @@ inherit npm
 
 NPM_INSTALL_DEV="1"
 
-#SRC_URI  = "git://github.com/serialport/node-serialport.git;protocol=git;tag=v${PV}"
+#SRC_URI  = "git://github.com/serialport/node-serialport.git;protocol=https;tag=v${PV}"
 SRC_URI  = "npm://registry.npmjs.org;package=serialport;version=${PV}"
 
 #S = "${WORKDIR}/git"

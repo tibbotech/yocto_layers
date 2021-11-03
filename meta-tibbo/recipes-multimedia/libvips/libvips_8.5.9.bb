@@ -11,7 +11,7 @@ inherit autotools
 
 S = "${WORKDIR}/git"
 
-SRC_URI  = "git://github.com/jcupitt/libvips.git;protocol=git"
+SRC_URI  = "git://github.com/jcupitt/libvips.git;protocol=https"
 
 #FILES_${PN}  = "/usr/lib/*"
 #FILES_${PN} += "/usr/*"

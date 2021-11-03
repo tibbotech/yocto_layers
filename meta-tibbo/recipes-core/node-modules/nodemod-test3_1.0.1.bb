@@ -5,7 +5,7 @@ LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/MIT;md5=0835ad
 
 inherit npm
 
-SRC_URI  = "git://github.com/savoirfairelinux/node-server-example.git;protocol=git;tag=${PV}"
+SRC_URI  = "git://github.com/savoirfairelinux/node-server-example.git;protocol=https;tag=${PV}"
 #SRC_URI += "npmsw://${THISDIR}/${BPN}/npm-shrinkwrap.json"
 #SRC_URI += "file://${THISDIR}/${BPN}/npm-shrinkwrap.json"
 

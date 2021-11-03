@@ -15,7 +15,7 @@ S = "${WORKDIR}/git"
 
 inherit module
 
-SRC_URI = "git://github.com/tibbotech/rtl8xxx-dev.git;branch=master;protocol=git"
+SRC_URI = "git://github.com/tibbotech/rtl8xxx-dev.git;protocol=https;branch=master"
 
 do_install() {
  install -m 0755 -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/3rdparty

@@ -7,7 +7,7 @@ SRCREV="${AUTOREV}"
 
 S = "${WORKDIR}/git"
 
-SRC_URI = "git://github.com/tibbotech/ltps-beep.git;branch=master;protocol=git"
+SRC_URI = "git://github.com/tibbotech/ltps-beep.git;protocol=https;branch=master"
 
 FILES_${PN}  = "/opt/tps-beeper/*"
 

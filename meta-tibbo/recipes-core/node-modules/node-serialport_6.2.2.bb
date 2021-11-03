@@ -8,6 +8,6 @@ LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/MIT;md5=0835ad
 
 inherit npm
 
-SRC_URI  = "git://github.com/serialport/node-serialport.git;protocol=git;tag=v${PV}"
+SRC_URI  = "git://github.com/serialport/node-serialport.git;protocol=https;tag=v${PV}"
 
 S = "${WORKDIR}/git"

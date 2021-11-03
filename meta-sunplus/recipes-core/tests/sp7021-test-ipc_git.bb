@@ -9,7 +9,7 @@ SRCREV="${AUTOREV}"
 S = "${WORKDIR}/git"
 TARGET_CC_ARCH += "${LDFLAGS}"
 
-SRC_URI  = "git://github.com/tibbotech/sp7021_test_ipc.git;branch=master;protocol=git"
+SRC_URI  = "git://github.com/tibbotech/sp7021_test_ipc.git;protocol=https;branch=master;"
 SRC_URI += "file://Makefile.patch"
 
 FILES_${PN}  = "/home/root/sp_ipc_test"

@@ -15,7 +15,7 @@ S = "${WORKDIR}/git"
 
 inherit systemd
 
-SRC_URI  = "git://github.com/lwfinger/rtl8723bs_bt.git;branch=master;protocol=git"
+SRC_URI  = "git://github.com/lwfinger/rtl8723bs_bt.git;protocol=https;branch=master"
 SRC_URI += "file://Makefile.patch"
 SRC_URI += "file://rtlbt_config"
 SRC_URI += "file://rtl8723bs-bt-ttyO5.rules"

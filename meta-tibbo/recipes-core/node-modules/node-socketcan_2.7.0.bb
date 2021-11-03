@@ -10,6 +10,6 @@ inherit npm
 
 SRCREV="${AUTOREV}"
 
-SRC_URI  = "git://github.com/sebi2k1/node-can.git;protocol=git"
+SRC_URI  = "git://github.com/sebi2k1/node-can.git;protocol=https"
 
 S = "${WORKDIR}/git"

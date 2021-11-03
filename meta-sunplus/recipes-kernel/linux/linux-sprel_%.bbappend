@@ -10,7 +10,7 @@ KBRANCH_tppg2 = "master"
 # mainline
 COMPATIBLE_MACHINE_tppg2 = "tppg2"
 
-SRC_URI = "git://github.com/tibbotech/plus1_kernel.git;branch=${KBRANCH}"
+SRC_URI = "git://github.com/tibbotech/plus1_kernel.git;protocol=https;branch=${KBRANCH}"
 # SRC_URI += "git://git.yoctoproject.org/yocto-kernel-cache;type=kmeta;name=meta;branch=yocto-4.12;destsuffix=${KMETA}"
 SRC_URI += "file://kernel-meta/*;type=kmeta;name=meta;destsuffix=${KMETA}"
 #SRC_URI += "file://kernel-meta.tar.gz;type=kmeta;name=meta;destsuffix=${KMETA}"
@@ -87,7 +87,7 @@ SRC_URI += "file://bcmdhd/dhd_gpio.c.gpio.patch"
 SRC_URI += "file://mcp251xfd-backport/mcp251xfd.tar.gz"
 SRC_URI += "file://mcp251xfd-backport/Kconfig.mcp251xfd.patch"
 SRC_URI += "file://mcp251xfd-backport/Makefile.mcp251xfd.patch"
-#SRC_URI += "git://github.com/tibbotech/mcp251xfd.git;branch=master"
+#SRC_URI += "git://github.com/tibbotech/mcp251xfd.git;protocol=https;branch=master"
 
 # +dts
 SRC_URI += "file://dts/sp7021-dsx.dts.patch"

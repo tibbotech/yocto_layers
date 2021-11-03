@@ -15,7 +15,7 @@ S = "${WORKDIR}/git"
 
 inherit module
 
-SRC_URI = "git://github.com/tibbotech/kern-mod-twg.git;branch=main;protocol=git"
+SRC_URI = "git://github.com/tibbotech/kern-mod-twg.git;protocol=https;branch=main"
 #SRC_URI += "file://twg_main.c.irq.patch"
 
 do_install() {

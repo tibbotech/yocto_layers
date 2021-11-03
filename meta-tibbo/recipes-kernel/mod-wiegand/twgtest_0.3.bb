@@ -10,7 +10,7 @@ LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/GPL-2.0;md5=80
 
 S = "${WORKDIR}/git"
 
-SRC_URI = "git://github.com/tibbotech/twgtest.git;branch=tppg2;protocol=git"
+SRC_URI = "git://github.com/tibbotech/twgtest.git;protocol=https;branch=tppg2"
 
 FILES_${PN}  = "/home/root/dvtests/*"
 FILES_${PN}-dbg  = "/home/root/dvtests/.debug/*"

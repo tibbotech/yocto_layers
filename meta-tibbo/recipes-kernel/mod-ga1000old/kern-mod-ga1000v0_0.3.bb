@@ -15,7 +15,7 @@ S = "${WORKDIR}/git"
 
 inherit module
 
-SRC_URI = "git://github.com/tibbotech/kern-mod-ga1000v0.git;branch=main;protocol=git"
+SRC_URI = "git://github.com/tibbotech/kern-mod-ga1000v0.git;protocol=https;branch=main"
 
 #MAKE_TARGETS = "KERNEL_PATH=${STAGING_KERNEL_DIR} MAKE='make -e' -C ${STAGING_KERNEL_DIR} SUBDIRS=${S} modules"
 

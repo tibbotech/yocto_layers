@@ -8,7 +8,7 @@ SRCREV="${AUTOREV}"
 
 S = "${WORKDIR}/git"
 
-SRC_URI = "git://github.com/tibbotech/tpsled.git;branch=main;protocol=git"
+SRC_URI = "git://github.com/tibbotech/tpsled.git;protocol=https;branch=main"
 
 FILES_${PN}  = "/opt/${PN}/*"
 FILES_${PN}-dbg  = "/opt/${PN}/.debug/*"

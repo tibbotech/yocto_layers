@@ -28,7 +28,7 @@ do_install_append() {
 SYSTEMD_AUTO_ENABLE_${PN} = "enable"
 
 # dlna module
-#SRC_URI += "git://github.com/arut/nginx-dlna-module.git;protocol=git;rev=master;destsuffix=nginx-dlna-module"
+#SRC_URI += "https://github.com/arut/nginx-dlna-module.git;rev=master;destsuffix=nginx-dlna-module"
 ##SRC_URI += "file://nginx-dlna-module/ngx_http_dlna.c.patch"
 #EXTRA_OECONF += " --add-module=${WORKDIR}/nginx-dlna-module"
 ##EXTRA_OECONF += " --with-compat --add-dynamic-module=${WORKDIR}/nginx-dlna-module"
@@ -39,7 +39,7 @@ SYSTEMD_AUTO_ENABLE_${PN} = "enable"
 #
 
 # rtmp module
-SRC_URI += "git://github.com/arut/nginx-rtmp-module.git;protocol=git;rev=master;destsuffix=nginx-rtmp-module"
+SRC_URI += "https://github.com/arut/nginx-rtmp-module.git;rev=master;destsuffix=nginx-rtmp-module"
 #EXTRA_OECONF += " --add-module=${WORKDIR}/nginx-dlna-module"
 EXTRA_OECONF += " --with-compat --add-dynamic-module=${WORKDIR}/nginx-rtmp-module"
 
@@ -51,7 +51,7 @@ INSANE_SKIP_${PN} = "ldflags"
 EXTRA_OECONF += " --with-http_dav_module"
 
 # add WebDav extended commands module
-SRC_URI += "git://github.com/arut/nginx-dav-ext-module.git;protocol=git;rev=v2.0.0;destsuffix=ngx_http_dav_ext_module"
+SRC_URI += "https://github.com/arut/nginx-dav-ext-module.git;rev=v2.0.0;destsuffix=ngx_http_dav_ext_module"
 FILES_${PN} += "/usr/modules/ngx_http_dav_ext_module.so"
 EXTRA_OECONF += " --with-compat --add-dynamic-module=${WORKDIR}/ngx_http_dav_ext_module"
 DEPENDS += "expat"

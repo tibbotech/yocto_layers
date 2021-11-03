@@ -15,7 +15,7 @@ inherit module
 # BR="original"
 BR="master"
 
-SRC_URI = "git://github.com/tibbotech/mwl-wifi-sd8787.git;branch=${BR};protocol=git"
+SRC_URI = "git://github.com/tibbotech/mwl-wifi-sd8787.git;protocol=https;branch=${BR}"
 
 MAKE_TARGETS = "KERNEL_PATH=${STAGING_KERNEL_DIR} MAKE='make -e' -C ${STAGING_KERNEL_DIR} SUBDIRS=${S} modules"
 

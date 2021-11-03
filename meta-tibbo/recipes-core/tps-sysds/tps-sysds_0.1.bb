@@ -12,7 +12,7 @@ inherit autotools npm
 
 S = "${WORKDIR}/git"
 
-SRC_URI = "git://github.com/tibbotech/ltps-sysds.git;branch=master;protocol=git"
+SRC_URI = "git://github.com/tibbotech/ltps-sysds.git;protocol=https;branch=master"
 
 FILES_${PN}-node  += "/usr/lib/node_modules/"
 FILES_${PN}-test  = "/home/root/*"

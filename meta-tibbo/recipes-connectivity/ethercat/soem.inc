@@ -10,9 +10,7 @@ inherit cmake
 
 S = "${WORKDIR}/git"
 
-SRC_URI = " \
- git://github.com/OpenEtherCATsociety/SOEM.git;protocol=https;branch=master \
-"
+SRC_URI = "git://github.com/OpenEtherCATsociety/SOEM.git;protocol=https;branch=master"
 # file://CMakeLists.txt.patch 
 
 #FILES_${PN}  = "*"

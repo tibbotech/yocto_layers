@@ -12,7 +12,7 @@ inherit autotools pkgconfig
 
 S = "${WORKDIR}/git"
 
-SRC_URI  = "git://github.com/Matroska-Org/libmatroska.git;protocol=git"
+SRC_URI  = "git://github.com/Matroska-Org/libmatroska.git;protocol=https"
 
 #FILES_${PN}  = "/usr/lib/*"
 #FILES_${PN} += "/usr/*"

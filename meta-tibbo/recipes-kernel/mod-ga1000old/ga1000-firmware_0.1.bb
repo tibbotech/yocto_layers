@@ -12,7 +12,7 @@ S = "${WORKDIR}/git/"
 
 inherit base allarch
 
-SRC_URI = "git://github.com/tibbotech/ga1000-linux-fw.git;branch=master;protocol=git"
+SRC_URI = "git://github.com/tibbotech/ga1000-linux-fw.git;protocol=https;branch=master"
 
 do_install() {
  install -d ${D}/lib/firmware/libertas

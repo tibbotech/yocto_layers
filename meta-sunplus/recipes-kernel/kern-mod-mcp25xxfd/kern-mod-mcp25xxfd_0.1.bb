@@ -15,7 +15,7 @@ S = "${WORKDIR}/${PN}"
 
 inherit module
 
-SRC_URI = "git://github.com/msperl/linux-rpi.git;branch=upstream-5.2-master-80f23-mcp25xxfd-v8.2;subpath=linux-rpi/drivers/net/can/spi/mcp25xxfd/"
+SRC_URI = "git://github.com/msperl/linux-rpi.git;protocol=https;branch=upstream-5.2-master-80f23-mcp25xxfd-v8.2;subpath=linux-rpi/drivers/net/can/spi/mcp25xxfd/"
 
 #MAKE_TARGETS = "KERNEL_PATH=${STAGING_KERNEL_DIR} MAKE='make -e' -C ${STAGING_KERNEL_DIR} SUBDIRS=${S} modules"
 

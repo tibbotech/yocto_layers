@@ -10,7 +10,7 @@ inherit npm
 
 SRCREV="${AUTOREV}"
 
-SRC_URI  = "git://github.com/fivdi/i2c-bus.git;protocol=git"
+SRC_URI  = "git://github.com/fivdi/i2c-bus.git;protocol=https"
 
 S = "${WORKDIR}/git"
 

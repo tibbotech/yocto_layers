@@ -11,9 +11,7 @@ inherit systemd cmake
 
 S = "${WORKDIR}/git"
 
-SRC_URI = " \
- git://github.com/OpenEtherCATsociety/SOES.git;protocol=https;branch=master \
-"
+SRC_URI = "git://github.com/OpenEtherCATsociety/SOES.git;protocol=https;branch=master"
 
 FILES_${PN}-dbg  = "/usr/src/*"
 FILES_${PN}-dev  = "/usr/include/*.h"

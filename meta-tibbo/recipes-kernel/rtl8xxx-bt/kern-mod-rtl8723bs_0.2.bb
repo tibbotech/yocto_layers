@@ -16,8 +16,8 @@ S = "${WORKDIR}/git"
 
 inherit module
 
-#SRC_URI = "git://github.com/NextThingCo/RTL8723BS.git;branch=master;protocol=git"
-SRC_URI = "git://github.com/macromorgan/RTL8723BS.git;branch=master;protocol=git"
+#SRC_URI = "git://github.com/NextThingCo/RTL8723BS.git;protocol=https;branch=master"
+SRC_URI = "git://github.com/macromorgan/RTL8723BS.git;protocol=https;branch=master"
 
 #MAKE_TARGETS = "KERNEL_PATH=${STAGING_KERNEL_DIR} MAKE='make -e' -C ${STAGING_KERNEL_DIR} SUBDIRS=${S} modules"
 #MAKE_TARGETS = " "

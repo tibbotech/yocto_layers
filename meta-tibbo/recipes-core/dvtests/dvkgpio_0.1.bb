@@ -8,7 +8,7 @@ SRCREV="${AUTOREV}"
 
 S = "${WORKDIR}/git"
 
-SRC_URI = "git://github.com/tibbotech/ltps-dvkgpio.git;branch=master;protocol=git"
+SRC_URI = "git://github.com/tibbotech/ltps-dvkgpio.git;protocol=https;branch=master"
 
 FILES_${PN}  = "/home/root/${PN}/*"
 FILES_${PN}-dbg  = "/home/root/${PN}/.debug/*"

@@ -12,7 +12,7 @@ inherit autotools
 
 S = "${WORKDIR}/git"
 
-SRC_URI  = "git://github.com/Matroska-Org/libebml.git;protocol=git"
+SRC_URI  = "git://github.com/Matroska-Org/libebml.git;protocol=https"
 
 #FILES_${PN}  = "/usr/lib/*"
 #FILES_${PN} += "/usr/*"

@@ -9,6 +9,6 @@ inherit cmake
 
 S = "${WORKDIR}/git"
 
-SRC_URI  = "git://github.com/lpereira/hardinfo.git;protocol=git;"
+SRC_URI  = "git://github.com/lpereira/hardinfo.git;protocol=https"
 
 LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/GPL-2.0;md5=801f80980d171dd6425610833a22dbe6"

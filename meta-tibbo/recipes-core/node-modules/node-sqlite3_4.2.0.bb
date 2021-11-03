@@ -8,7 +8,7 @@ LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/BSD-3-Clause;m
 
 inherit npm
 
-SRC_URI  = "git://github.com/mapbox/node-sqlite3.git;protocol=git;tag=v${PV}"
+SRC_URI  = "git://github.com/mapbox/node-sqlite3.git;protocol=https;tag=v${PV}"
 
 S = "${WORKDIR}/git"
 

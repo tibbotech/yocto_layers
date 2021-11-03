@@ -8,7 +8,7 @@ SRCREV="${AUTOREV}"
 
 S = "${WORKDIR}/git"
 
-SRC_URI = "git://github.com/tibbotech/ltps-dvtests.git;branch=master;protocol=git"
+SRC_URI = "git://github.com/tibbotech/ltps-dvtests.git;protocol=https;branch=master"
 
 FILES_${PN}  = "/home/root/${PN}/*"
 FILES_${PN} += "/lib/systemd/system/set485@.service"

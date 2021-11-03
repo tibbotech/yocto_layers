@@ -10,6 +10,6 @@ inherit npm
 
 NPMPN = "${PN}"
 
-SRC_URI  = "git://github.com/websockets/bufferutil.git;protocol=git;tag=v${PV}"
+SRC_URI  = "git://github.com/websockets/bufferutil.git;protocol=https;tag=v${PV}"
 
 S = "${WORKDIR}/git"
