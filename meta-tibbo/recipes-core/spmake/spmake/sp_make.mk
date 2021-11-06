@@ -32,7 +32,7 @@ ${D0}/${OUTD}:
 	install -d ${D0}/${OUTD}
 
 ${D1}/${F_XBT}.img: ${D1}/${F_XBT}.sig
-	${D1}/sp_tools/add_xhdr.sh $< $@ 1
+	${D0}/sp_tools/add_xhdr.sh $< $@ 1
 
 ${D1}/${F_XBT}.sig: ${D1}/${F_XBT}.bin
 	install ${D1}/${F_XBT}.bin ${D1}/${F_XBT}.sig

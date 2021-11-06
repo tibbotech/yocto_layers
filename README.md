@@ -47,16 +47,16 @@ Final images and parts will be placed at
 
 ## machine, distro, imagename table for IMG
 
-| machine        | distro  | imagename    | command line                         | tasks  | comment                                      |
-| -------------- | ------- | ------------ | ------------------------------------ | ------ | ---------------------------------------------|
-| tpp-tppg2-arm5 | tps     | imgf-xboot   | bitbake mc:tpp-tppg2-arm5:imgf-xboot |  ~2800 | Builds several versions of XBoot and A926 FW |
-| tpp-tppg2      | tps     | img-tst-tini | bitbake mc::img-tst-tini             |  ~4800 | Small CLI systemd-only image                 |
-| tpp-tppg2      | tps     | img-tps-free | bitbake mc::img-tps-free             |  ~4950 | + package management, gdb, tcf-agent         |
-| tpp-tppg2      | tps     | img-tps-base | bitbake mc::img-tps-base             |  ~5400 | + TiOS, TPS-WAN, other closed-source apps    |
-| tpp-tppg2      | tps     | img-tps-repo | bitbake mc::img-tps-repo             |  ~9900 | Packages free + private collection           |
-| tppg2, -arm5   | tps     | imgm-spmn    | bitbake imgm-spmn                     |  ~7700 | img-tst-tini + img-tps-free + imgf-xboot     |
-| tppg2, -arm5   | tps     | imgm-spmt    | bitbake imgm-spmt                     |  ~8100 | img-tst-tini + img-tps-base + imgf-xboot
-| qemux86-64     | tps     | imgm-spba    | bitbake imgm-spba                     |  ~7000 | BuildApplience image                          |
+| machine        | distro  | imagename    | command line                         | tasks / DL / HDD       | comment                                      |
+| -------------- | ------- | ------------ | ------------------------------------ | ---------------------- | ---------------------------------------------|
+| tpp-tppg2-arm5 | tps     | imgf-xboot   | bitbake mc:tpp-tppg2-arm5:imgf-xboot |  ~2800 /  6 GB / 29 GB | Builds several versions of XBoot and A926 FW |
+| tpp-tppg2      | tps     | img-tst-tini | bitbake mc::img-tst-tini             |  ~4800 /  7 GB / 30 GB | Small CLI systemd-only image                 |
+| tpp-tppg2      | tps     | img-tps-free | bitbake mc::img-tps-free             |  ~4950 /  7 GB / 31 GB | + package management, gdb, tcf-agent         |
+| tpp-tppg2      | tps     | img-tps-base | bitbake mc::img-tps-base             |  ~5400 /  7 GB / 32 GB | + TiOS, TPS-WAN, other closed-source apps    |
+| tpp-tppg2      | tps     | img-tps-repo | bitbake mc::img-tps-repo             |  ~9900 / 12 GB / 40 GB | Packages free + private collection           |
+| tppg2, -arm5   | tps     | imgm-spmn    | bitbake imgm-spmn                     |  ~7700 / 7 GB / 60 GB | img-tst-tini + img-tps-free + imgf-xboot     |
+| tppg2, -arm5   | tps     | imgm-spmt    | bitbake imgm-spmt                     |  ~8100 / 7 GB / 61 GB | img-tst-tini + img-tps-base + imgf-xboot     |
+| qemux86-64     | tps     | imgm-spba    | bitbake imgm-spba                     |  ~7000 / ? GB / ?? GB | BuildApplience image                         |
 
 ## 2.2 Build the SDK
 'Make sure you did 2.0 step in this console. Then:
