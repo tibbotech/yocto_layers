@@ -31,8 +31,8 @@ IMAGE_INSTALL += "kernel-module-can-raw can-utils"
 IMAGE_INSTALL += "kernel-module-fuse"
 # tibbits #42, #40_2
 IMAGE_INSTALL += "kernel-module-rtc-ds3232 kernel-module-mcp4531"
-# OpenAMP
-IMAGE_INSTALL += "${@bb.utils.contains("DISTRO_FEATURES", "openamp", "kernel-module-uio-pdrv-genirq kernel-module-virtio-rpmsg-bus", "",d)}"
+# OpenAMP: now it is embedded
+#IMAGE_INSTALL += "${@bb.utils.contains("DISTRO_FEATURES", "openamp", "kernel-module-uio-pdrv-genirq kernel-module-virtio-rpmsg-bus", "",d)}"
 
 IMAGE_INSTALL_append_tppg1 += "kern-mod-ga1000v0"
 IMAGE_INSTALL_append_tppg2 += "sp7021-test-ipc"
