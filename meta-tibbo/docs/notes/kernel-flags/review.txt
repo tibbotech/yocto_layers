@@ -1,7 +1,0 @@
-from: linux/.meta/cfg/standard/beaglebone/merge_log.txt
-
-CONFIG_RTC_DRV_OMAP ?
-CONFIG_MFD_TPS65217
-CONFIG_REGULATOR_TPS6507X
-CONFIG_MEMCG_KMEM
-CONFIG_OABI_COMPAT

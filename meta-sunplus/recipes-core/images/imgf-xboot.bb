@@ -41,6 +41,6 @@ DEPENDS += "xboot-emmc"
 DEPENDS += "bnoos"
 
 # OpenAMP
-#TOOLCHAIN_TARGET_TASK_append += "${@bb.utils.contains("DISTRO_FEATURES", "openamp", "libopen-amp-dev libopen-amp-staticdev", "",d)}"
-TOOLCHAIN_TARGET_TASK_append += "${@bb.utils.contains("DISTRO_FEATURES", "openamp", "libmetal open-amp", "",d)}"
+#TOOLCHAIN_TARGET_TASK:append += "${@bb.utils.contains("DISTRO_FEATURES", "openamp", "libopen-amp-dev libopen-amp-staticdev", "",d)}"
+TOOLCHAIN_TARGET_TASK:append += "${@bb.utils.contains("DISTRO_FEATURES", "openamp", "libmetal open-amp", "",d)}"
 # OpenAMP /

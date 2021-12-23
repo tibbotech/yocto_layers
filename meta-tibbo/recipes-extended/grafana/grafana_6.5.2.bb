@@ -1,12 +1,12 @@
 DESCRIPTION = "The tool for beautiful monitoring and metric analytics & dashboards for Graphite, InfluxDB & Prometheus & More"
 
 SRC_URI = "https://dl.grafana.com/oss/release/grafana-${PV}.linux-amd64.tar.gz;name=amd64"
-SRC_URI_armv6 = "https://dl.grafana.com/oss/release/grafana-${PV}.linux-armv6.tar.gz;name=armv6"
-SRC_URI_armv7a = "https://dl.grafana.com/oss/release/grafana-${PV}.linux-armv7.tar.gz;name=armv7"
-SRC_URI_armv7ve = "https://dl.grafana.com/oss/release/grafana-${PV}.linux-armv7.tar.gz;name=armv7"
-SRC_URI_armv8a = "https://dl.grafana.com/oss/release/grafana-${PV}.linux-arm64.tar.gz;name=arm64"
+SRC_URI:armv6 = "https://dl.grafana.com/oss/release/grafana-${PV}.linux-armv6.tar.gz;name=armv6"
+SRC_URI:armv7a = "https://dl.grafana.com/oss/release/grafana-${PV}.linux-armv7.tar.gz;name=armv7"
+SRC_URI:armv7ve = "https://dl.grafana.com/oss/release/grafana-${PV}.linux-armv7.tar.gz;name=armv7"
+SRC_URI:armv8a = "https://dl.grafana.com/oss/release/grafana-${PV}.linux-arm64.tar.gz;name=arm64"
 
-SRC_URI_append = " \
+SRC_URI:append = " \
     file://grafana.service \
     file://grafana-server \
 "
@@ -56,15 +56,15 @@ do_install() {
     	${D}${datadir}/grafana/
 }
 
-INSANE_SKIP_${PN} = "ldflags already-stripped build-deps"
+INSANE_SKIP:${PN} = "ldflags already-stripped build-deps"
 
-SYSTEMD_SERVICE_${PN} = "\
+SYSTEMD_SERVICE:${PN} = "\
     grafana.service \
 "
 
-SYSTEMD_AUTO_ENABLE_${PN} = "disable"
+SYSTEMD_AUTO_ENABLE:${PN} = "disable"
 
-FILES_${PN} += "\
+FILES:${PN} += "\
     ${systemd_unitdir} \
     ${sysconfdir}/grafana \
     ${sysconfdir}/default \

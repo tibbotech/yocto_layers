@@ -1,0 +1,2 @@
+include features/usb-net/usb-net.scc
+kconf hardware protos.cfg

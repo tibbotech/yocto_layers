@@ -1,11 +1,8 @@
-DESCRIPTION += ": Main"
-
-#inherit allarch autotools
-inherit autotools
-
 require shorewall-5.2.inc
 
-S = "${WORKDIR}/${PN}-${PV}"
+DESCRIPTION:append = " : Main"
+
+inherit autotools
 
 do_configure() {
  ${S}/configure --vendor=redhat ANNOTATED=1 DEFAULT_PAGER=/usr/bin/less
@@ -20,39 +17,39 @@ do_install() {
 
 DEPENDS += "shorewall-core"
 DEPENDS += "shorewall-init"
-RDEPENDS_${PN} += "iptables"
-RDEPENDS_${PN} += "shorewall-init"
-RDEPENDS_${PN} += "shorewall-core"
-RDEPENDS_${PN} += "perl"
-RDEPENDS_${PN} += "perl-module-cwd"
-RDEPENDS_${PN} += "perl-module-file-basename"
-RDEPENDS_${PN} += "perl-module-file-temp"
-RDEPENDS_${PN} += "perl-module-getopt-long"
-RDEPENDS_${PN} += "perl-module-carp"
-RDEPENDS_${PN} += "perl-module-findbin"
-RDEPENDS_${PN} += "perl-module-scalar-util"
-RDEPENDS_${PN} += "perl-module-lib"
-RDEPENDS_${PN} += "perl-module-overloading"
-RDEPENDS_${PN} += "perl-module-autouse"
-RDEPENDS_${PN} += "perl-module-digest-sha"
-RDEPENDS_${PN} += "perl-module-io-socket"
-RDEPENDS_${PN} += "perl-module-file-glob"
-RDEPENDS_${PN} += "perl-module-sys-hostname"
-RDEPENDS_${PN} += "perl-module-sort"
+RDEPENDS:${PN} += "iptables"
+RDEPENDS:${PN} += "shorewall-init"
+RDEPENDS:${PN} += "shorewall-core"
+RDEPENDS:${PN} += "perl"
+RDEPENDS:${PN} += "perl-module-cwd"
+RDEPENDS:${PN} += "perl-module-file-basename"
+RDEPENDS:${PN} += "perl-module-file-temp"
+RDEPENDS:${PN} += "perl-module-getopt-long"
+RDEPENDS:${PN} += "perl-module-carp"
+RDEPENDS:${PN} += "perl-module-findbin"
+RDEPENDS:${PN} += "perl-module-scalar-util"
+RDEPENDS:${PN} += "perl-module-lib"
+RDEPENDS:${PN} += "perl-module-overloading"
+RDEPENDS:${PN} += "perl-module-autouse"
+RDEPENDS:${PN} += "perl-module-digest-sha"
+RDEPENDS:${PN} += "perl-module-io-socket"
+RDEPENDS:${PN} += "perl-module-file-glob"
+RDEPENDS:${PN} += "perl-module-sys-hostname"
+RDEPENDS:${PN} += "perl-module-sort"
 
-#RDEPENDS_${PN} += "kernel-module-xt-state"
-#RDEPENDS_${PN} += "kernel-module-iptable-raw"
-#RDEPENDS_${PN} += "kernel-module-iptable-mangle"
-#RDEPENDS_${PN} += "kernel-module-xt-multiport"
-#RDEPENDS_${PN} += "kernel-module-xt-hashlimit"
-#RDEPENDS_${PN} += "kernel-module-xt-hashlimit"
-#RDEPENDS_${PN} += "kernel-module-nf-log-ipv4"
+#RDEPENDS:${PN} += "kernel-module-xt-state"
+#RDEPENDS:${PN} += "kernel-module-iptable-raw"
+#RDEPENDS:${PN} += "kernel-module-iptable-mangle"
+#RDEPENDS:${PN} += "kernel-module-xt-multiport"
+#RDEPENDS:${PN} += "kernel-module-xt-hashlimit"
+#RDEPENDS:${PN} += "kernel-module-xt-hashlimit"
+#RDEPENDS:${PN} += "kernel-module-nf-log-ipv4"
 
-#RDEPENDS_${PN} += "kernel-module-nf*"
-#RDEPENDS_${PN} += "kernel-module-xt*"
-#RDEPENDS_${PN} += "kernel-module-ipt*"
+#RDEPENDS:${PN} += "kernel-module-nf*"
+#RDEPENDS:${PN} += "kernel-module-xt*"
+#RDEPENDS:${PN} += "kernel-module-ipt*"
 
-FILES_${PN} += "*"
+FILES:${PN} += "*"
 
 do_compile[noexec] = "1"
 

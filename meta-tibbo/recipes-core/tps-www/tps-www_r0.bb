@@ -1,9 +1,7 @@
 DESCRIPTION = "TPS php web interface"
 HOMEPAGE = "http://tibbo.com/"
 MAINTAINER = "Dmitry Dvorkin <dvorkin@tibbo.com>"
-LICENSE = "LGPLv2+"
-
-LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/GPL-2.0;md5=801f80980d171dd6425610833a22dbe6"
+LICENSE = "LGPLv3+"
 
 inherit allarch systemd
 require tps-www-user.inc
@@ -30,10 +28,12 @@ do_install() {
  # and save it to .htpasswd
 }
 
-FILES_${PN}  = "*"
+FILES:${PN}  = "*"
 
 DEPENDS += "tps-www-perms"
-RDEPENDS_${PN} += "nginx php-fpm"
+RDEPENDS:${PN} += "nginx php-fpm"
 
-SYSTEMD_SERVICE_${PN} = "php-fpm-tpsa.service"
-SYSTEMD_AUTO_ENABLE_php-fpm = "enable"
+SYSTEMD_SERVICE:${PN} = "php-fpm-tpsa.service"
+SYSTEMD_AUTO_ENABLE:php-fpm = "enable"
+
+LIC_FILES_CHKSUM = "file://${FILESDIR_tibbo}/common-licenses/GPL-3.0-or-later;md5=1c76c4cc354acaac30ed4d5eefea7245"

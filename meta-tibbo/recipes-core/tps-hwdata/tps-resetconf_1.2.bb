@@ -6,14 +6,12 @@ SECTION = "base"
 
 inherit allarch systemd
 
-LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/GPL-2.0;md5=801f80980d171dd6425610833a22dbe6"
-
 S = "${WORKDIR}"
 
 SRC_URI  = "file://reset_conf.service"
 SRC_URI += "file://reset_conf.sh"
 
-FILES_${PN}  = "/opt/${PN}/*"
+FILES:${PN}  = "/opt/${PN}/*"
 
 do_install() {
  install -d ${D}/opt/${PN}/
@@ -22,6 +20,8 @@ do_install() {
  install -m 0644 ${S}/reset_conf.service ${D}${systemd_unitdir}/system
 }
 
-RDEPENDS_${PN} += "tps-bash"
+RDEPENDS:${PN} += "tps-bash"
 
-SYSTEMD_SERVICE_${PN} = "reset_conf.service"
+SYSTEMD_SERVICE:${PN} = "reset_conf.service"
+
+LIC_FILES_CHKSUM = "file://${FILESDIR_tibbo}/common-licenses/GPL-3.0-or-later;md5=1c76c4cc354acaac30ed4d5eefea7245"

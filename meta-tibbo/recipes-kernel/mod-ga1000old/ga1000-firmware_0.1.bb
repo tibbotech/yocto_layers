@@ -3,12 +3,12 @@ HOMEPAGE = "http://kernel.org/"
 MAINTAINER = "Dvorkin Dmitry <dvorkin@tibbo.com>"
 SECTION = "kernel"
 PRIORITY = "optional"
-LICENSE = "LGPL-2.0"
+LICENSE = "GPLv2"
 PR = "r1"
 SRCREV="${AUTOREV}"
 
 # src in /files/ga1000-firmware/*
-S = "${WORKDIR}/git/"
+S = "${WORKDIR}/git"
 
 inherit base allarch
 
@@ -19,13 +19,10 @@ do_install() {
  install -m 0644 ${S}/*.bin ${D}/lib/firmware/libertas/
 }
 
-FILES_${PN} += "/lib"
+FILES:${PN} += "/lib"
 
-RDEPENDS_${PN} += "bash"
+RDEPENDS:${PN} += "bash"
 
 INSANE_SKIP = "arch"
 
-LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/LGPL-2.0;md5=9427b8ccf5cf3df47c29110424c9641a"
-
-SRC_URI[md5sum] = "7ebef4599496186c5077c6ad22adcc3e"
-SRC_URI[sha256sum] = "a6eee5a2a0b650760930529670336adc2ca08a31fa55742b3ffee96f1b6598f2"
+LIC_FILES_CHKSUM = "file://${FILESDIR_tibbo}/common-licenses/GPL-2.0-only;md5=801f80980d171dd6425610833a22dbe6"

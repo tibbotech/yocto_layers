@@ -35,6 +35,7 @@ KERNEL_DEVICETREE += "sp7021-bpi-f2s.dtb"
 KERNEL_DEVICETREE += "sp7021-demov2.dtb"
 KERNEL_DEVICETREE += "sp7021-demov3.dtb"
 KERNEL_DEVICETREE += "sp7021-ublox.dtb"
+KERNEL_DEVICETREE += "sp7021-icognize.dtb"
 KERNEL_EXTRA_ARGS += "LOADADDR=${UBOOT_ENTRYPOINT}"
 
 UBOOT_CONFIG ??= "a7021_emmc a7021_nand a7021_romt a7021_ppg2 a7021_dsxe"

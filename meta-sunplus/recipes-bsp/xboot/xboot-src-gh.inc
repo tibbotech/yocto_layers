@@ -1,11 +1,10 @@
 
 HOMEPAGE = "https://www.sunplus.com/"
 SECTION = "bootloaders"
-LICENSE = "GPLv2+"
-LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/GPL-2.0;md5=801f80980d171dd6425610833a22dbe6"
+LICENSE = "GPLv3+"
 
-SRCREV_draminit = "be6ab724da9ebccfb064445855360e5b9640da78"
-SRCREV_xboot = "008865111dd39ff44cea83594b76669dae5605ed"
+SRCREV_draminit = "bc8bc40a63cd379c15928341825cf40ee94023fb"
+SRCREV_xboot = "605eadadd4445c604b695775228bf0459ef95395"
 
 SRC_URI = "\
 git://github.com/tibbotech/plus1_draminit.git;protocol=https;name=draminit;branch=master;destsuffix=draminit; \
@@ -17,3 +16,5 @@ PREMIRRORS=""
 INHIBIT_PACKAGE_STRIP = "1"
 INHIBIT_PACKAGE_DEBUG_SPLIT = "1"
 INHIBIT_SYSROOT_STRIP="1"
+
+LIC_FILES_CHKSUM = "file://${FILESDIR_sunplus}/common-licenses/GPL-3.0-or-later;md5=1c76c4cc354acaac30ed4d5eefea7245"

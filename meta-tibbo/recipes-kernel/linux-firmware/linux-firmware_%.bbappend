@@ -1,5 +1,5 @@
 
-#do_install_append() {
+#do_install:append() {
 # rm -r ${D}${nonarch_base_libdir}/firmware/amdgpu
 # rm -r ${D}${nonarch_base_libdir}/firmware/i915
 # rm -r ${D}${nonarch_base_libdir}/firmware/intel/*.sfi

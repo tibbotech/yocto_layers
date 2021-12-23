@@ -20,18 +20,18 @@ do_configure() {
  ${S}/configure ${CONFIGUREOPTS} ${EXTRA_OECONF}
 }
 
-do_install_prepend() {
+do_install:prepend() {
  install -d ${D}${DV_JAVA_T}/jre/lib/${TARGET_ARCH}/
  install -d ${D}${DV_JAVA_T}/jre/lib/ext/
 }
 
 PACKAGES = "${PN}-dbg ${PN}"
 
-FILES_${PN}-dbg  = "${DV_JAVA_T}/jre/lib/${TARGET_ARCH}/.debug/*"
-FILES_${PN}-dbg += "/usr/src/debug/librxtx/*"
+FILES:${PN}-dbg  = "${DV_JAVA_T}/jre/lib/${TARGET_ARCH}/.debug/*"
+FILES:${PN}-dbg += "/usr/src/debug/librxtx/*"
 
-FILES_${PN}  = "${DV_JAVA_T}/jre/lib/${TARGET_ARCH}/*"
-FILES_${PN} += "${DV_JAVA_T}/jre/lib/ext/"
+FILES:${PN}  = "${DV_JAVA_T}/jre/lib/${TARGET_ARCH}/*"
+FILES:${PN} += "${DV_JAVA_T}/jre/lib/ext/"
 
 SRC_URI[md5sum] = "a83ffee223765dfb4564dbf35ec90e92"
 SRC_URI[sha256sum] = "f91b07e478d2210c44ae02abcd6ab17016135775ae7cf931305df2a5314882b0"

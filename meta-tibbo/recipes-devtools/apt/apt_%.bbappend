@@ -1,19 +1,18 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/${BPN}:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/${BPN}:"
 
-SRC_URI += "file://*"
+SRC_URI:tppg2 += "file://preferences.d/nodejs"
+SRC_URI:tppg2 += "file://preferences.d/tibbo"
+SRC_URI:tppg2 += "file://sources.list.d/ubuntu-focal.list"
+SRC_URI:tppg2 += "file://sources.list.d/tibbo.list"
+SRC_URI:tppg2 += "file://sources.list.d/nodejs.list"
 
-do_install_append() {
-# mkdir -p ${D}${sysconfdir}/apt/sources.list.d/
-# install -m 0644 ${WORKDIR}/*.list ${D}${sysconfdir}/apt/sources.list.d/
-# echo "deb [arch=${ARCH}] http://tibbo.com/downloads/LTPS/repo ${MACHINE}"
+
+do_install:append:tppg2() {
  cp -rpf ${WORKDIR}/sources.list.d ${D}${sysconfdir}/apt/
  cp -rpf ${WORKDIR}/preferences.d ${D}${sysconfdir}/apt/
 }
 
-#do_install_append_tppg2() {
-#}
+FILES:${PN}:tppg2 += "${sysconfdir}/apt/*"
 
-FILES_${PN} += "${sysconfdir}/apt/*"
-
-RDEPENDS_${PN} += "coreutils glibc-utils"
+RDEPENDS:${PN} += "coreutils glibc-utils"
 

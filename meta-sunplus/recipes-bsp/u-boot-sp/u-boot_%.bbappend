@@ -1,5 +1,5 @@
 
-do_deploy_append() {
+do_deploy:append() {
  export MKIMAGE=${DEPLOY_DIR_IMAGE}/sp_tools/mkimage;
 
  if [ -n "${UBOOT_CONFIG}" ]; then

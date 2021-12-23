@@ -1,3 +1,3 @@
 # ---- versions
 
-#PREFERRED_VERSION_linux-yocto ?= "4.19%"
+PREFERRED_VERSION_linux-yocto ?= "5.4%"

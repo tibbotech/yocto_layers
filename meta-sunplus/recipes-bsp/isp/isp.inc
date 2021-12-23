@@ -2,9 +2,7 @@ DESCRIPTION = "SunPlus native image build scripts"
 SUMMARY = "SP Image scripts"
 HOMEPAGE = "https://www.sunplus.com/"
 SECTION = "devel"
-
-LICENSE = "GPLv2+"
-LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/GPL-2.0;md5=801f80980d171dd6425610833a22dbe6"
+LICENSE = "GPLv3+"
 
 S = "${WORKDIR}/git"
 
@@ -51,3 +49,5 @@ do_configure[noexec] = "1"
 BBCLASSEXTEND = "native"
 
 SYSROOT_DIRS_NATIVE += "${base_prefix}/sp_tools"
+
+LIC_FILES_CHKSUM = "file://${FILESDIR_sunplus}/common-licenses/GPL-3.0-or-later;md5=1c76c4cc354acaac30ed4d5eefea7245"

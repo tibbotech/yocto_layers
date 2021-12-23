@@ -1,11 +1,9 @@
 DESCRIPTION = "PhP SqLite Admin"
 HOMEPAGE = "https://www.phpliteadmin.org"
 MAINTAINER = "Dmitry Dvorkin <dvorkin@tibbo.com>"
-LICENSE = "LGPLv2+"
+LICENSE = "GPLv3+"
 SECTION = "base"
 PACKAGES = "${PN}"
-
-LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/GPL-2.0;md5=801f80980d171dd6425610833a22dbe6"
 
 inherit allarch useradd
 require tps-www-user.inc
@@ -21,6 +19,8 @@ do_install() {
  chown -R root:root ${D}/var/www/shared
 }
 
-FILES_${PN}  = "*"
+FILES:${PN}  = "*"
 
-#RDEPENDS_${PN} += "php"
+RDEPENDS:${PN} += "php"
+
+LIC_FILES_CHKSUM = "file://${FILESDIR_tibbo}/common-licenses/GPL-3.0-or-later;md5=1c76c4cc354acaac30ed4d5eefea7245"

@@ -3,7 +3,7 @@ HOMEPAGE = "http://carry-well.com/"
 MAINTAINER = "Dvorkin Dmitry <dvorkin@tibbo.com>"
 SECTION = "kernel/modules"
 PRIORITY = "optional"
-LICENSE = "LGPL-2.0"
+LICENSE = "GPLv2"
 PR = "r1"
 
 SRCREV="${AUTOREV}"
@@ -19,8 +19,6 @@ SRC_URI  = "file://rtk_hciattach.tar.gz"
 SRC_URI += "file://rtl8xxx-bt-ttyO5.rules"
 SRC_URI += "file://rtk_hciattach@.service"
 
-#SRC_URI += "file://rtlbt_config"
-
 do_install() {
  install -d ${D}/lib/systemd/system
  install -m 0644 ${WORKDIR}/rtk_hciattach@.service ${D}/lib/systemd/system/
@@ -32,16 +30,11 @@ do_install() {
  install -m 0644 ${WORKDIR}/rtl8xxx-bt-ttyO5.rules ${D}/etc/udev/rules.d/rtl8xxx-bt-ttyO5.rules
 }
 
-FILES_${PN} += "/etc"
-FILES_${PN} += "/lib"
-FILES_${PN} += "/usr"
+FILES:${PN} += "/etc"
+FILES:${PN} += "/lib"
+FILES:${PN} += "/usr"
 
-RDEPENDS_${PN} += "bash"
-RDEPENDS_${PN} += "rtl8xxx-firmware"
+RDEPENDS:${PN} += "bash"
+RDEPENDS:${PN} += "rtl8xxx-firmware"
 
-LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/LGPL-2.0;md5=9427b8ccf5cf3df47c29110424c9641a"
-
-SRC_URI[md5sum] = "7ebef4599496186c5077c6ad22adcc3e"
-SRC_URI[sha256sum] = "a6eee5a2a0b650760930529670336adc2ca08a31fa55742b3ffee96f1b6598f2"
-
-#SYSTEMD_SERVICE_${PN} = "rtk_hciattach@ttyO5.service"
+LIC_FILES_CHKSUM = "file://${FILESDIR_tibbo}/common-licenses/GPL-2.0-only;md5=801f80980d171dd6425610833a22dbe6"

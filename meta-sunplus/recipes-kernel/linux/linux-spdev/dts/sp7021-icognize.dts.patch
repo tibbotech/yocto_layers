@@ -1,0 +1,32 @@
+--- /dev/null	2021-11-05 00:55:27.374402965 +0300
++++ a/arch/arm/boot/dts/sp7021-icognize.dts	2021-11-06 14:19:57.743985518 +0300
+@@ -0,0 +1,29 @@
++/*
++ * Linux iCOGNIZE nousb test - test board definition
++ * Copyright (C) 2021 Tibbo Tech. - http://tibbo.com/tps/
++ * License: GPLv2 or later
++ */
++/dts-v1/;
++
++#define ENABLE_DMATX0 0
++#define ENABLE_DMATX1 0
++
++#include "sp7021-ltpp3g2revD.dtsi"
++
++/ {
++        model = "SP7021 iCOGNIZE nousb";
++};
++
++&l2sw {  mode = <1>;  };
++&sdio {  status = "okay";  };
++&sp_uphy0 {  status = "disabled";  };
++&sp_uphy1 {  status = "disabled";  };
++
++&pctl {
++};
++
++/ {
++    soc@B {
++
++    };
++};

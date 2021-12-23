@@ -43,7 +43,7 @@ source oe-init-build-env build.tppg2
 bitbake <imagename>
 ```
 Final images and parts will be placed at
-/disk2/build.26/tmp/deploy/images/<machine>/
+/disk2/build.tibbo.dunfell.0/tmp/deploy/images/<machine>/
 
 ## machine, distro, imagename table for IMG
 
@@ -64,7 +64,7 @@ Final images and parts will be placed at
 bitbake -c populate_sdk <imagename>
 ```
 SDK self-unpack image will be placed into
-/disk2/build.26/tmp/deploy/sdk/
+/disk2/build.tibbo.dunfell.0/tmp/deploy/sdk/
 
 ## cross-target, distro, imagename table for SDK
 
@@ -82,16 +82,16 @@ First bitbake run is time-consuming. All subsequent builds are incremental.
 Xboot + arm926 firmware is not required for ISPBOOOT assembly.
 Script will download this parts from Tibbo website.
 
-After build /disk2/build.26/tmp/deploy/images/tppg2/ contains all required image components: bootloaders, kernel, rootfs images.
+After build /disk2/build.tibbo.dunfell.0/tmp/deploy/images/tppg2/ contains all required image components: bootloaders, kernel, rootfs images.
 
 ## 3. Assembling ISPBOOOT.BIN from built parts
 
-Deploy dir /disk2/build.26/tmp/deploy/images/ contains image components:
+Deploy dir /disk2/build.tibbo.dunfell.0/tmp/deploy/images/ contains image components:
 
 bootloaders, kernel, rootfs images.
 Pack the final image:
 ```
-$ cd /disk2/build.26/tmp/deploy/images/tppg2/
+$ cd /disk2/build.tibbo.dunfell.0/tmp/deploy/images/tppg2/
 $ make -f ./sp_make.mk
 ```
 
@@ -112,7 +112,7 @@ meta-tibbo/conf/machine/include/tppg2-all-prefs.inc
 ### ISPBOOOT.BIN components
 are defined at
 ```
-/disk2/build.26/tmp/deploy/images/tppg2/sp_make.mk
+/disk2/build.tibbo.dunfell.0/tmp/deploy/images/tppg2/sp_make.mk
 ```
 Components to choose:
 * xboot and U-boot: for nand or emmc,

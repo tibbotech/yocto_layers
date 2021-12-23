@@ -5,6 +5,7 @@ LICENSE = "MIT"
 require inc-p-123.inc
 require inc-rootfs.inc
 require inc-tps-gen.inc
+
 IMAGE_FEATURES += "package-management"
 
 # mandtory
@@ -22,7 +23,7 @@ IMAGE_INSTALL += "bluez5"
 
 IMAGE_INSTALL += "qt5everywheredemo"
 IMAGE_INSTALL += "qt5ledscreen"
-#TOOLCHAIN_HOST_TASK_append += " qt5-creator"
+#TOOLCHAIN_HOST_TASK += "qt5-creator"
 
 #IMAGE_INSTALL += "kern-mod-rtl8723bs"
 

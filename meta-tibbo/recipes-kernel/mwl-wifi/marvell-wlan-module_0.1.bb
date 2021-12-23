@@ -3,8 +3,7 @@ HOMEPAGE = "http://marvell.com/"
 MAINTAINER = "Dvorkin Dmitry <dvorkin@tibbo.com>"
 SECTION = "kernel/modules"
 PRIORITY = "optional"
-RDEPENDS_${PN} = "marvell-fw"
-LICENSE = "GPL-2.0"
+LICENSE = "GPLv2"
 PR = "r1"
 SRCREV="${AUTOREV}"
 
@@ -30,4 +29,6 @@ inherit update-rc.d
 INITSCRIPT_NAME = "${PN}"
 INITSCRIPT_PARAMS = "defaults 05"
 
-LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/GPL-2.0;md5=801f80980d171dd6425610833a22dbe6"
+RDEPENDS:${PN} = "marvell-fw"
+
+LIC_FILES_CHKSUM = "file://${FILESDIR_tibbo}/common-licenses/GPL-2.0-only;md5=801f80980d171dd6425610833a22dbe6"

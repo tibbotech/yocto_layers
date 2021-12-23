@@ -16,7 +16,7 @@ IMAGE_FEATURES = ""
 
 IMAGE_FEATURES += "ssh-server-openssh"
 #IMAGE_FEATURES += "x11-base x11-sato"
-IMAGE_INSTALL += "openssh-sftp-server"
+IMAGE_INSTALL  += "openssh-sftp-server"
 IMAGE_FEATURES += "package-management"
 
 IMAGE_INSTALL += "gdbserver"

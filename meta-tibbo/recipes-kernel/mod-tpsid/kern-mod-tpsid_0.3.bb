@@ -4,11 +4,11 @@ MAINTAINER = "Dvorkin Dmitry <dvorkin@tibbo.com>"
 AUTHOR = "Dvorkin Dmitry <dvorkin@tibbo.com>"
 SECTION = "kernel/modules"
 PRIORITY = "optional"
-LICENSE = "LGPL-2.0"
+LICENSE = "GPL-2.0"
 SRCREV="${AUTOREV}"
 
 PACKAGES =+ "${PN}-includes"
-PACKAGE_ARCH_${PN}-includes = "all"
+PACKAGE_ARCH:${PN}-includes = "all"
 
 S = "${WORKDIR}/git"
 
@@ -24,8 +24,4 @@ do_install() {
  install -m 0644 ${S}/tpsid.conf ${D}${sysconfdir}/modules-load.d/
 }
 
-LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/LGPL-2.0;md5=9427b8ccf5cf3df47c29110424c9641a"
-
-DEPENDS += "virtual/kernel"
-
-SRC_URI[sha256sum] = "a51c14ec69519203495639379815ad17dfaecc2c212ab277f5935a8bbc592886"
+LIC_FILES_CHKSUM = "file://${FILESDIR_tibbo}/common-licenses/GPL-2.0-only;md5=801f80980d171dd6425610833a22dbe6"

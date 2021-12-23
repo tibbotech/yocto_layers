@@ -9,9 +9,9 @@ PROVIDES = "bctoolbox"
 S = "${WORKDIR}/git"
 
 
-INSANE_SKIP_${PN} += "dev-deps "
+INSANE_SKIP:${PN} += "dev-deps "
 
-inherit cmake  
+inherit cmake
 
 EXTRA_OECMAKE += "-DENABLE_TESTS_COMPONENT=OFF -DCMAKE_SKIP_INSTALL_RPATH=ON"
 

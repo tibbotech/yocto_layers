@@ -4,12 +4,12 @@ HOMEPAGE = "https://www.influxdata.com/products/influxdb-overview/"
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://src/${GO_IMPORT}/LICENSE;md5=f39a8d10930fb37bd59adabb3b9d0bd6"
 
-FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
 
-RDEPENDS_${PN}  = "bash"
-RDEPENDS_${PN} += "curl"
-RDEPENDS_${PN}-dev  = "bash"
-#RDEPENDS_${PN}-dev += "python2.7-core"
+RDEPENDS:${PN}  = "bash"
+RDEPENDS:${PN} += "curl"
+RDEPENDS:${PN}-dev  = "bash"
+#RDEPENDS:${PN}-dev += "python2.7-core"
 
 GO_IMPORT = "github.com/influxdata/influxdb"
 
@@ -23,20 +23,20 @@ SRC_URI = "\
     file://influxdb.conf \
 "
 
-SRC_URI_append_mipsarch = " file://0001-patch-term-module-for-mips-ispeed-ospeed-termios-abs.patch;patchdir=src/${GO_IMPORT}"
+SRC_URI:append:mipsarch = " file://0001-patch-term-module-for-mips-ispeed-ospeed-termios-abs.patch;patchdir=src/${GO_IMPORT}"
 
 SRCREV = "4b59eadb28bfdfd1ae627f338010dda6ac0dfc41"
 
 inherit go-mod systemd update-rc.d useradd
 
 USERADD_PACKAGES = "${PN}"
-USERADD_PARAM_${PN} = "--system -d /var/lib/influxdb -m -s /bin/nologin influxdb"
+USERADD_PARAM:${PN} = "--system -d /var/lib/influxdb -m -s /bin/nologin influxdb"
 
-do_configure_append() {
+do_configure:append() {
  sed -i 's/\/usr\/bin\/sh/\/bin\/sh/g' ${S}/src/github.com/influxdata/influxdb/scripts/ci/run_perftest.sh
 }
 
-do_install_prepend() {
+do_install:prepend() {
     rm ${B}/src/${GO_IMPORT}/build.py
     rm ${B}/src/${GO_IMPORT}/build.sh
     rm ${B}/src/${GO_IMPORT}/Dockerfile*
@@ -47,7 +47,7 @@ do_install_prepend() {
     find ./ -path "*pkg/mod/*/debug/*/typedef.elf*" -delete
 }
 
-do_install_append() {
+do_install:append() {
     install -d ${D}${sysconfdir}/influxdb
     install -m 0644 ${WORKDIR}/influxdb.conf ${D}${sysconfdir}/influxdb
     chown -R root.influxdb ${D}${sysconfdir}/influxdb
@@ -75,4 +75,4 @@ INITSCRIPT_PACKAGES = "${PN}"
 INITSCRIPT_NAME = "influxdb"
 INITSCRIPT_PARAMS = "defaults"
 
-SYSTEMD_SERVICE_${PN} = "influxdb.service"
+SYSTEMD_SERVICE:${PN} = "influxdb.service"

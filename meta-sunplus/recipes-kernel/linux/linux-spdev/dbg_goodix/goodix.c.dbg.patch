@@ -1,0 +1,218 @@
+--- a/drivers/input/touchscreen/goodix.c	2021-11-16 13:38:25.984202832 +0300
++++ a/drivers/input/touchscreen/goodix.c	2021-11-17 01:35:07.722223423 +0300
+@@ -194,6 +194,7 @@
+ 	msgs[1].buf   = buf;
+ 
+ 	ret = i2c_transfer(client->adapter, msgs, 2);
++printk(KERN_ERR "GDX_read(%d): %d ret\n", len, ret);
+ 	return ret < 0 ? ret : (ret != ARRAY_SIZE(msgs) ? -EIO : 0);
+ }
+ 
+@@ -227,6 +228,7 @@
+ 
+ 	ret = i2c_transfer(client->adapter, &msg, 1);
+ 	kfree(addr_buf);
++printk(KERN_ERR "GDX_writ(%d): %d ret\n", len, ret);
+ 	return ret < 0 ? ret : (ret != 1 ? -EIO : 0);
+ }
+ 
+@@ -355,6 +357,7 @@
+ 	int i;
+ 
+ 	touch_num = goodix_ts_read_input_report(ts, point_data);
++printk(KERN_ERR "GDX_events(): touch_num:%d\n", touch_num);
+ 	if (touch_num < 0)
+ 		return;
+ 
+@@ -427,6 +430,7 @@
+ 		return -EINVAL;
+ 	}
+ 
++printk(KERN_ERR "GDX_check_cfg8()\n");
+ 	return 0;
+ }
+ 
+@@ -451,6 +455,7 @@
+ 		return -EINVAL;
+ 	}
+ 
++printk(KERN_ERR "GDX_check_cfg16()\n");
+ 	return 0;
+ }
+ 
+@@ -484,6 +489,7 @@
+ 	int error;
+ 
+ 	error = goodix_check_cfg(ts, cfg);
++printk(KERN_ERR "GDX_send_cfg(): error0:%d\n", error);
+ 	if (error)
+ 		return error;
+ 
+@@ -494,6 +500,7 @@
+ 			error);
+ 		return error;
+ 	}
++printk(KERN_ERR "GDX_send_cfg(): ok\n");
+ 	dev_dbg(&ts->client->dev, "Config sent successfully.");
+ 
+ 	/* Let the firmware reconfigure itself, so sleep for 10ms */
+@@ -507,12 +514,14 @@
+ 	int error;
+ 
+ 	error = gpiod_direction_output(ts->gpiod_int, 0);
++printk(KERN_ERR "GDX_int_sync() 0: %d\n", error);
+ 	if (error)
+ 		return error;
+ 
+ 	msleep(50);				/* T5: 50ms */
+ 
+ 	error = gpiod_direction_input(ts->gpiod_int);
++printk(KERN_ERR "GDX_int_sync() 1: %d\n", error);
+ 	if (error)
+ 		return error;
+ 
+@@ -530,6 +539,7 @@
+ 
+ 	/* begin select I2C slave addr */
+ 	error = gpiod_direction_output(ts->gpiod_rst, 0);
++printk(KERN_ERR "GDX_reset() 0: %d\n", error);
+ 	if (error)
+ 		return error;
+ 
+@@ -537,12 +547,14 @@
+ 
+ 	/* HIGH: 0x28/0x29, LOW: 0xBA/0xBB */
+ 	error = gpiod_direction_output(ts->gpiod_int, ts->client->addr == 0x14);
++printk(KERN_ERR "GDX_reset() 1: %d\n", error);
+ 	if (error)
+ 		return error;
+ 
+ 	usleep_range(100, 2000);		/* T3: > 100us */
+ 
+ 	error = gpiod_direction_output(ts->gpiod_rst, 1);
++printk(KERN_ERR "GDX_reset() 2: %d\n", error);
+ 	if (error)
+ 		return error;
+ 
+@@ -550,10 +562,12 @@
+ 
+ 	/* end select I2C slave addr */
+ 	error = gpiod_direction_input(ts->gpiod_rst);
++printk(KERN_ERR "GDX_reset() 3: %d\n", error);
+ 	if (error)
+ 		return error;
+ 
+ 	error = goodix_int_sync(ts);
++printk(KERN_ERR "GDX_reset() 4: %d\n", error);
+ 	if (error)
+ 		return error;
+ 
+@@ -571,8 +585,10 @@
+ 	struct device *dev;
+ 	struct gpio_desc *gpiod;
+ 
++printk(KERN_ERR "GDX_get_gpio_config(): 0\n");
+ 	if (!ts->client)
+ 		return -EINVAL;
++printk(KERN_ERR "GDX_get_gpio_config(): 1\n");
+ 	dev = &ts->client->dev;
+ 
+ 	ts->avdd28 = devm_regulator_get(dev, "AVDD28");
+@@ -633,6 +649,7 @@
+ 	int x_max, y_max;
+ 	int error;
+ 
++printk(KERN_ERR "GDX_read_config()\n");
+ 	error = goodix_i2c_read(ts->client, ts->chip->config_addr,
+ 				config, ts->chip->config_len);
+ 	if (error) {
+@@ -681,6 +698,7 @@
+ 	dev_info(&ts->client->dev, "ID %d, version: %04x\n", ts->id,
+ 		 ts->version);
+ 
++printk(KERN_ERR "GDX_version() ID %d, version: %04x\n", ts->id, ts->version);
+ 	return 0;
+ }
+ 
+@@ -706,6 +724,7 @@
+ 		msleep(20);
+ 	}
+ 
++printk(KERN_ERR "GDX_test(): %d\n", error);
+ 	return error;
+ }
+ 
+@@ -726,6 +745,7 @@
+ 	ts->int_trigger_type = GOODIX_INT_TRIGGER;
+ 	ts->max_touch_num = GOODIX_MAX_CONTACTS;
+ 
++printk(KERN_ERR "GDX_configure_dev()\n");
+ 	ts->input_dev = devm_input_allocate_device(&ts->client->dev);
+ 	if (!ts->input_dev) {
+ 		dev_err(&ts->client->dev, "Failed to allocate input device.");
+@@ -818,9 +838,11 @@
+ 	struct goodix_ts_data *ts = ctx;
+ 	int error;
+ 
++printk(KERN_ERR "GDX_config_cb(): 0\n");
+ 	if (cfg) {
+ 		/* send device configuration to the firmware */
+ 		error = goodix_send_cfg(ts, cfg);
++printk(KERN_ERR "GDX_config_cb(): %d\n", error);
+ 		if (error)
+ 			goto err_release_cfg;
+ 	}
+@@ -863,6 +885,7 @@
+ 	ts->contact_size = GOODIX_CONTACT_SIZE;
+ 
+ 	error = goodix_get_gpio_config(ts);
++printk(KERN_ERR "GDX_prb(): 0 %d\n", error);
+ 	if (error)
+ 		return error;
+ 
+@@ -886,10 +909,12 @@
+ 
+ 	error = devm_add_action_or_reset(&client->dev,
+ 					 goodix_disable_regulators, ts);
++printk(KERN_ERR "GDX_prb(): 1 %d\n", error);
+ 	if (error)
+ 		return error;
+ 
+ 	if (ts->gpiod_int && ts->gpiod_rst) {
++printk(KERN_ERR "GDX_prb(): 1-0\n");
+ 		/* reset the controller */
+ 		error = goodix_reset(ts);
+ 		if (error) {
+@@ -912,8 +937,10 @@
+ 
+ 	ts->chip = goodix_get_chip_data(ts->id);
+ 
++printk(KERN_ERR "GDX_prb(): 2\n");
+ 	if (ts->gpiod_int && ts->gpiod_rst) {
+ 		/* update device config */
++printk(KERN_ERR "GDX_prb(): 2-0\n");
+ 		ts->cfg_name = devm_kasprintf(&client->dev, GFP_KERNEL,
+ 					      "goodix_%d_cfg.bin", ts->id);
+ 		if (!ts->cfg_name)
+@@ -922,6 +949,7 @@
+ 		error = request_firmware_nowait(THIS_MODULE, true, ts->cfg_name,
+ 						&client->dev, GFP_KERNEL, ts,
+ 						goodix_config_cb);
++printk(KERN_ERR "GDX_prb(): 2-1:%d\n", error);
+ 		if (error) {
+ 			dev_err(&client->dev,
+ 				"Failed to invoke firmware loader: %d\n",
+@@ -931,11 +959,13 @@
+ 
+ 		return 0;
+ 	} else {
++printk(KERN_ERR "GDX_prb(): 2-10\n");
+ 		error = goodix_configure_dev(ts);
+ 		if (error)
+ 			return error;
+ 	}
+ 
++printk(KERN_ERR "GDX_prb(): 3\n");
+ 	return 0;
+ }
+ 

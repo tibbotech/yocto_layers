@@ -1,7 +1,7 @@
 Targets are:
-    img-spmn
-    img-spmt
-    img-spba
+    imgm-spmn
+    imgm-spmt
+    imgm-spba
 
 Additional targets are:
     meta-toolchain

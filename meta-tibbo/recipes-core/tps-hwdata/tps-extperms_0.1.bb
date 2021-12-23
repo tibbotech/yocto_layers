@@ -1,12 +1,12 @@
 DESCRIPTION = "TPS pins.ini shared definition"
 HOMEPAGE = "http://tibbo.com/"
 MAINTAINER = "Dmitry Dvorkin <dvorkin@tibbo.com>"
-LICENSE = "LGPLv2+"
+LICENSE = "LGPLv3+"
 SECTION = "base"
 
 inherit useradd
 
-LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/GPL-2.0;md5=801f80980d171dd6425610833a22dbe6"
-
 USERADD_PACKAGES = "${PN}"
-GROUPADD_PARAM_${PN} = "capi-devs"
+GROUPADD_PARAM:${PN} = "capi-devs"
+
+LIC_FILES_CHKSUM = "file://${FILESDIR_tibbo}/common-licenses/GPL-3.0-or-later;md5=1c76c4cc354acaac30ed4d5eefea7245"

@@ -5,12 +5,11 @@ INC_PR = "r1"
 
 inherit autotools pkgconfig
 
-#SRC_URI = "http://download.savannah.nongnu.org/releases/linphone/${PN}/sources/${P}.tar.gz"
-SRC_URI = "http://download.savannah.nongnu.org/releases/linphone/ortp/sources/ortp-${PV}.tar.gz"
+SRC_URI = "http://download.savannah.nongnu.org/releases/linphone/${PN}/sources/${PN}-${PV}.tar.gz"
 
 LIC_FILES_CHKSUM = "file://COPYING;md5=7fbc338309ac38fefcd64b04bb903e34"
 
-do_compile_append() {
+do_compile:append() {
         sed -i -e s:${STAGING_DIR_TARGET}::g \
                -e s:/${TARGET_SYS}::g \
                   ortp.pc

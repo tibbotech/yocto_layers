@@ -14,14 +14,14 @@ do_deploy() {
  echo "DV deploy:${DEPLOY_DIR_IMAGE}"
 }
 
-do_deploy_append_class-native() {
+do_deploy:append:class-native() {
  echo "DV deploy append:${DEPLOY_DIR_IMAGE}"
  install -d ${DEPLOY_DIR_IMAGE}/sp_tools/tools
  install ${S}/add_xhdr.sh ${DEPLOY_DIR_IMAGE}/sp_tools/
  install ${S}/tools/tcpsum ${DEPLOY_DIR_IMAGE}/sp_tools/tools/
 }
 
-FILES_${PN} += "*"
+FILES:${PN} += "*"
 
 BBCLASSEXTEND = "native nativesdk"
 

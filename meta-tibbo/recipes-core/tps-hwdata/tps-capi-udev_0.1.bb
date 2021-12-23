@@ -6,13 +6,11 @@ SECTION = "base"
 
 inherit allarch useradd
 
-LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/GPL-2.0;md5=801f80980d171dd6425610833a22dbe6"
-
 S = "${WORKDIR}/${PN}"
 
 SRC_URI  = "file://capi-devs.rules"
 
-FILES_${PN} += "/etc/*"
+FILES:${PN} += "/etc/*"
 
 do_install() {
   install -d ${D}/etc/udev/rules.d
@@ -20,6 +18,8 @@ do_install() {
 }
 
 USERADD_PACKAGES = "${PN}"
-GROUPADD_PARAM_${PN} = "capi-devs"
+GROUPADD_PARAM:${PN} = "capi-devs"
 
 DEPENDS += "tps-extperms"
+
+LIC_FILES_CHKSUM = "file://${FILESDIR_tibbo}/common-licenses/GPL-3.0-or-later;md5=1c76c4cc354acaac30ed4d5eefea7245"

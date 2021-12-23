@@ -1,6 +1,6 @@
 SUMMARY = "DataMatrix library io wrapper."
 DESCRIPTION = "Library library io wrapper."
-LICENSE = "LGPLv2+"
+LICENSE = "LGPLv2"
 LIC_FILES_CHKSUM = "file://COPYING;md5=4641e94ec96f98fabc56ff9cc48be14b"
 SECTION = "console/utils"
 

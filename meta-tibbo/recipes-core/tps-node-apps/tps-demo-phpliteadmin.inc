@@ -1,10 +1,8 @@
 DESCRIPTION = "TPS PHP SqLite3 Admin demo"
 HOMEPAGE = "http://tibbo.com/"
 MAINTAINER = "Dmitry Dvorkin <dvorkin@tibbo.com>"
-LICENSE = "LGPLv2+"
+LICENSE = "LGPLv3+"
 PACKAGES = "${PN}"
-
-LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/GPL-2.0;md5=801f80980d171dd6425610833a22dbe6"
 
 inherit systemd useradd
 require tps-node-apps-perm.inc
@@ -25,23 +23,25 @@ do_install() {
  install -m 0644 ${WORKDIR}/${PN}/conf/napp-demo-phpliteadmin.service ${D}${systemd_unitdir}/system
 }
 
-pkg_postinst_${PN}_append() {
+pkg_postinst_${PN}:append() {
  if type systemctl >/dev/null 2>/dev/null; then
    systemctl reload nginx
  fi;
 }
-pkg_postrm_${PN}_append() {
+pkg_postrm_${PN}:append() {
  if type systemctl >/dev/null 2>/dev/null; then
    systemctl reload nginx
  fi;
 }
 
-FILES_${PN}  = "*"
+FILES:${PN}  = "*"
 
-RDEPENDS_${PN} += "nginx"
-RDEPENDS_${PN} += "php-fpm"
+RDEPENDS:${PN} += "nginx"
+RDEPENDS:${PN} += "php-fpm"
 DEPENDS += "tps-node-home"
-RDEPENDS_${PN} += "tps-node-home"
-RDEPENDS_${PN} += "phpliteadmin"
+RDEPENDS:${PN} += "tps-node-home"
+RDEPENDS:${PN} += "phpliteadmin"
 
-SYSTEMD_SERVICE_${PN} = "napp-demo-phpliteadmin.service"
+SYSTEMD_SERVICE:${PN} = "napp-demo-phpliteadmin.service"
+
+LIC_FILES_CHKSUM = "file://${FILESDIR_tibbo}/common-licenses/GPL-3.0-or-later;md5=1c76c4cc354acaac30ed4d5eefea7245"

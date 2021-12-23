@@ -1,8 +1,8 @@
 # Update DTC to latest git and apply DT overlay patch
 
-FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
 
-SRC_URI_append_class-native += "\
+SRC_URI:append:class-native += "\
  file://upd.mk \
  file://sync.sh \
  file://upd_bad.its \
@@ -24,7 +24,7 @@ inherit deploy
 do_deploy() {
  echo "DV1"
 }
-do_deploy_append_class-native() {
+do_deploy:append:class-native() {
 # echo "DV2: s:${S}/dtc D:${DEPLOYDIR}"
  install ${S}/dtc ${DEPLOYDIR}/dtc
  install ${WORKDIR}/upd.mk ${DEPLOYDIR}/
@@ -34,4 +34,4 @@ do_deploy_append_class-native() {
 
 addtask deploy before do_package_stage after do_compile
 
-RDEPENDS_${PN} += "mcpp"
+RDEPENDS:${PN} += "mcpp"

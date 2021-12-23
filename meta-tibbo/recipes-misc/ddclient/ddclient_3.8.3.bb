@@ -14,10 +14,10 @@ SRC_URI = "https://sourceforge.net/projects/ddclient/files/ddclient/ddclient-${P
 SRC_URI[md5sum] = "3b426ae52d509e463b42eeb08fb89e0b"
 SRC_URI[sha256sum] = "d40e2f1fd3f4bff386d27bbdf4b8645199b1995d27605a886b8c71e44d819591"
 
-RDEPENDS_${PN}_append  = " perl"
-RDEPENDS_${PN}_append += " perl-module-getopt-long"
-RDEPENDS_${PN}_append += " perl-module-sys-hostname"
-RDEPENDS_${PN}_append += " perl-module-io-socket"
+RDEPENDS:${PN} += "perl"
+RDEPENDS:${PN} += "perl-module-getopt-long"
+RDEPENDS:${PN} += "perl-module-sys-hostname"
+RDEPENDS:${PN} += "perl-module-io-socket"
 
 # NOTE: no Makefile found, unable to determine what needs to be done
 
@@ -43,4 +43,4 @@ do_install () {
  install -m 0644 ${WORKDIR}/ddclient.service ${D}${systemd_unitdir}/system
 }
 
-SYSTEMD_SERVICE_${PN} = "ddclient.service"
+SYSTEMD_SERVICE:${PN} = "ddclient.service"

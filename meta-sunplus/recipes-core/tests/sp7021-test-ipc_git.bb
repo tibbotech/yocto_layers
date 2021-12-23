@@ -7,18 +7,18 @@ PACKAGES = "${PN}-dbg ${PN}"
 SRCREV="${AUTOREV}"
 
 S = "${WORKDIR}/git"
+
 TARGET_CC_ARCH += "${LDFLAGS}"
 
 SRC_URI  = "git://github.com/tibbotech/sp7021_test_ipc.git;protocol=https;branch=master;"
 SRC_URI += "file://Makefile.patch"
 
-FILES_${PN}  = "/home/root/sp_ipc_test"
-FILES_${PN}-dbg  = "/home/root/.debug/sp_ipc_test"
+FILES:${PN}  = "/home/root/sp_ipc_test"
+FILES:${PN}-dbg  = "/home/root/.debug/sp_ipc_test"
 
 do_install() {
   install -d ${D}/home/root/
   install ${B}/sp_ipc_test ${D}/home/root/
 }
 
-LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/GPL-2.0;md5=801f80980d171dd6425610833a22dbe6"
-
+LIC_FILES_CHKSUM = "file://${FILESDIR_sunplus}/common-licenses/GPL-3.0-or-later;md5=1c76c4cc354acaac30ed4d5eefea7245"

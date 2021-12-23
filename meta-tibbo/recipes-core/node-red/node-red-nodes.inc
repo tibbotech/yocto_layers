@@ -1,16 +1,10 @@
 DESCRIPTION = "Node-RED Nodes:${PN}"
 HOMEPAGE = "https://github.com/node-red/node-red-nodes"
+LICENSE = "Apache-2.0"
 
 require node-red-module.inc
 
-# has no serialport and sqlite
-#SRC_URI  = "git://github.com/node-red/node-red-nodes.git;protocol=https;tag=${PV}"
-
-SRCREV="${AUTOREV}"
-SRC_URI  = "git://github.com/node-red/node-red-nodes.git;protocol=https;branch=master"
-#SRC_URI += "npmsw://${THISDIR}/${BPN}/npm-shrinkwrap.json"
-
-#NPM_SHRINKWRAP := "${THISDIR}/${PN}/npm-shrinkwrap.json"
+SRC_URI  = "git://github.com/node-red/node-red-nodes.git;protocol=https;branch=master;tag=${PV}"
 
 CUR_DST="/usr/lib/node_modules/${PN}"
 
@@ -27,3 +21,5 @@ do_install() {
  install -m 0644 ${S}/*.html ${D}${CUR_DST}/
  install -m 0644 ${S}/*.js ${D}${CUR_DST}/
 }
+
+LIC_FILES_CHKSUM = "file://LICENSE;md5=89aea4e17d99a7cacdbeed46a0096b10"

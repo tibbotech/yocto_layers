@@ -2,9 +2,7 @@ DESCRIPTION = "SunPlus B-chip (arm926, peripherial) nonos demo"
 SUMMARY = "B-chip (arm926) nonos demo"
 HOMEPAGE = "https://www.sunplus.com/"
 SECTION = "devel"
-
-LICENSE = "GPLv2+"
-LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/GPL-2.0;md5=801f80980d171dd6425610833a22dbe6"
+LICENSE = "GPLv3+"
 
 S = "${WORKDIR}/git"
 
@@ -22,7 +20,7 @@ do_deploy() {
  ${STAGING_DIR_NATIVE}/sp_tools/add_uhdr.sh nonos_B ${DEPLOY_DIR_IMAGE}/a926-empty.bin ${DEPLOY_DIR_IMAGE}/a926-empty.img arm 0x100040 0x100040
 }
 
-FILES_${PN} += "*"
+FILES:${PN} += "*"
 
 addtask do_deploy after do_compile before do_build
 
@@ -31,3 +29,5 @@ do_configure[noexec] = "1"
 DEPENDS += "isp-native"
 # this has to be u-boot-SP mkimage
 DEPENDS += "u-boot-mkimage-native"
+
+LIC_FILES_CHKSUM = "file://${FILESDIR_sunplus}/common-licenses/GPL-3.0-or-later;md5=1c76c4cc354acaac30ed4d5eefea7245"

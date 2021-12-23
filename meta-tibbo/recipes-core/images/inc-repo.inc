@@ -13,6 +13,7 @@ DEPENDS += "gstreamer1.0-plugins-base"
 DEPENDS += "gstreamer1.0-plugins-good"
 DEPENDS += "gstreamer1.0-plugins-bad"
 DEPENDS += "gstreamer1.0-libav"
+DEPENDS += "vlc"
 #DEPENDS += "mjpg-streamer"
 DEPENDS += "ffmpeg"
 #DEPENDS += "live555"
@@ -108,9 +109,9 @@ DEPENDS += "log4cpp"
 
 DEPENDS += "fuse-exfat exfat-utils"
 
-#TOOLCHAIN_HOST_TASK_append += " nativesdk-dlib-dev"
+#TOOLCHAIN_HOST_TASK_append += "nativesdk-dlib-dev"
 
-DEPENDS += "apt"
+#DEPENDS += "apt"
 
 DEPENDS += "dstat"
 DEPENDS += "nmap"
@@ -144,7 +145,7 @@ DEPENDS += "${@bb.utils.contains("DISTRO_FEATURES", "openamp", "rpmsg-echo-test 
 DEPENDS += "soem"
 #DEPENDS += "soes"
 # iec-...
-DEPENDS += "forte"
+#DEPENDS += "forte"
 
 # tmp
 #DEPENDS += "linux-firmware"

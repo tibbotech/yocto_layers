@@ -1,8 +1,8 @@
 
-ROOTFS_POSTPROCESS_COMMAND_prepend += " dv_rootfs_issue;"
-ROOTFS_POSTPROCESS_COMMAND_prepend += " dv_rootfs_clean;"
-ROOTFS_POSTPROCESS_COMMAND_prepend += " dv_rootfs_sshroot;"
-#ROOTFS_POSTPROCESS_COMMAND_prepend += " dv_rootfs_mounts;"
+ROOTFS_POSTPROCESS_COMMAND:prepend += "dv_rootfs_issue;"
+ROOTFS_POSTPROCESS_COMMAND:prepend += "dv_rootfs_clean;"
+ROOTFS_POSTPROCESS_COMMAND:prepend += "dv_rootfs_sshroot;"
+#ROOTFS_POSTPROCESS_COMMAND:prepend += "dv_rootfs_mounts;"
 
 dv_rootfs_issue() {
  # issue

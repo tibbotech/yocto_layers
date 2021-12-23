@@ -4,4 +4,6 @@ PACKAGECONFIG = " sqlite3 \
                    ${@bb.utils.contains('DISTRO_FEATURES', 'pam', 'pam', '', d)}"
 
 # try LDFLAGS
-CFLAGS =+ " -ldl"
+CFLAGS =+ " -ldl --with-curl"
+
+RDEPENDS:${PN} += "libcurl"

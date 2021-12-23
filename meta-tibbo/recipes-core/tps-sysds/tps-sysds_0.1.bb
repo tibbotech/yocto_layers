@@ -1,12 +1,12 @@
 DESCRIPTION = "SystemD interface simple API"
 HOMEPAGE = "http://tibbo.com/"
 MAINTAINER = "Dmitry Dvorkin <dvorkin@tibbo.com>"
-LICENSE = "LGPLv2+"
+LICENSE = "LGPLv3+"
 SECTION = "libs"
 PACKAGES = "${PN}-dbg ${PN}-dev ${PN}-test ${PN}-node ${PN}"
 SRCREV="${AUTOREV}"
 
-SUMMARY_${PN}-node = "SystemD interface NodeJs object"
+SUMMARY:${PN}-node = "SystemD interface NodeJs object"
 
 inherit autotools npm
 
@@ -14,9 +14,9 @@ S = "${WORKDIR}/git"
 
 SRC_URI = "git://github.com/tibbotech/ltps-sysds.git;protocol=https;branch=master"
 
-FILES_${PN}-node  += "/usr/lib/node_modules/"
-FILES_${PN}-test  = "/home/root/*"
-FILES_${PN}  += "/usr/lib/*.so*"
+FILES:${PN}-node  += "/usr/lib/node_modules/"
+FILES:${PN}-test  = "/home/root/*"
+FILES:${PN}  += "/usr/lib/*.so*"
 
 
 do_configure() {
@@ -42,18 +42,18 @@ do_install() {
  install-node
 }
 
-RDEPENDS_${PN} += " libstdc++"
-RDEPENDS_${PN} += " systemd"
-RDEPENDS_${PN}-test += " ${PN}"
-RDEPENDS_${PN}-node += " nodejs"
+RDEPENDS:${PN} += " libstdc++"
+RDEPENDS:${PN} += " systemd"
+RDEPENDS:${PN}-test += " ${PN}"
+RDEPENDS:${PN}-node += " nodejs"
 
 DEPENDS += "nativesdk-swig"
 
-DEPENDS_${PN}-node += "${PN}"
-DEPENDS_${PN}-node += "${PN}-dev"
-DEPENDS_${PN}-node += "systemd-dev"
-DEPENDS_${PN}-node += "nativesdk-swig"
-DEPENDS_${PN}-node += "node-gyp-native"
-DEPENDS_${PN}-node += "nodejs nodejs-native"
+DEPENDS:${PN}-node += "${PN}"
+DEPENDS:${PN}-node += "${PN}-dev"
+DEPENDS:${PN}-node += "systemd-dev"
+DEPENDS:${PN}-node += "nativesdk-swig"
+DEPENDS:${PN}-node += "node-gyp-native"
+DEPENDS:${PN}-node += "nodejs nodejs-native"
 
-LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/GPL-2.0;md5=801f80980d171dd6425610833a22dbe6"
+LIC_FILES_CHKSUM = "file://${FILESDIR_tibbo}/common-licenses/GPL-3.0-or-later;md5=1c76c4cc354acaac30ed4d5eefea7245"

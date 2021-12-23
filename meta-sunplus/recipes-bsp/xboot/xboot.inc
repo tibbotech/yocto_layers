@@ -40,7 +40,7 @@ do_deploy() {
  ${S}/add_xhdr.sh ${DEPLOY_DIR_IMAGE}/${PN}.sig ${DEPLOY_DIR_IMAGE}/${PN}.img 1
 }
 
-FILES_${PN} += "*"
+FILES:${PN} += "*"
 
 addtask deploy before do_package_stage after do_compile
 

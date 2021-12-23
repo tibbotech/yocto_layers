@@ -1,4 +1,0 @@
-require python-scipy.inc
-
-SRC_URI[md5sum] = "f6986798b7d22ffc5f80b749d7ec27ca"
-SRC_URI[sha256sum] = "039572f0ca9578a466683558c5bf1e65d442860ec6e13307d528749cfe6d07b8"

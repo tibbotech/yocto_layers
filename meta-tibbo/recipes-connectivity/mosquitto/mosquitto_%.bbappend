@@ -1,13 +1,13 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/${BPN}:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/${BPN}:"
 
-CONFFILES_${PN} += " ${sysconfdir}/mosquitto/mosquitto.conf"
-CONFFILES_${PN} += " ${sysconfdir}/mosquitto/passwords"
+CONFFILES:${PN} += "${sysconfdir}/mosquitto/mosquitto.conf"
+CONFFILES:${PN} += "${sysconfdir}/mosquitto/passwords"
 SRC_URI += "file://etc/mosquitto/mosquitto.conf"
 SRC_URI += "file://etc/mosquitto/passwords"
 
 inherit useradd
 
-do_install_append () {
+do_install:append () {
  install -m 0644 ${WORKDIR}/etc/mosquitto/mosquitto.conf ${D}${sysconfdir}/mosquitto/mosquitto.conf
  install -m 0644 ${WORKDIR}/etc/mosquitto/passwords ${D}${sysconfdir}/mosquitto/passwords
  chown mosquitto:mosquitto -R ${D}/etc/mosquitto
@@ -16,6 +16,4 @@ do_install_append () {
 }
 
 USERADD_PACKAGES = "${PN}"
-USERADD_PARAM_${PN} = " \
-    --system --no-create-home \
-    --user-group mosquitto"
+USERADD_PARAM:${PN} = " --system --no-create-home --user-group mosquitto"

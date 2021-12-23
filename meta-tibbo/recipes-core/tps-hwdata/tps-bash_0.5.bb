@@ -4,16 +4,14 @@ MAINTAINER = "Dmitry Dvorkin <dvorkin@tibbo.com>"
 LICENSE = "LGPLv2+"
 SECTION = "base"
 
-LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/GPL-2.0;md5=801f80980d171dd6425610833a22dbe6"
-
 S = "${WORKDIR}"
 
 SRC_URI  = "file://pins"
 SRC_URI += "file://lcdb"
 SRC_URI += "file://rpmsbase.sh"
 
-FILES_${PN}  = "/opt/tps-shared/*"
-FILES_${PN} += "/etc/profile.d/*"
+FILES:${PN}  = "/opt/tps-shared/*"
+FILES:${PN} += "/etc/profile.d/*"
 
 do_install() {
   install -d ${D}/opt/tps-shared/bash/
@@ -23,6 +21,8 @@ do_install() {
   install -m 0644 ${S}/rpmsbase.sh ${D}/etc/profile.d/
 }
 
-RDEPENDS_${PN} += "virtual/pinsini"
+RDEPENDS:${PN} += "virtual/pinsini"
 
 COMPATIBLE_HOST = "(arm.*-linux)"
+
+LIC_FILES_CHKSUM = "file://${FILESDIR_tibbo}/common-licenses/GPL-3.0-or-later;md5=1c76c4cc354acaac30ed4d5eefea7245"

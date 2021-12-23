@@ -9,7 +9,7 @@ SRC_URI += " file://fa0.patch \
  file://ss0.patch \
 "
 
-do_install_append() {
+do_install:append() {
  install -d ${D}${bindir}/
  install -m 0755 ${B}/mtcnn/mtcnn ${D}${bindir}/mtcnn
 }

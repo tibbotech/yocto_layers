@@ -1,0 +1,4 @@
+replace it with systemd: https://wiki.archlinux.org/title/systemd-networkd#[DHCP
+etc/systemd/network/10-eth0-dhcpd.conf
+or
+google "KEA"

@@ -1,2 +1,1 @@
-
-RDEPENDS_${PN} += "systemd"
+RDEPENDS:${PN} += "systemd"

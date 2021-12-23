@@ -1,4 +1,6 @@
 
+FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
+
 inherit systemd
 
 SRC_URI += "file://all.crt"
@@ -10,9 +12,7 @@ SRC_URI += "file://all.conf"
 #EXTRA_OECONF += " --error-log-path=/dev/stderr"
 EXTRA_OECONF += " --error-log-path=/var/log/nginx.err.log"
 
-FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
-
-do_install_append() {
+do_install:append() {
  install -d ${D}${sysconfdir}/nginx/ssl/
  install -m 0644 ${WORKDIR}/all.crt ${D}${sysconfdir}/nginx/ssl/
  install -m 0644 ${WORKDIR}/all.key ${D}${sysconfdir}/nginx/ssl/
@@ -20,12 +20,12 @@ do_install_append() {
 }
 
 # test for ssl forwarding
-#do_install_append_tppg2() {
+#do_install:append:tppg2() {
 # install -m 0644 ${WORKDIR}/ktr_default_server ${D}${sysconfdir}/nginx/sites-available/default_server
 # install -m 0644 ${WORKDIR}/ktr_default_server ${D}${sysconfdir}/nginx/sites-enabled/default_server.conf
 #}
 
-SYSTEMD_AUTO_ENABLE_${PN} = "enable"
+SYSTEMD_AUTO_ENABLE:${PN} = "enable"
 
 # dlna module
 #SRC_URI += "https://github.com/arut/nginx-dlna-module.git;rev=master;destsuffix=nginx-dlna-module"
@@ -33,27 +33,29 @@ SYSTEMD_AUTO_ENABLE_${PN} = "enable"
 #EXTRA_OECONF += " --add-module=${WORKDIR}/nginx-dlna-module"
 ##EXTRA_OECONF += " --with-compat --add-dynamic-module=${WORKDIR}/nginx-dlna-module"
 #
-#do_compile_append() {
+#do_compile:append() {
 # make modules
 #}
 #
 
 # rtmp module
-SRC_URI += "https://github.com/arut/nginx-rtmp-module.git;rev=master;destsuffix=nginx-rtmp-module"
-#EXTRA_OECONF += " --add-module=${WORKDIR}/nginx-dlna-module"
+SRC_URI += "git://github.com/arut/nginx-rtmp-module.git;protocol=https;rev=master;destsuffix=nginx-rtmp-module;name=rtmp"
 EXTRA_OECONF += " --with-compat --add-dynamic-module=${WORKDIR}/nginx-rtmp-module"
 
-FILES_${PN} += "/usr/modules/ngx_rtmp_module.so"
+FILES:${PN} += "/usr/modules/ngx_rtmp_module.so"
 
-INSANE_SKIP_${PN} = "ldflags"
+INSANE_SKIP:${PN} = "ldflags"
 
 # add WebDav module to build
 EXTRA_OECONF += " --with-http_dav_module"
 
 # add WebDav extended commands module
-SRC_URI += "https://github.com/arut/nginx-dav-ext-module.git;rev=v2.0.0;destsuffix=ngx_http_dav_ext_module"
-FILES_${PN} += "/usr/modules/ngx_http_dav_ext_module.so"
+SRC_URI += "git://github.com/arut/nginx-dav-ext-module.git;protocol=https;rev=v2.0.0;destsuffix=ngx_http_dav_ext_module;name=dav"
+FILES:${PN} += "/usr/modules/ngx_http_dav_ext_module.so"
 EXTRA_OECONF += " --with-compat --add-dynamic-module=${WORKDIR}/ngx_http_dav_ext_module"
 DEPENDS += "expat"
 
 DEPENDS += "libxslt"
+
+SRC_URI[rtmp.sha256sum] = "c94785d43eb2c124b34ba43eb243567f3bb995638647631150a4d5666e95c13c"
+SRC_URI[dav.sha256sum] = "ab94ca8c659c8c6dbdda71069d0a45a16a63034e03b14c482b73d8c994f62d39"

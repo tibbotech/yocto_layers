@@ -1,10 +1,8 @@
 DESCRIPTION = "TPS node applications demos"
 HOMEPAGE = "http://tibbo.com/"
 MAINTAINER = "Dmitry Dvorkin <dvorkin@tibbo.com>"
-LICENSE = "LGPLv2+"
+LICENSE = "LGPLv3+"
 PACKAGES = "${PN}"
-
-LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/GPL-2.0;md5=801f80980d171dd6425610833a22dbe6"
 
 inherit allarch useradd
 require tps-node-apps-perm.inc
@@ -26,14 +24,13 @@ do_install() {
  chown -R ${NAPPS_U}:${NAPPS_G} ${D}${NAPPS_PFX}
 }
 
-FILES_${PN}  = "*"
+FILES:${PN}  = "*"
 
 DEPENDS += "nodejs"
 DEPENDS += "tps-node-apps-perm"
 DEPENDS += "tps-node-home"
-RDEPENDS_${PN} += "nodejs"
-RDEPENDS_${PN} += "tps-node-apps-perm"
-RDEPENDS_${PN} += "tps-node-home"
+RDEPENDS:${PN} += "nodejs"
+RDEPENDS:${PN} += "tps-node-apps-perm"
+RDEPENDS:${PN} += "tps-node-home"
 
-#SYSTEMD_SERVICE_${PN} = "tps-wan.service"
-##SYSTEMD_AUTO_ENABLE_php-fpm = "enable"
+LIC_FILES_CHKSUM = "file://${FILESDIR_tibbo}/common-licenses/GPL-3.0-or-later;md5=1c76c4cc354acaac30ed4d5eefea7245"

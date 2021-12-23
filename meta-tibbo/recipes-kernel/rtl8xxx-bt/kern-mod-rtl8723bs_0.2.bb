@@ -3,13 +3,13 @@ HOMEPAGE = "https://github.com/hadess/rtl8723bs"
 MAINTAINER = "Dvorkin Dmitry <dvorkin@tibbo.com>"
 SECTION = "kernel/modules"
 PRIORITY = "optional"
-LICENSE = "LGPL-2.0"
+LICENSE = "GPLv2"
 PR = "r1"
 
 SRCREV="${AUTOREV}"
 
 PACKAGES =+ "${PN}-includes"
-PACKAGE_ARCH_${PN}-includes = "all"
+PACKAGE_ARCH:${PN}-includes = "all"
 
 # src in /files/kern-mod-rtl8723bs/*
 S = "${WORKDIR}/git"
@@ -18,9 +18,6 @@ inherit module
 
 #SRC_URI = "git://github.com/NextThingCo/RTL8723BS.git;protocol=https;branch=master"
 SRC_URI = "git://github.com/macromorgan/RTL8723BS.git;protocol=https;branch=master"
-
-#MAKE_TARGETS = "KERNEL_PATH=${STAGING_KERNEL_DIR} MAKE='make -e' -C ${STAGING_KERNEL_DIR} SUBDIRS=${S} modules"
-#MAKE_TARGETS = " "
 
 do_install() {
 # install -m 0755 -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/3rdparty
@@ -31,10 +28,7 @@ do_install() {
 }
 
 # add this (but not used)
-RDEPENDS_${PN} += "linux-firmware-rtl8723"
-RDEPENDS_${PN} += "linux-firmware-rtl8821"
+RDEPENDS:${PN} += "linux-firmware-rtl8723"
+RDEPENDS:${PN} += "linux-firmware-rtl8821"
 
-LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/LGPL-2.0;md5=9427b8ccf5cf3df47c29110424c9641a"
-
-SRC_URI[md5sum] = "7ebef4599496186c5077c6ad22adcc3e"
-SRC_URI[sha256sum] = "a6eee5a2a0b650760930529670336adc2ca08a31fa55742b3ffee96f1b6598f2"
+LIC_FILES_CHKSUM = "file://${FILESDIR_tibbo}/common-licenses/GPL-2.0-only;md5=801f80980d171dd6425610833a22dbe6"

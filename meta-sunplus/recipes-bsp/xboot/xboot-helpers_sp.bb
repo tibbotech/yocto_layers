@@ -16,7 +16,7 @@ do_install() {
  install -m 0755 ${S}/auto_config/auto_config_h ${D}${bindir}
 }
 
-FILES_${PN} += "*"
+FILES:${PN} += "*"
 
 BBCLASSEXTEND = "native"
 

@@ -1,9 +1,8 @@
-DESCRIPTION += ": IF up/down actions"
-
-#inherit allarch autotools
-inherit autotools
-
 require shorewall-5.2.inc
+
+DESCRIPTION:append = " : IF up/down actions"
+
+inherit autotools
 
 do_configure() {
  ${S}/configure --vendor=redhat ANNOTATED=1 DEFAULT_PAGER=/usr/bin/less
@@ -18,9 +17,9 @@ do_install() {
  export DESTDIR="${D}"; ${S}/install.sh
 }
 
-FILES_${PN} += "*"
+FILES:${PN} += "*"
 
-RDEPENDS_${PN} += "bash"
+RDEPENDS:${PN} += "bash"
 
 do_compile[noexec] = "1"
 

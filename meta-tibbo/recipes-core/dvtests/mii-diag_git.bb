@@ -1,7 +1,7 @@
 DESCRIPTION = "MII diag program"
 HOMEPAGE = "http://anduin.linuxfromscratch.org/BLFS/other/net-tools/mii-diag.c"
 MAINTAINER = "Dmitry Dvorkin <dvorkin@tibbo.com>"
-LICENSE = "LGPLv2+"
+LICENSE = "GPLv2+"
 SECTION = "console/utils"
 PACKAGES = "${PN}-dbg ${PN}"
 SRCREV="${AUTOREV}"
@@ -14,9 +14,7 @@ SRC_URI += "file://Makefile"
 S = "${WORKDIR}"
 B = "${S}"
 
-LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/GPL-2.0;md5=801f80980d171dd6425610833a22dbe6"
-
-#MIRRORS += "https://github.com/freedesktop-unofficial-mirror/evtest.git"
+LIC_FILES_CHKSUM = "file://mii-diag.c;beginline=16;endline=26;md5=c51d3eef3be114124d11349ca0d7e117"
 
 SRC_URI[md5sum] = "64a9a08dd016d02b6af3deef3277ad98"
 SRC_URI[sha256sum] = "77d5c050d5ee4a6344389ba5aad83e023b0e6003da227009830bd1be9be8f208"

@@ -9,8 +9,8 @@ require inc-tps-gen.inc
 IMAGE_FEATURES = ""
 
 IMAGE_FEATURES += "ssh-server-openssh"
-IMAGE_INSTALL += "openssh-sftp-server"
-IMAGE_INSTALL += "systemd-analyze"
+IMAGE_INSTALL  += "openssh-sftp-server"
+IMAGE_INSTALL  += "systemd-analyze"
 IMAGE_FEATURES += "package-management"
 
 ROOTFS_PKGMANAGE = "dpkg apt"

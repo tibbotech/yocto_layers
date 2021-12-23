@@ -1,2 +1,2 @@
 
-SYSTEMD_AUTO_ENABLE_busybox-syslog = "disable"
+SYSTEMD_AUTO_ENABLE:busybox-syslog = "disable"

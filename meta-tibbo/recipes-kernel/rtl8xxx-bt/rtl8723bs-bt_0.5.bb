@@ -3,15 +3,13 @@ HOMEPAGE = "https://github.com/lwfinger/rtl8723bs_bt"
 MAINTAINER = "Dvorkin Dmitry <dvorkin@tibbo.com>"
 SECTION = "kernel/modules"
 PRIORITY = "optional"
-LICENSE = "LGPL-2.0"
+LICENSE = "GPLv2"
 PR = "r1"
 
 SRCREV="${AUTOREV}"
 
 # src in /files/kern-mod-rtl8723bs_bt/*
 S = "${WORKDIR}/git"
-
-#inherit base
 
 inherit systemd
 
@@ -40,18 +38,13 @@ do_install() {
 # install -m 0644 ${WORKDIR}/rtl8723bs-bt-ttyO5.rules ${D}/etc/udev/rules.d/
 }
 
-FILES_${PN} += "/etc"
-FILES_${PN} += "/lib"
-FILES_${PN} += "/usr"
+FILES:${PN} += "/etc"
+FILES:${PN} += "/lib"
+FILES:${PN} += "/usr"
 
-RDEPENDS_${PN} += "bash"
+RDEPENDS:${PN} += "bash"
 # add this (but not used)
-RDEPENDS_${PN} += "linux-firmware-rtl8723"
-RDEPENDS_${PN} += "linux-firmware-rtl8821"
+RDEPENDS:${PN} += "linux-firmware-rtl8723"
+RDEPENDS:${PN} += "linux-firmware-rtl8821"
 
-LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/LGPL-2.0;md5=9427b8ccf5cf3df47c29110424c9641a"
-
-SRC_URI[md5sum] = "7ebef4599496186c5077c6ad22adcc3e"
-SRC_URI[sha256sum] = "a6eee5a2a0b650760930529670336adc2ca08a31fa55742b3ffee96f1b6598f2"
-
-#SYSTEMD_SERVICE_${PN} = "bt_rtk_hciattach@ttyO5.service"
+LIC_FILES_CHKSUM = "file://${FILESDIR_tibbo}/common-licenses/GPL-2.0-only;md5=801f80980d171dd6425610833a22dbe6"

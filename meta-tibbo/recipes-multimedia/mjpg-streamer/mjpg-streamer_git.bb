@@ -1,12 +1,9 @@
 SUMMARY = "MJPG-streamer takes JPGs from Linux-UVC compatible webcams, filesystem or other input plugins and streams them as M-JPEG via HTTP to webbrowsers, VLC and other software. It is the successor of uvc-streamer, a Linux-UVC streaming application with Pan/Tilt"
 SECTION = "libs/multimedia"
-
 LICENSE = "GPLv2"
-LIC_FILES_CHKSUM = "file://LICENSE;md5=751419260aa954499f7abaabaa882bbe"
 
-PV = "0.5+git${SRCPV}"
-SRCREV = "5f6adeefa0d5a78833cc809f2bfa76131f2b9ff8"
-SRCREV = "501f6362c5afddcfb41055f97ae484252c85c912"
+PV = "1.0+git${SRCPV}"
+SRCREV = "310b29f4a94c46652b20c4b7b6e5cf24e532af39"
 SRC_URI = "git://github.com/jacksonliam/mjpg-streamer.git;protocol=https \
            file://0001-Makefile-don-t-overwrite-C-LDFLAGS.patch;striplevel=2 \
           "
@@ -40,6 +37,8 @@ do_install() {
     mv ${D}${prefix}/www ${D}${datadir}/mjpg-streamer/
 }
 
-FILES_${PN} += "${libdir}/*.so"
+FILES:${PN} += "${libdir}/*.so"
 
-INSANE_SKIP_${PN} = "ldflags"
+INSANE_SKIP:${PN} = "ldflags"
+
+LIC_FILES_CHKSUM = "file://LICENSE;md5=751419260aa954499f7abaabaa882bbe"
