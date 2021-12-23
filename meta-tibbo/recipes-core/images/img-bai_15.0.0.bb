@@ -7,7 +7,7 @@ SRC_URI += "file://npm.dunfell.patch"
 
 SRCREV = "78fe96f3edf981285cb9b6a0286e45f44d8b4b21"
 
-SRCREV_tibbo = "51775551cef3299cb30cf4ab4588a23928b11e21"
+SRCREV_tibbo = "4d345ce84ade8d492bc5b160421fa73ed6384c94"
 SRC_URI += "git://github.com/tibbotech/yocto_layers.git;protocol=https;branch=dunfell;name=tibbo;destsuffix=xxx;"
 SRCREV_oe = "814eec96c2a29172da57a425a3609f8b6fcc6afe"
 SRC_URI += "git://git.openembedded.org/meta-openembedded;branch=dunfell;name=oe;destsuffix=xx0;"
