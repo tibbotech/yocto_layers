@@ -159,6 +159,8 @@ KERNEL_FEATURES:append = " cfg/rpi-ovls/ovls-4.19.scc"
 KERNEL_FEATURES:append = "${@bb.utils.contains("MACHINE_FEATURES", "touchscreen", " custom/touchscreen/all.scc", "" ,d)}"
 KERNEL_FEATURES:append = "${@bb.utils.contains("MACHINE_FEATURES", "usbgadget", " features/usb/usb-gadgets.scc", "" ,d)}"
 KERNEL_FEATURES:append = "${@bb.utils.contains("MACHINE_FEATURES", "3g", " custom/modems/protos.scc", "" ,d)}"
+KERNEL_FEATURES:append = " custom/tunnel/udp.scc"
+KERNEL_FEATURES:append = " cgl/net/l2tp.scc"
 
 LIC_FILES_CHKSUM = "file://COPYING;md5=bbea815ee2795b2f4230826c0c6b8814"
 

@@ -39,9 +39,13 @@ DEPENDS += "freeradius"
 DEPENDS += "ethtool"
 DEPENDS += "usbutils usb-modeswitch"
 DEPENDS += "net-snmp"
+#DEPENDS += "ddclient"
+# VPNs
 DEPENDS += "rp-pppoe"
 DEPENDS += "openvpn"
-#DEPENDS += "ddclient"
+DEPENDS += "wireguard-tools"
+DEPENDS += "pptp-linux"
+DEPENDS += "xl2tpd"
 
 # development
 DEPENDS += "gdb"
