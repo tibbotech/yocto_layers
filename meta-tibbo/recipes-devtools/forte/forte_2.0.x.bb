@@ -7,7 +7,7 @@ SRCREV = "${AUTOREV}"
 #inherit autotools update-rc.d useradd systemd
 inherit cmake
 
-SRC_URI  = "https://git.eclipse.org/r/4diac/org.eclipse.4diac.forte.git;protocol=git;branch=${PV}"
+SRC_URI  = "git://git.eclipse.org/r/4diac/org.eclipse.4diac.forte.git;protocol=https;branch=${PV}"
 SRC_URI += "file://git/setup_tps.sh"
 SRC_URI += "file://forte.service"
 
@@ -33,4 +33,4 @@ RDEPENDS:${PN} += "libmodbus"
 
 SYSTEMD_SERVICE:${PN} = "${PN}.service"
 
-LIC_FILES_CHKSUM = "file://LICENSE.md;md5=57f8d5e2b3e98ac6e088986c12bf94e6"
+LIC_FILES_CHKSUM = "file://LICENSE.md;md5=d9fc0efef5228704e7f5b37f27192723"

@@ -11,7 +11,6 @@ SRC_URI = "https://sourceforge.net/projects/ddclient/files/ddclient/ddclient-${P
 	   file://persistent \
 	   file://ddclient.service \
 	"
-SRC_URI[md5sum] = "3b426ae52d509e463b42eeb08fb89e0b"
 SRC_URI[sha256sum] = "d40e2f1fd3f4bff386d27bbdf4b8645199b1995d27605a886b8c71e44d819591"
 
 RDEPENDS:${PN} += "perl"

@@ -33,5 +33,4 @@ FILES:${PN}-dbg += "/usr/src/debug/librxtx/*"
 FILES:${PN}  = "${DV_JAVA_T}/jre/lib/${TARGET_ARCH}/*"
 FILES:${PN} += "${DV_JAVA_T}/jre/lib/ext/"
 
-SRC_URI[md5sum] = "a83ffee223765dfb4564dbf35ec90e92"
 SRC_URI[sha256sum] = "f91b07e478d2210c44ae02abcd6ab17016135775ae7cf931305df2a5314882b0"

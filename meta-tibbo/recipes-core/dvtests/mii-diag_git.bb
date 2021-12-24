@@ -16,5 +16,4 @@ B = "${S}"
 
 LIC_FILES_CHKSUM = "file://mii-diag.c;beginline=16;endline=26;md5=c51d3eef3be114124d11349ca0d7e117"
 
-SRC_URI[md5sum] = "64a9a08dd016d02b6af3deef3277ad98"
 SRC_URI[sha256sum] = "77d5c050d5ee4a6344389ba5aad83e023b0e6003da227009830bd1be9be8f208"

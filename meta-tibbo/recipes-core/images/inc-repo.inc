@@ -149,7 +149,7 @@ DEPENDS += "${@bb.utils.contains("DISTRO_FEATURES", "openamp", "rpmsg-echo-test 
 DEPENDS += "soem"
 #DEPENDS += "soes"
 # iec-...
-#DEPENDS += "forte"
+DEPENDS += "forte"
 
 # tmp
 #DEPENDS += "linux-firmware"
