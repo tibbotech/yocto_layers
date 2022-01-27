@@ -27,3 +27,5 @@ IMAGE_INSTALL += "fuse-exfat exfat-utils"
 
 DEPENDS += "c103app"
 DEPENDS += "c103app-web-adv"
+
+IMAGE_INSTALL += "iproute2"

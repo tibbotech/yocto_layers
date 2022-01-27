@@ -8,13 +8,13 @@
 + */
 +/dts-v1/;
 +
-+#define ENABLE_DMATX0 0
-+#define ENABLE_DMATX1 0
++//#define ENABLE_DMATX0 0
++//#define ENABLE_DMATX1 0
 +
 +#include "sp7021-ltpp3g2revD.dtsi"
 +
 +/ {
-+        model = "SP7021 TPPs3 Gen 2 Base";
++        model = "SP7021 TPPs3 Gen 2 UBlox";
 +};
 +
 +&l2sw {  mode = <1>;  };

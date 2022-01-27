@@ -1,2 +1,2 @@
 include features/usb-net/usb-net.scc
-kconf hardware udp.cfg
+kconf non-hardware udp.cfg

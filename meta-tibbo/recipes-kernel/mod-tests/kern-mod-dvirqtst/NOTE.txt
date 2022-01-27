@@ -1,0 +1,58 @@
+
+test irq latency
+https://github.com/gkaindl/linux-gpio-irq-latency-test/blob/master/test-irq-latency.c
+
+test0 (gpio_to_irq):
+
+/dts-v1/;
+
+#include "sp7021-ltpp3g2revD.dtsi"
+
+/ {
+ model = "SP7021 TPPs3 Gen 2 Base";
+ clocks {
+
+ };
+};
+
+&pctl {
+ /* muxed (preset) irq on S1D */
+ pins_dvirqtst0: pins_dvirqtst0 {
+ sppctl,pins = <
+      SPPCTL_IOPAD(11,SPPCTL_PCTL_G_PMUX,MUXF_GPIO_INT0,0)
+    >;
+ };
+ /* irq made from gpio on S1D (dir: in by default) */
+ pins_dvirqtst1: pins_dvirqtst1 {
+ sppctl,pins = <
+      SPPCTL_IOPAD(11,SPPCTL_PCTL_G_GPIO,0,0)
+    >;
+ };
+
+};
+
+/ {
+    soc@B {
+ /* irq test1: irq premuxed and mapped by _of */
+ itst_0: itst_0 {
+    compatible = "dv-irq-tst";
+    pinctrl-names = "default";
+    pinctrl-0 = <&pins_dvirqtst0>;
+    tps-sock = "s1";
+    interrupt-parent = <&intc>;
+    interrupts = <120 IRQ_TYPE_EDGE_FALLING>;
+    status = "okay";
+ };
+ /* irq test 2: gpio_to_irq mapping */
+ itst_1: itst_1 {
+    compatible = "dv-irq-tst";
+    pinctrl-names = "default";
+    pinctrl-0 = <&pins_dvirqtst1>;
+    tps-sock = "s1";
+    gpios = <&pctl 11 GPIO_ACTIVE_LOW>;
+    status = "okay";
+ };
+
+    };
+};
+-----------------------------------------------

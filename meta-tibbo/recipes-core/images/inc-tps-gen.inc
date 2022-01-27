@@ -37,6 +37,7 @@ IMAGE_INSTALL += "kernel-module-rtc-ds3232 kernel-module-mcp4531"
 
 IMAGE_INSTALL:append:tppg1 += "kern-mod-ga1000v0"
 IMAGE_INSTALL:append:tppg2 += "sp7021-test-ipc"
+IMAGE_INSTALL:append:tppg2 += "kern-mod-dvirqtst"
 
 inherit core-image
 

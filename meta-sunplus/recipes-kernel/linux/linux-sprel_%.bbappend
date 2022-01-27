@@ -26,7 +26,7 @@ SRCREV = "3d2a894c9d9038ab101e9b3917e8587365e689b7"
 ## 5.4 tibbo/spi_exp2
 #SRCREV = "acd013f0a071284c010f25bc71b7b96d042bfcc1"
 # 5.4 master
-SRCREV = "268e3fe2c2d9a644c7fa5dd8e587e4c4c0a31991"
+SRCREV = "79cd32402bf45c0db27bdf8392865369a3d1d52d"
 # 4.19
 SRCREV_machine:tppg2 = "e81c7196d43ee83e0c05a9ac666cfe7a5fbd2ce9"
 # 5.4 master
@@ -36,7 +36,7 @@ SRCREV_machine:tppg2 = "3d2a894c9d9038ab101e9b3917e8587365e689b7"
 ## 5.4 tibbo/spi_exp2
 #SRCREV_machine:tppg2 = "acd013f0a071284c010f25bc71b7b96d042bfcc1"
 # 5.4 master
-SRCREV_machine:tppg2 = "268e3fe2c2d9a644c7fa5dd8e587e4c4c0a31991"
+SRCREV_machine:tppg2 = "79cd32402bf45c0db27bdf8392865369a3d1d52d"
 
 # if using meta from master
 #SRCREV_meta ?= "cebe198870d781829bd997a188cc34d9f7a61023"
@@ -56,8 +56,6 @@ SRC_URI += "file://dts/sp7021-ttt.dts.patch"
 SRC_URI += "file://dts/sp7021-ublox.dts.patch"
 #SRC_URI += "file://pinctrl_dbg/sppctl.c.err.patch"
 #SRC_URI += "file://pinctrl_dbg/sp7021_gpio_ops.c.Fdbg.patch"
-
-SRC_URI += "file://pinctrl_dbg/gpioirq.patch"
 
 SRC_URI += "file://dts/sp7021-tpsgpio.dts.patch"
 # for gpio-driven rts/cts
@@ -161,6 +159,7 @@ KERNEL_FEATURES:append = "${@bb.utils.contains("MACHINE_FEATURES", "usbgadget", 
 KERNEL_FEATURES:append = "${@bb.utils.contains("MACHINE_FEATURES", "3g", " custom/modems/protos.scc", "" ,d)}"
 KERNEL_FEATURES:append = " custom/tunnel/udp.scc"
 KERNEL_FEATURES:append = " cgl/net/l2tp.scc"
+KERNEL_FEATURES:append = " custom/netfilter/addrtype.scc"
 
 LIC_FILES_CHKSUM = "file://COPYING;md5=bbea815ee2795b2f4230826c0c6b8814"
 

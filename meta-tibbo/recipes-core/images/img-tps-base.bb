@@ -34,3 +34,5 @@ DEPENDS += "tps-gprs"
 
 # temporary there
 IMAGE_INSTALL += "devmem2 ethtool"
+
+IMAGE_INSTALL += "wireguard-tools"

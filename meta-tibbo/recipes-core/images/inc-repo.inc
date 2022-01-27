@@ -69,6 +69,8 @@ DEPENDS += "lshw"
 # requires gtk2
 #DEPENDS += "hardinfo"
 DEPENDS += "lrzsz"
+DEPENDS += "netcat"
+DEPENDS += "nmap"
 
 # nodeJS
 #DEPENDS += "node-red"
@@ -154,3 +156,5 @@ DEPENDS += "forte"
 # tmp
 #DEPENDS += "linux-firmware"
 #DEPENDS += "dhcp"
+
+DEPENDS += "dkms"
