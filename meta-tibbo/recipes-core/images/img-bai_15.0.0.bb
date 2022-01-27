@@ -7,11 +7,11 @@ SRC_URI += "file://npm.dunfell.patch"
 
 SRCREV = "795339092f87672e4f68e4d3bc4cfd0e252d1831"
 
-SRCREV_tibbo = "2db0975972e8202bb0a7b5f3a2391726defcd409"
+SRCREV_tibbo = "7911309541cad7c5ea61fb75b274f993147806e1"
 SRC_URI += "git://github.com/tibbotech/yocto_layers.git;protocol=https;branch=dunfell;name=tibbo;destsuffix=xxx;"
 SRCREV_oe = "69f94af4d91215e7d4e225bab54bf3bcfee42f1c"
 SRC_URI += "git://git.openembedded.org/meta-openembedded;branch=dunfell;name=oe;destsuffix=xx0;"
-SRCREV_qt5 = "795339092f87672e4f68e4d3bc4cfd0e252d1831"
+SRCREV_qt5 = "b4d24d70aca75791902df5cd59a4f4a54aa4a125"
 SRC_URI += "git://github.com/meta-qt5/meta-qt5.git;protocol=https;branch=dunfell;name=qt5;destsuffix=xx1;"
 SRCREV_amp = "bdbdb0b02af4800a0c7fc70edef33cfd55babbdd"
 SRC_URI += "git://github.com/OpenAMP/meta-openamp.git;protocol=https;branch=master;name=amp;destsuffix=xx2;"
