@@ -74,7 +74,7 @@ SDK self-unpack image will be placed into
 | tpp-tppg2      | tps     | img-tst-tini | bitbake mc::img-tst-tini -c populate_sdk             | A7 SDK                                       |
 | tpp-tppg2      | tps     | img-tps-free | bitbake mc::img-tps-free -c populate_sdk             | A7 SDK                                       |
 | tpp-tppg2      | tps     | img-tps-base | bitbake mc::img-tps-base -c populate_sdk             | A7 SDK                                       |
-| tpp-tppg2      | tps     | img-tps-repo | bitbake mc::img-tps-repo -c populate_sdk             | A7 SDK                                       |
+| tpp-tppg2      | tps     | img-tps-repo |                                                      | meanless                                     |
 
 
 First bitbake run is time-consuming. All subsequent builds are incremental.
