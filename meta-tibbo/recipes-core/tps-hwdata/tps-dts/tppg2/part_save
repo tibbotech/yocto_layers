@@ -1,6 +1,26 @@
 
-part_save() {
- dd if=/dev/zero of=/dev/mmcblk0p6 bs=1K
- dd if=${f_name}.dtb of=/dev/mmcblk0p6 bs=1K
+part_save_nand() {
+ flash_erase --silent /dev/mtd8 0 0
+ if [ $? -ne 0 ]; then
+   return 1;
+ fi;
+ nandwrite --quiet -p /dev/mtd8 "${1}.dtb"
+ if [ $? -ne 0 ]; then
+   return 1;
+ fi;
  return 0;
+}
+
+part_save_emmc() {
+ dd if=/dev/zero of=/dev/mmcblk0p6 bs=1K
+ dd if=${1}.dtb of=/dev/mmcblk0p6 bs=1K
+ return 0;
+}
+
+part_save() {
+ if [ -e /dev/mtd0 ]; then
+   part_save_nand "${1}"
+ else
+   part_save_emmc "${1}"
+ fi;
 }

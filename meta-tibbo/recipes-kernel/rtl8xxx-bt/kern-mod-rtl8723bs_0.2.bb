@@ -17,7 +17,8 @@ S = "${WORKDIR}/git"
 inherit module
 
 #SRC_URI = "git://github.com/NextThingCo/RTL8723BS.git;protocol=https;branch=master"
-SRC_URI = "git://github.com/macromorgan/RTL8723BS.git;protocol=https;branch=master"
+#SRC_URI = "git://github.com/macromorgan/RTL8723BS.git;protocol=https;branch=master"
+SRC_URI = "git://github.com/PopcornComputer/RTL8723BS.git;protocol=https;branch=master"
 
 do_install() {
 # install -m 0755 -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/3rdparty
