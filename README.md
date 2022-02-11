@@ -22,6 +22,7 @@ sed -i 's/"gatesgarth"/"rocko sumo thud zeus dunfell gatesgarth"/g' ./poky/meta-
 
 ### 1.2 Pulling the updates from the GitHub
 ```
+cd ./poky; rm -rf ./meta-tibbo;  rm -rf ./meta-sunplus; cd ..
 cd ./poky.x/;  git pull ; cd ..
 rsync -a --exclude=.git ./poky.x/ ./poky/
 ```
