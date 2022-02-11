@@ -25,6 +25,12 @@ sed -i 's/"gatesgarth"/"rocko sumo thud zeus dunfell gatesgarth"/g' ./poky/meta-
 cd ./poky.x/;  git pull ; cd ..
 rsync -a --exclude=.git ./poky.x/ ./poky/
 ```
+Update your Yocto-core and Openembedded layers (optionally):
+```
+cd ./poky;
+git pull
+cd ./meta-openembedded; git pull; cd ..
+```
 
 ### 1.3 Creating separate disk directory for build (under root account)
 ```
