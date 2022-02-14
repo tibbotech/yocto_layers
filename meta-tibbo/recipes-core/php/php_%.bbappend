@@ -1,9 +1,7 @@
 
 # disable mysql, sqlite and imap packages
-PACKAGECONFIG = " sqlite3 \
-                   ${@bb.utils.contains('DISTRO_FEATURES', 'pam', 'pam', '', d)}"
+#PACKAGECONFIG = " sqlite3 \
+#                   ${@bb.utils.contains('DISTRO_FEATURES', 'pam', 'pam', '', d)}"
 
-# try LDFLAGS
-CFLAGS =+ " -ldl --with-curl"
-
-RDEPENDS:${PN} += "libcurl"
+EXTRA_OECONF =+ "--with-curl"
+DEPENDS += "curl"
