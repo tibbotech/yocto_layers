@@ -1,0 +1,11 @@
+--- a/drivers/pinctrl/sunplus/sppctl_gpio_ops.c	2022-02-12 00:46:16.591809159 +0300
++++ a/drivers/pinctrl/sunplus/sppctl_gpio_ops.c	2022-02-15 15:53:22.564466817 +0300
+@@ -332,6 +332,8 @@
+ 	sppctlgpio_chip_t *pc = ( sppctlgpio_chip_t *)gpiochip_get_data(_c);
+ 	int i;
+ 
++	return( -ENXIO);
++
+ #ifdef SUPPORT_PINMUX
+ 	if ( _off < SPPCTL_MUXABLE_MIN || _off > SPPCTL_MUXABLE_MAX) {
+ 	  KERR(_c->parent, "i_map: %d is not muxable\n", _off);

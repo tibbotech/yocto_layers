@@ -1,0 +1,19 @@
+--- a/drivers/pinctrl/sunplus/sppctl_gpio_ops.c	2022-02-11 00:38:10.860759292 +0300
++++ a/drivers/pinctrl/sunplus/sppctl_gpio_ops.c	2022-02-11 01:14:24.579281660 +0300
+@@ -16,6 +16,7 @@
+  */
+ 
+ #include <linux/seq_file.h>
++#include <linux/gpio/consumer.h>
+ #include <asm/io.h>
+ 
+ #include "sppctl_gpio.h"
+@@ -339,6 +340,8 @@
+ 	}
+ #endif
+ 
++	struct gpio_desc *x = gpiochip_get_desc( _c, _off);
++	KDBG(_c->parent, "i_map: pin %d flags:%X\n", _off, x->flags);
+ 	for ( i = 0; i < SPPCTL_GPIO_IRQS; i++) {
+ 	  if ( pc->irq[ i] < 0) continue;
+ 	  if ( pc->irq_pin[ i] == _off) return pc->irq[ i];

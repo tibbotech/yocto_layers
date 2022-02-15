@@ -56,6 +56,8 @@ SRC_URI += "file://dts/sp7021-ttt.dts.patch"
 SRC_URI += "file://dts/sp7021-ublox.dts.patch"
 #SRC_URI += "file://pinctrl_dbg/sppctl.c.err.patch"
 #SRC_URI += "file://pinctrl_dbg/sp7021_gpio_ops.c.Fdbg.patch"
+#SRC_URI += "file://pinctrl_dbg/sppctl_gpio_ops.c.idbg.patch"
+SRC_URI += "file://pinctrl_dbg/sppctl_gpio_ops.c.irq.patch"
 
 SRC_URI += "file://dts/sp7021-tpsgpio.dts.patch"
 # for gpio-driven rts/cts
