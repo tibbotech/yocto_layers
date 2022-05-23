@@ -17,7 +17,7 @@ git clone -b ${rel} git://git.openembedded.org/meta-openembedded ./poky/meta-ope
 git clone -b ${rel} https://github.com/tibbotech/yocto_layers.git ./poky.x
 rsync -a --exclude=.git ./poky.x/ ./poky/
 patch -p0 < ./poky/npm.${rel}.patch
-sed -i 's/"gatesgarth"/"rocko sumo thud zeus dunfell gatesgarth"/g' ./poky/meta-openamp/conf/layer.conf
+sed -i 's/"honister"/"rocko sumo thud zeus dunfell gatesgarth honister kirkstone"/g' ./poky/meta-openamp/conf/layer.conf
 ```
 
 ### 1.2 Pulling the updates from the GitHub
