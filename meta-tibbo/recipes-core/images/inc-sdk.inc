@@ -1,5 +1,5 @@
 
-inherit populate_sdk_qt5
+inherit populate_sdk populate_sdk_qt5
 
 #TOOLCHAIN_TARGET_TASK += "fltk"
 #TOOLCHAIN_TARGET_TASK += "fltk-staticdev"

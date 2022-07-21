@@ -1,6 +1,6 @@
---- /dev/null	2020-12-02 14:41:46.756023780 +0300
-+++ a/arch/arm/boot/dts/sp7021-dsx.dtsi	2020-12-10 02:22:47.099203480 +0300
-@@ -0,0 +1,338 @@
+--- /dev/null	2022-06-16 23:46:24.726356482 +0300
++++ a/arch/arm/boot/dts/sp7021-dsx.dtsi	2022-06-19 17:40:02.247414447 +0300
+@@ -0,0 +1,340 @@
 +/dts-v1/;
 +
 +#include "sp7021-ChipC.dtsi"
@@ -58,7 +58,7 @@
 +
 +&mmc1 {
 + pinctrl-names = "default";
-+ pinctrl-0 = <&mmc1_mux>;
++ pinctrl-0 = <&mmc1_mux &mmc1_cd63_mux>;
 + cd-gpios = <&pctl 63 GPIO_ACTIVE_LOW>;
 +};
 +
@@ -252,6 +252,8 @@
 + mmc1_mux: mmc1_mux {
 +	sppctl,groups = "SD_CARD";
 +	sppctl,function = "SD_CARD";
++ };
++ mmc1_cd63_mux: mmc1_cd63_mux {
 +	sppctl,pins = < SPPCTL_IOPAD(63,SPPCTL_PCTL_G_GPIO,0,0) >;
 + };
 + pins_sdio: pins_sdio {

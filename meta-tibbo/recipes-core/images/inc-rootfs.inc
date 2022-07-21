@@ -2,6 +2,7 @@
 ROOTFS_POSTPROCESS_COMMAND:prepend += "dv_rootfs_issue;"
 ROOTFS_POSTPROCESS_COMMAND:prepend += "dv_rootfs_clean;"
 ROOTFS_POSTPROCESS_COMMAND:prepend += "dv_rootfs_sshroot;"
+ROOTFS_POSTPROCESS_COMMAND:prepend += "dv_rootfs_bash;"
 #ROOTFS_POSTPROCESS_COMMAND:prepend += "dv_rootfs_mounts;"
 
 dv_rootfs_issue() {
@@ -22,6 +23,13 @@ dv_rootfs_clean() {
 dv_rootfs_sshroot() {
  if [ -f ${IMAGE_ROOTFS}${sysconfdir}/ssh/sshd_config ]; then
    sed -i 's/^[#[:space:]]*PermitRootLogin.*/PermitRootLogin yes/' ${IMAGE_ROOTFS}${sysconfdir}/ssh/sshd_config
+ fi;
+}
+
+# if bash is enabled in the image and started as /bin/sh it does not read ~/.bashrc file
+dv_rootfs_bash() {
+ if [ -e ${IMAGE_ROOTFS}/bin/bash ] || [ -h ${IMAGE_ROOTFS}/bin/bash ]; then
+   sed -i "s/^\(root.*\):\/bin\/sh/\1:\/bin\/bash/" ${IMAGE_ROOTFS}/etc/passwd
  fi;
 }
 

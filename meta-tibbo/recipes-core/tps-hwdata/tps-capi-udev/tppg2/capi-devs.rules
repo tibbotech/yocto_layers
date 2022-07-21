@@ -1,0 +1,9 @@
+# no i2c-3, case i2c-3 is main TPS power & eeprom
+KERNEL=="i2c-[012456789]*", GROUP="capi-devs", MODE="0660"
+KERNEL=="spi*", GROUP="capi-devs", MODE="0660"
+# gpio + gpio import/export
+SUBSYSTEM=="gpio", KERNEL=="gpiochip*", GROUP="capi-devs", MODE="0660", PROGRAM="/bin/sh -c 'chown root:capi-devs /sys/class/gpio/*export; chmod g+w /sys/class/gpio/*export'"
+#SUBSYSTEM=="gpio", KERNEL=="gpio*", ACTION=="add", PROGRAM="/bin/sh -c 'chown root:capi-devs /sys%p/active_low /sys%p/direction /sys%p/edge /sys%p/value ; chmod 660 /sys%p/active_low /sys%p/direction /sys%p/edge /sys%p/value'"
+SUBSYSTEM=="gpio", KERNEL=="P*_*", ACTION=="add", GROUP="capi-devs", MODE="0660", PROGRAM="/bin/sh -c 'chown root:capi-devs /sys/class/gpio/%k/* ; chmod g+rw /sys/class/gpio/%k/* '"
+# ttys (except /dev/ttyO0) is dialout by defeault
+SUBSYSTEM=="tty", KERNEL=="ttyS[0-9]*", GROUP="capi-devs", MODE="0660"

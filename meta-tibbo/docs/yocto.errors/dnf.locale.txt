@@ -1,0 +1,9 @@
+
+ERROR: ... do_rootfs: [log_check] ...-node: found 2 error messages in the logfile:
+[log_check] Failed to set locale, defaulting to C
+[log_check] Failed to set locale, defaulting to C
+
+How to fix (on host PC):
+```
+ln -s /usr/share/locale /usr/lib
+```

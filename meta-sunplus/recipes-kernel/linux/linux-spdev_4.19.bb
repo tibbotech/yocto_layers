@@ -1,6 +1,6 @@
 KBRANCH ?= "v4.19/standard/base"
 
-require recipes-kernel/linux/linux-spdev.inc
+require recipes-kernel/linux/linux-sp-4.19.inc
 
 # board specific branches
 KBRANCH:qemuarm  ?= "v4.19/standard/arm-versatile-926ejs"

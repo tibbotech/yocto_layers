@@ -9,6 +9,7 @@ S = "${WORKDIR}/git"
 inherit deploy
 
 do_compile() {
+ oe_runmake clean
  oe_runmake
 }
 

@@ -1,5 +1,6 @@
 
-SRCREV = "7d0effa360f58807578916786d17c56754bcf820"
+SRCREV = "32916340c7737b19503460c6c731ec19edfe1773"
+SRCREV = "aa5bc16415a6c54b3128bccdf74eae21e3fac449"
 
 SRC_URI  = "git://git@113.196.136.131:22/qac628/Bchip-non-os;protocol=ssh;branch=master;"
 #SRC_URI += "file://main.c.tst0.patch"

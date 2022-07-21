@@ -20,6 +20,7 @@ IMAGE_INSTALL += "resize-helper"
 IMAGE_INSTALL += "tzdata-asia"
 
 IMAGE_INSTALL += "tps-resetconf"
+IMAGE_INSTALL += "wireguard-tools"
 
 # temporary there
 IMAGE_INSTALL += "devmem2 ethtool"

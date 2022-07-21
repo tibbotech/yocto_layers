@@ -28,11 +28,10 @@ IMAGE_INSTALL += "tps-wan"
 IMAGE_INSTALL += "tps-tios-sp7021"
 IMAGE_INSTALL += "tps-resetconf"
 IMAGE_INSTALL += "twgtest"
+IMAGE_INSTALL += "wireguard-tools"
 
 DEPENDS += "tps-capi"
 DEPENDS += "tps-gprs"
 
 # temporary there
 IMAGE_INSTALL += "devmem2 ethtool"
-
-IMAGE_INSTALL += "wireguard-tools"

@@ -1,0 +1,247 @@
+diff -ur a/drivers/pinctrl/sunplus/sppctl.c a/drivers/pinctrl/sunplus/sppctl.c
+--- a/drivers/pinctrl/sunplus/sppctl.c	2022-07-12 15:37:24.627290571 +0300
++++ a/drivers/pinctrl/sunplus/sppctl.c	2022-07-13 02:14:29.978684623 +0300
+@@ -57,7 +57,7 @@
+ 	uint32_t *r;
+ 	sppctl_reg_t x = { .m = (~(~0 << _bsiz)) << _boff, .v = ((uint16_t)_rval) << _boff };
+ 
+-	if (_p->debug > 1) KDBG(_p->pcdp->dev, "%s(x%X,x%X,x%X,x%X) m:x%X v:x%X\n", __FUNCTION__, _roff, _boff, _bsiz, _rval, x.m, x.v);
++	dev_dbg(_p->pcdp->dev, "%s(x%X,x%X,x%X,x%X) m:x%X v:x%X\n", __FUNCTION__, _roff, _boff, _bsiz, _rval, x.m, x.v);
+ 	r = (uint32_t *)&x;
+ 	writel(*r, _p->baseI + (_roff << 2));
+ }
+@@ -70,7 +70,7 @@
+ 
+ 	x = (sppctl_reg_t *)&r;
+ 	rval = (x->v >> _boff) & (~(~0 << _bsiz));
+-	if (_p->debug > 1) KDBG(_p->pcdp->dev, "%s(x%X,x%X,x%X) v:x%X rval:x%X\n", __FUNCTION__, _roff, _boff, _bsiz, x->v, rval);
++	dev_dbg(_p->pcdp->dev, "%s(x%X,x%X,x%X) v:x%X rval:x%X\n", __FUNCTION__, _roff, _boff, _bsiz, x->v, rval);
+ 	return (rval);
+ }
+ 
+@@ -86,7 +86,7 @@
+ 		x.v <<= 8;
+ 		x.m <<= 8;
+ 	}
+-	if (_p->debug > 1) KDBG(_p->pcdp->dev, "%s(x%X,x%X) off:x%X m:x%X v:x%X\n", __FUNCTION__, _pin, _fun, func, x.m, x.v);
++	dev_dbg(_p->pcdp->dev, "%s(x%X,x%X) off:x%X m:x%X v:x%X\n", __FUNCTION__, _pin, _fun, func, x.m, x.v);
+ 	r = (uint32_t *)&x;
+ 	writel(*r, _p->baseF + func);
+ }
+@@ -101,7 +101,7 @@
+ 	x = (sppctl_reg_t *)&r;
+ 	if (_fun % 2 == 0) pin = x->v & 0x00FF;
+ 	else pin = x->v >> 8;
+-	if (_p->debug > 1) KDBG(_p->pcdp->dev, "%s(x%X) off:x%X m:x%X v:x%X pin:x%X\n", __FUNCTION__, _fun, func, x->m, x->v, pin);
++	dev_dbg(_p->pcdp->dev, "%s(x%X) off:x%X m:x%X v:x%X pin:x%X\n", __FUNCTION__, _fun, func, x->m, x->v, pin);
+ 	return (pin);
+ }
+ 
+diff -ur a/drivers/pinctrl/sunplus/sppctl_gpio_ops.c a/drivers/pinctrl/sunplus/sppctl_gpio_ops.c
+--- a/drivers/pinctrl/sunplus/sppctl_gpio_ops.c	2022-07-12 15:37:24.627290571 +0300
++++ a/drivers/pinctrl/sunplus/sppctl_gpio_ops.c	2022-07-13 11:28:54.137684304 +0300
+@@ -60,7 +60,7 @@
+ 	sppctlgpio_chip_t *pc = (sppctlgpio_chip_t *)gpiochip_get_data(_c);
+ 
+ 	r = readl(pc->base2 + SPPCTL_GPIO_OFF_GFR + R32_ROF(_n));
+-	//KINF(_c->parent, "u F r:%X = %d %px off:%d\n", r, R32_VAL(r,R32_BOF(_n)), pc->base2, SPPCTL_GPIO_OFF_GFR + R32_ROF(_n));
++	KDBG(_c->parent, "u F r:%X = %d %px off:%d\n", r, R32_VAL(r,R32_BOF(_n)), pc->base2, SPPCTL_GPIO_OFF_GFR + R32_ROF(_n));
+ 	return (R32_VAL(r,R32_BOF(_n)));
+ }
+ 
+@@ -71,7 +71,7 @@
+ 	sppctlgpio_chip_t *pc = (sppctlgpio_chip_t *)gpiochip_get_data(_c);
+ 
+ 	r = readl(pc->base0 + SPPCTL_GPIO_OFF_CTL + R16_ROF(_n));
+-	//KINF(_c->parent, "u M r:%X = %d %px off:%d\n", r, R32_VAL(r,R16_BOF(_n)), pc->base0, SPPCTL_GPIO_OFF_CTL + R16_ROF(_n));
++	KDBG(_c->parent, "u M r:%X = %d %px off:%d\n", r, R32_VAL(r,R16_BOF(_n)), pc->base0, SPPCTL_GPIO_OFF_CTL + R16_ROF(_n));
+ 	return (R32_VAL(r,R16_BOF(_n)));
+ }
+ 
+@@ -81,6 +81,7 @@
+ 	u32 r;
+ 	sppctlgpio_chip_t *pc = (sppctlgpio_chip_t *)gpiochip_get_data(_c);
+ 
++	KDBG(_c->parent,"(%03d)", _n);
+ 	// FIRST
+ 	if (_f != muxFKEEP) {
+ 		r = readl(pc->base2 + SPPCTL_GPIO_OFF_GFR + R32_ROF(_n));
+@@ -109,6 +110,7 @@
+ 	sppctlgpio_chip_t *pc = (sppctlgpio_chip_t *)gpiochip_get_data(_c);
+ 	u16 inv_off = SPPCTL_GPIO_OFF_IINV;
+ 
++	KDBG(_c->parent,"(%03d)", _n);
+ 	if (sppctlgpio_f_gdi(_c, _n) == 0) inv_off = SPPCTL_GPIO_OFF_OINV;
+ #ifdef CONFIG_PINCTRL_SPPCTL_Q645
+ 	r = readl(pc->base0 + inv_off + R16_ROF(_n));
+@@ -124,6 +126,7 @@
+ 	sppctlgpio_chip_t *pc = (sppctlgpio_chip_t *)gpiochip_get_data(_c);
+ 	u16 inv_off = SPPCTL_GPIO_OFF_IINV;
+ 
++	KDBG(_c->parent,"(%03d)", _n);
+ 	r = (BIT(R16_BOF(_n))<<16) | BIT(R16_BOF(_n));
+ #ifdef CONFIG_PINCTRL_SPPCTL_Q645
+ 	writel(r, pc->base0 + inv_off + R16_ROF(_n));
+@@ -138,6 +141,7 @@
+ 	sppctlgpio_chip_t *pc = (sppctlgpio_chip_t *)gpiochip_get_data(_c);
+ 	u16 inv_off = SPPCTL_GPIO_OFF_OINV;
+ 
++	KDBG(_c->parent,"(%03d)", _n);
+ 	r = (BIT(R16_BOF(_n))<<16) | BIT(R16_BOF(_n));
+ #ifdef CONFIG_PINCTRL_SPPCTL_Q645
+ 	writel(r, pc->base0 + inv_off + R16_ROF(_n));
+@@ -152,6 +156,7 @@
+ 	u32 r;
+ 	sppctlgpio_chip_t *pc = (sppctlgpio_chip_t *)gpiochip_get_data(_c);
+ 
++	KDBG(_c->parent,"(%03d)", _n);
+ #ifdef CONFIG_PINCTRL_SPPCTL_Q645
+ 	r = readl(pc->base0 + SPPCTL_GPIO_OFF_OD + R16_ROF(_n));
+ #else
+@@ -165,6 +170,7 @@
+ 	u32 r;
+ 	sppctlgpio_chip_t *pc = (sppctlgpio_chip_t *)gpiochip_get_data(_c);
+ 
++	KDBG(_c->parent,"(%03d,%d)", _n, _v);
+ 	r = (BIT(R16_BOF(_n))<<16) | ((_v & BIT(0)) << R16_BOF(_n));
+ #ifdef CONFIG_PINCTRL_SPPCTL_Q645
+ 	writel(r, pc->base0 + SPPCTL_GPIO_OFF_OD + R16_ROF(_n));
+@@ -182,7 +188,7 @@
+ 	u32 r;
+ 	sppctlgpio_chip_t *pc = (sppctlgpio_chip_t *)gpiochip_get_data(_c);
+ 
+-	//KINF(_c->parent, "f_req(%03d)\n", _n);
++	KDBG(_c->parent, "(%03d)\n", _n);
+ 	// get GPIO_FIRST:32
+ 	r = readl(pc->base2 + SPPCTL_GPIO_OFF_GFR + R32_ROF(_n));
+ 	// set GPIO_FIRST(1):32
+@@ -201,6 +207,7 @@
+ 	u32 r;
+ 	sppctlgpio_chip_t *pc = (sppctlgpio_chip_t *)gpiochip_get_data(_c);
+ 
++	KDBG(_c->parent, "(%03d)\n", _n);
+ 	// set GPIO_MASTER(1):m16,v:16 - doesn't matter now: gpio mode is default
+ 	//r = (BIT(R16_BOF(_n))<<16) | BIT(R16_BOF(_n);
+ 	//writel(r, pc->base0 + SPPCTL_GPIO_OFF_CTL + R16_ROF(_n));
+@@ -219,6 +226,7 @@
+ 	u32 r;
+ 	sppctlgpio_chip_t *pc = (sppctlgpio_chip_t *)gpiochip_get_data(_c);
+ 
++	KDBG(_c->parent, "(%03d)\n", _n);
+ 	r = readl(pc->base0 + SPPCTL_GPIO_OFF_OE + R16_ROF(_n));
+ 	return (R32_VAL(r,R16_BOF(_n)) ^ BIT(0));
+ }
+@@ -229,6 +237,7 @@
+ 	u32 r;
+ 	sppctlgpio_chip_t *pc = (sppctlgpio_chip_t *)gpiochip_get_data(_c);
+ 
++	KDBG(_c->parent, "(%03d)\n", _n);
+ 	r = (BIT(R16_BOF(_n))<<16);
+ 	writel(r, pc->base0 + SPPCTL_GPIO_OFF_OE + R16_ROF(_n));
+ 	return (0);
+@@ -240,6 +249,7 @@
+ 	u32 r;
+ 	sppctlgpio_chip_t *pc = (sppctlgpio_chip_t *)gpiochip_get_data(_c);
+ 
++	KDBG(_c->parent, "(%03d,%d)\n", _n, _v);
+ 	r = (BIT(R16_BOF(_n))<<16) | BIT(R16_BOF(_n));
+ 	writel(r, pc->base0 + SPPCTL_GPIO_OFF_OE + R16_ROF(_n));
+ 	if (_v < 0) return (0);
+@@ -254,6 +264,7 @@
+ 	u32 r;
+ 	sppctlgpio_chip_t *pc = (sppctlgpio_chip_t *)gpiochip_get_data(_c);
+ 
++	KDBG(_c->parent, "(%03d)\n", _n);
+ 	r = readl(pc->base0 + SPPCTL_GPIO_OFF_IN + R32_ROF(_n));
+ 	return (R32_VAL(r,R32_BOF(_n)));
+ }
+@@ -264,6 +275,7 @@
+ 	u32 r;
+ 	sppctlgpio_chip_t *pc = (sppctlgpio_chip_t *)gpiochip_get_data(_c);
+ 
++	KDBG(_c->parent, "(%03d,%d)\n", _n, _v);
+ 	r = (BIT(R16_BOF(_n))<<16) | (_v & 0x0001) << R16_BOF(_n);
+ 	writel(r, pc->base0 + SPPCTL_GPIO_OFF_OUT + R16_ROF(_n));
+ }
+@@ -311,6 +323,7 @@
+ 	int i;
+ 	const char *label;
+ 
++	KDBG(_c->parent, "()\n");
+ 	for (i = 0; i < _c->ngpio; i++) {
+ 		if (!(label = gpiochip_is_requested(_c, i))) label = "";
+ 		seq_printf(_s, " gpio-%03d (%-16.16s | %-16.16s)", i + _c->base, _c->names[i], label);
+@@ -332,6 +345,7 @@
+ 	sppctlgpio_chip_t *pc = ( sppctlgpio_chip_t *)gpiochip_get_data(_c);
+ 	int i;
+ 
++	KDBG(_c->parent, "(%03d)\n", _off);
+ #ifdef SUPPORT_PINMUX
+ 	if ( _off < SPPCTL_MUXABLE_MIN || _off > SPPCTL_MUXABLE_MAX) {
+ 	  KERR(_c->parent, "i_map: %d is not muxable\n", _off);
+diff -ur a/drivers/pinctrl/sunplus/sppctl.h a/drivers/pinctrl/sunplus/sppctl.h
+--- a/drivers/pinctrl/sunplus/sppctl.h	2022-07-12 15:37:24.627290571 +0300
++++ a/drivers/pinctrl/sunplus/sppctl.h	2022-07-13 02:10:08.550317529 +0300
+@@ -73,8 +73,8 @@
+ 	} else { printk(KERN_ERR      MNAME": "fmt,##args); } }
+ #ifdef CONFIG_PINCTRL_SPPCTL_DEBUG
+ #define KDBG(pd,fmt,args...) { \
+-	if ((pd) != NULL) { dev_info((pd),""fmt,##args);  \
+-	} else { printk(KERN_DEBUG    MNAME": "fmt,##args); } }
++	if ((pd) != NULL) { dev_dbg((pd),""fmt,##args);  \
++	} else { pr_debug(KERN_DEBUG    MNAME": "fmt,##args); } }
+ #else
+ #define KDBG(pd,fmt,args...)
+ #endif
+diff -ur a/drivers/pinctrl/sunplus/sppctl_pinctrl.c a/drivers/pinctrl/sunplus/sppctl_pinctrl.c
+--- a/drivers/pinctrl/sunplus/sppctl_pinctrl.c	2022-07-12 15:37:24.627290571 +0300
++++ a/drivers/pinctrl/sunplus/sppctl_pinctrl.c	2022-07-13 11:45:29.859482796 +0300
+@@ -93,14 +93,14 @@
+ 
+ int stpctl_c_g_get(struct pinctrl_dev *_pd, unsigned _gid, unsigned long *_config)
+ {
+-	// KINF(_pd->dev, "%s(%d)\n", __FUNCTION__, _gid);
++	KDBG(_pd->dev, "%s(%d)\n", __FUNCTION__, _gid);
+ 	// FIXME: add data
+ 	return (0);
+ }
+ 
+ int stpctl_c_g_set(struct pinctrl_dev *_pd, unsigned _gid, unsigned long *_configs, unsigned _num_configs)
+ {
+-	// KINF(_pd->dev, "%s(%d,,%d)\n", __FUNCTION__, _gid, _num_configs);
++	KDBG(_pd->dev, "%s(%d,,%d)\n", __FUNCTION__, _gid, _num_configs);
+ 	// FIXME: delete ?
+ 	return (0);
+ }
+@@ -108,19 +108,19 @@
+ #ifdef CONFIG_DEBUG_FS
+ void stpctl_c_d_show(struct pinctrl_dev *_pd, struct seq_file *s, unsigned _off)
+ {
+-	// KINF(_pd->dev, "%s(%d)\n", __FUNCTION__, _off);
++	KDBG(_pd->dev, "%s(%d)\n", __FUNCTION__, _off);
+ 	seq_printf(s, " %s", dev_name(_pd->dev));
+ }
+ 
+ void stpctl_c_d_group_show(struct pinctrl_dev *_pd, struct seq_file *s, unsigned _gid)
+ {
+ 	// group: freescale/pinctrl-imx.c, 448
+-	// KINF(_pd->dev, "%s(%d)\n", __FUNCTION__, _gid);
++	KDBG(_pd->dev, "%s(%d)\n", __FUNCTION__, _gid);
+ }
+ 
+ void stpctl_c_d_config_show(struct pinctrl_dev *_pd, struct seq_file *s, unsigned long _config)
+ {
+-	// KINF(_pd->dev, "%s(%ld)\n", __FUNCTION__, _config);
++	KDBG(_pd->dev, "%s(%ld)\n", __FUNCTION__, _config);
+ }
+ #else
+ #define stpctl_c_d_show NULL
+@@ -452,7 +452,7 @@
+ 
+ void stpctl_o_mfre(struct pinctrl_dev *_pd, struct pinctrl_map *_map, unsigned num_maps)
+ {
+-	//KINF(_pd->dev, "%s(%d)\n", __FUNCTION__, num_maps);
++	KDBG(_pd->dev, "%s(%d)\n", __FUNCTION__, num_maps);
+ 	// FIXME: test
+ 	pinctrl_utils_free_map(_pd, _map, num_maps);
+ }

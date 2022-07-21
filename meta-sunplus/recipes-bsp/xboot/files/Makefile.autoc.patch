@@ -1,7 +1,7 @@
---- a/Makefile	2020-02-06 15:12:41.000477509 +0300
-+++ a/Makefile	2020-02-06 21:37:04.633257557 +0300
-@@ -199,7 +199,7 @@
- prepare: auto_config build_draminit
+--- a/Makefile	2022-04-19 16:53:59.804607551 +0300
++++ a/Makefile	2022-04-19 16:54:46.737928040 +0300
+@@ -508,7 +508,7 @@
+ endif
  	@mkdir -p $(BIN)
  
 -AUTOCONFH=tools/auto_config/auto_config_h

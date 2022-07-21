@@ -12,13 +12,13 @@ inherit base autotools
 
 S="${WORKDIR}/git/bluetooth"
 B="${S}"
-D="${WORKDIR}/image"
+D="${WORKDIR}/image/"
 
 do_install:append() {
- install -d ${D}/opt/
- install -m 0755 ${WORKDIR}/bt-reset.sh ${D}/opt/bt-reset.sh
+ install -d ${D}opt/
+ install -m 0755 ${WORKDIR}/bt-reset.sh ${D}opt/bt-reset.sh
  install -d ${D}/lib/systemd/system/
- install -m 0644 ${WORKDIR}/brcm-patchram-plus@.service ${D}/lib/systemd/system/brcm-patchram-plus@.service
+ install -m 0644 ${WORKDIR}/brcm-patchram-plus@.service ${D}lib/systemd/system/brcm-patchram-plus@.service
 }
 
 FILES:${PN}  = "/usr/sbin/*"

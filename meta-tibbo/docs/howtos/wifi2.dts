@@ -1,0 +1,5 @@
+/dts-v1/;
+
+#include "sp7021-ltpp3g2revD.dtsi"
+
+&sdio {  status = "okay";  };

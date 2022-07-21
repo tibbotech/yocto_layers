@@ -1,0 +1,7 @@
+
+
+| ..../build/tmp/hosttools/ld: cannot find -latomic
+| collect2: error: ld returned 1 exit status
+| node.target.mk:172: recipe for target '..../build/tmp/work/x86_64-linux/nodejs-native/10.15.3-r0/node-v10.15.3/out/Release/node' failed
+
+libatomic-devel should be installed on the host PC

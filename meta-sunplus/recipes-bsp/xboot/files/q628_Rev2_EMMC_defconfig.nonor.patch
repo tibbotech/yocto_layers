@@ -1,6 +1,6 @@
---- a/configs/q628_Rev2_EMMC_defconfig	2020-09-02 20:10:22.759626777 +0300
-+++ a/configs/q628_Rev2_EMMC_defconfig	2020-09-28 02:22:38.429501877 +0300
-@@ -20,7 +20,7 @@
+--- a/configs/q628_Rev2_EMMC_defconfig	2022-04-19 19:29:32.948368199 +0300
++++ a/configs/q628_Rev2_EMMC_defconfig	2022-04-19 19:30:21.028693939 +0300
+@@ -17,7 +17,7 @@
  # CONFIG_HAVE_PARA_NAND is not set
  # CONFIG_HAVE_SPI_NAND is not set
  CONFIG_HAVE_FS_FAT=y

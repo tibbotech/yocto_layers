@@ -2,12 +2,10 @@ SUMMARY = "PJSIP library"
 DESCRIPTION = "PJSIP is a free and open source multimedia communication library written in C"
 HOMEPAGE = "https://www.pjsip.org/"
 SECTION = "libs/multimedia"
-LICENSE = "MIT"
 PACKAGES = "${PN}-dev ${PN}-staticdev ${PN}-dbg"
 
 SRC_URI  = "git://github.com/pjsip/pjproject.git;protocol=https;branch=${X_BR}"
 SRC_URI += "file://config_site.h"
-#SRC_URI += "file://Makefile.patch"
 
 S = "${WORKDIR}/git"
 
@@ -53,5 +51,3 @@ DEPENDS += "util-linux"
 DEPENDS += "alsa-lib"
 
 RDEPENDS:${PN}-dev = "${PN}-dev"
-
-LIC_FILES_CHKSUM = "file://COPYING;md5=801f80980d171dd6425610833a22dbe6"

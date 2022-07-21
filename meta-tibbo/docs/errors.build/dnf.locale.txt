@@ -1,6 +1,0 @@
-ERROR: TPS-node-1.0-r1 do_rootfs: [log_check] TPS-node: found 2 error messages in the logfile:
-[log_check] Failed to set locale, defaulting to C
-[log_check] Failed to set locale, defaulting to C
-
-fix:
-ln -s /usr/share/locale /usr/lib

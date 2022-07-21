@@ -1,0 +1,16 @@
+# How to enable WiFi without Eth connection
+
+Put WiFi module on the socket and in serial console:
+```
+# echo -e "/dts-v1/;\n\n#include \"sp7021-ltpp3g2revD.dtsi\"\n\n&sdio {  status = \"okay\";  };" > ./wifi2.dts
+# wpa_passphrase SID pass >> /etc/wpa_supplicant/wlan0.conf
+# /opt/tps-dts/conv.sh wifi2.dts && reboot
+```
+Check for wlan0 interface existance after boot by running
+```
+# ifconfig wlan0
+```
+if interface is not exist, check dmesg:
+```
+# dmesg | grep -i sdio
+```

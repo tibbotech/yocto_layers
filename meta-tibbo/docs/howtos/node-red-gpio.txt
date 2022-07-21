@@ -1,0 +1,7 @@
+# NodeRed GPIO
+
+```
+# dnf install -y node-red-contrib-libgpiod
+
+```
+http://10.1.1.100:1880/

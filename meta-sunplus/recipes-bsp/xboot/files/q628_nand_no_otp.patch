@@ -1,8 +1,8 @@
---- a/configs/q628_Rev2_SPINAND_defconfig	2021-01-20 17:41:45.858649573 +0300
-+++ a/configs/q628_Rev2_SPINAND_defconfig	2021-01-20 17:41:55.178524304 +0300
-@@ -12,7 +12,7 @@
- # CONFIG_XIP_SPIBAREMETAL is not set
+--- a/configs/q628_Rev2_SPINAND_defconfig	2022-04-19 16:57:25.476626699 +0300
++++ a/configs/q628_Rev2_SPINAND_defconfig	2022-04-19 16:58:06.501031281 +0300
+@@ -10,7 +10,7 @@
  # CONFIG_BOOT_ON_CSIM is not set
+ # CONFIG_HAVE_UART_BOOTSTRAP is not set
  CONFIG_HAVE_USB_DISK=y
 -CONFIG_HAVE_OTP=y
 +# CONFIG_HAVE_OTP=y

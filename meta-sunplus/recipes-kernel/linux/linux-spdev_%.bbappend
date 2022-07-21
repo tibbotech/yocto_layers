@@ -1,42 +1,37 @@
 FILESEXTRAPATHS:prepend := "${THISDIR}/linux-spdev:"
 
+SUMMARY = "Linux kernel (SunPlus,dev)"
+
 # may be moved to /machine/ config
 KMACHINE:tppg2 = "pentagram"
 
-KBRANCH:tppg2 = "master"
 #KBRANCH:tppg2 = "kernel_4.19"
 #KBRANCH:tppg2 = "tibbo/spi_exp"
 #KBRANCH:tppg2 = "tibbo/spi_exp2"
 #KBRANCH:tppg2 = "tibbo/485"
 #KBRANCH:tppg2 = "tibbo/spi256"
 KBRANCH:tppg2 = "kernel_5.4"
+#KBRANCH:tppg2 = "master"
+
 # mainline
 COMPATIBLE_MACHINE:append = "|tppg2"
 
 SRC_URI = "git://git@113.196.136.131:22/qac628/linux/kernel;protocol=ssh;name=machine;branch=${KBRANCH}"
-# SRC_URI += "git://git.yoctoproject.org/yocto-kernel-cache;type=kmeta;name=meta;branch=yocto-4.12;destsuffix=${KMETA}"
 SRC_URI += "file://kernel-meta/*;type=kmeta;name=meta;destsuffix=${KMETA}"
 #SRC_URI += "file://kernel-meta.tar.gz;type=kmeta;name=meta;destsuffix=${KMETA}"
-#SRC_URI += "git://git.yoctoproject.org/yocto-kernel-cache;type=kmeta;name=meta;branch=yocto-4.12;destsuffix=${KMETA}"
+#SRC_URI += "git://git.yoctoproject.org/yocto-kernel-cache;type=kmeta;name=meta;branch=yocto-4.19;destsuffix=${KMETA}"
 
-# 5.4 master
-SRCREV = "3d2a894c9d9038ab101e9b3917e8587365e689b7"
-## 5.4 tibbo/spi_exp
-#SRCREV = "1cc820c8fb982b0dc359513dc069bba4e097fcd1"
-## 5.4 tibbo/spi_exp2
-#SRCREV = "acd013f0a071284c010f25bc71b7b96d042bfcc1"
-# 5.4 master
-SRCREV = "79cd32402bf45c0db27bdf8392865369a3d1d52d"
 # 4.19
 SRCREV_machine:tppg2 = "e81c7196d43ee83e0c05a9ac666cfe7a5fbd2ce9"
+# 5.4 tibbo/spi_exp
+SRCREV_machine:tppg2 = "1cc820c8fb982b0dc359513dc069bba4e097fcd1"
+# 5.4 tibbo/spi_exp2
+SRCREV_machine:tppg2 = "acd013f0a071284c010f25bc71b7b96d042bfcc1"
 # 5.4 master
-SRCREV_machine:tppg2 = "3d2a894c9d9038ab101e9b3917e8587365e689b7"
-## 5.4 tibbo/spi_exp
-#SRCREV_machine:tppg2 = "1cc820c8fb982b0dc359513dc069bba4e097fcd1"
-## 5.4 tibbo/spi_exp2
-#SRCREV_machine:tppg2 = "acd013f0a071284c010f25bc71b7b96d042bfcc1"
-# 5.4 master
-SRCREV_machine:tppg2 = "79cd32402bf45c0db27bdf8392865369a3d1d52d"
+SRCREV_machine:tppg2 = "69009583880c562439e0a3962797a0ea8d2e55da"
+
+# temporary it is the copy
+SRCREV = "69009583880c562439e0a3962797a0ea8d2e55da"
 
 # if using meta from master
 #SRCREV_meta ?= "cebe198870d781829bd997a188cc34d9f7a61023"
@@ -50,11 +45,11 @@ PREMIRRORS=""
 
 KMETA="kernel-meta"
 
-#SRC_URI += "file://defconfig"
-
 SRC_URI += "file://dts/sp7021-ttt.dts.patch"
 #SRC_URI += "file://pinctrl_dbg/sppctl.c.err.patch"
 #SRC_URI += "file://pinctrl_dbg/sp7021_gpio_ops.c.Fdbg.patch"
+#SRC_URI += "file://pinctrl_dbg/pins.newdbg.patch"
+#SRC_URI += "file://irq-sp-intc.c.dv1.patch"
 
 SRC_URI += "file://dts/sp7021-tpsgpio.dts.patch"
 # for gpio-driven rts/cts
@@ -114,21 +109,14 @@ RDEPENDS:kernel-module-bcmdhd += "bcmdhd-firmware"
 
 #KERNEL_EXTRA_FEATURES += "features/initramfs/initramfs.scc"
 
-#do_install:append() {
-# install -m 0755 -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/3rdparty
-# install -m 0644 ${S}/tpsga1000v0${KERNEL_OBJECT_SUFFIX} ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/3rdparty
-# # to force load ASAP for non-builtin module: applications start too fast
-## install -d ${D}${sysconfdir}/modules-load.d
-## install -m 0644 ${S}/tpsleds.conf ${D}${sysconfdir}/modules-load.d/
-#}
-
 KERNEL_FEATURES:append = " cfg/rpi-ovls/ovls-4.19.scc"
 
 KERNEL_FEATURES:append = "${@bb.utils.contains("MACHINE_FEATURES", "touchscreen", " custom/touchscreen/all.scc", "" ,d)}"
 KERNEL_FEATURES:append = "${@bb.utils.contains("MACHINE_FEATURES", "usbgadget", " features/usb/usb-gadgets.scc", "" ,d)}"
 KERNEL_FEATURES:append = "${@bb.utils.contains("MACHINE_FEATURES", "3g", " custom/modems/protos.scc", "" ,d)}"
+KERNEL_FEATURES:append = " ${@bb.utils.contains('MACHINE_FEATURES', 'vfat', 'cfg/fs/vfat.scc', '', d)}"
 KERNEL_FEATURES:append = " custom/tunnel/udp.scc"
 KERNEL_FEATURES:append = " cgl/net/l2tp.scc"
 KERNEL_FEATURES:append = " custom/netfilter/addrtype.scc"
 
-LIC_FILES_CHKSUM = "file://COPYING;md5=bbea815ee2795b2f4230826c0c6b8814"
+DEPENDS += "isp-native"

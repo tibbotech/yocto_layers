@@ -7,7 +7,6 @@ COMPATIBLE_HOST = "(arm).*-linux"
 
 #SRC_URI += "file://xboot.Makefile.size.patch"
 SRC_URI += "file://Makefile.autoc.patch"
-#SRC_URI += "file://q628_Rev2_EMMC_defconfig.nonor.patch"
 
 SRC_URI += "file://q628_emmc_no_otp.patch"
 SRC_URI += "file://q628_nand_no_otp.patch"

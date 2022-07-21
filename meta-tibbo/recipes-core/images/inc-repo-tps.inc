@@ -1,6 +1,7 @@
 
 # tests and benchmarks
 DEPENDS += "dvtests"
+DEPENDS += "dvkgpio"
 DEPENDS += "twgtest"
 DEPENDS += "evtest"
 

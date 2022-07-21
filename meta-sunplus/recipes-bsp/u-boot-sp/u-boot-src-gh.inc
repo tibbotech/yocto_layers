@@ -6,6 +6,7 @@ LICENSE = "GPLv2+"
 PE = "1"
 
 SRCREV = "1168594b9200053dee48d7e129726c9ffa4d17cd"
+SRCREV = "f54031e811bab7c184d45d159f9e6170aaec2e14"
 
 SRC_URI = "git://github.com/tibbotech/plus1_uboot.git;protocol=https;branch=master"
 

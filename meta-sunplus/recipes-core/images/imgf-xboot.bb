@@ -38,6 +38,8 @@ python tinyinitrd () {
 IMAGE_INSTALL = "xboot"
 DEPENDS += "xboot-nand"
 DEPENDS += "xboot-emmc"
+DEPENDS += "xboot-emmc-us"
+DEPENDS += "xboot-emmc-sd"
 DEPENDS += "bnoos"
 
 # OpenAMP

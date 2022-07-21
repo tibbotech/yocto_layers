@@ -1,0 +1,6 @@
+
+Wireless-regdb build requires m2crypto in python on the host PC:
+
+```
+# urpmi python-m2crypto
+```
