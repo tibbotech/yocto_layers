@@ -23,6 +23,8 @@ IMAGE_INSTALL += "kern-mod-twg"
 IMAGE_INSTALL += "${@bb.utils.contains("DISTRO_FEATURES", "wifi", "packagegroup-base-wifi", "",d)}"
 IMAGE_INSTALL:append:tppg2 += "${@bb.utils.contains("DISTRO_FEATURES", "wifi", "kernel-module-bcmdhd bcmdhd-firmware", "",d)}"
 IMAGE_INSTALL:append:tppg2 += "${@bb.utils.contains("DISTRO_FEATURES", "bluetooth", "brcm-patchram-plus", "",d)}"
+# systemd-growfs is not working for some reason
+IMAGE_INSTALL += "${@bb.utils.contains("DISTRO_FEATURES", "sysXtemd", "", "resize-helper",d)}"
 IMAGE_INSTALL += "u-boot-fw-utils"
 #IMAGE_INSTALL:append:tppg2 += "kernel-module-mcp251x"
 #IMAGE_INSTALL:append:tppg2 += "kernel-module-mcp25xxfd"

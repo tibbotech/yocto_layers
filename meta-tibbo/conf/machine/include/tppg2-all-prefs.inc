@@ -1,32 +1,21 @@
 
-# possible values:
-# gh - public github version
-# sp - private SP version
+# SRC_URI is defined at:
+# meta-sunplus/recipes-bsp/isp/isp.bb
+# meta-sunplus/recipes-bsp/b-chip/bnoos.bb
+# meta-sunplus/recipes-bsp/xboot/xboot-src.inc
+# meta-sunplus/recipes-bsp/u-boot/u-boot-src.inc
 
-xboot_v = "gh"
-PREFERRED_VERSION_xboot = "${xboot_v}"
-PREFERRED_VERSION_xboot-nand = "${xboot_v}"
-PREFERRED_VERSION_xboot-emmc = "${xboot_v}"
-PREFERRED_VERSION_xboot-emmc-us = "${xboot_v}"
-PREFERRED_VERSION_xboot-tools = "${xboot_v}"
-PREFERRED_VERSION_xboot-tools-native = "${xboot_v}"
-PREFERRED_VERSION_xboot-helpers = "${xboot_v}"
-PREFERRED_VERSION_xboot-helpers-native = "${xboot_v}"
-
-PREFERRED_VERSION_isp-native = "gh"
-
-PREFERRED_VERSION_bnoos = "gh"
-
-uboot_v = "gh"
+uboot_v = "sp"
 PREFERRED_VERSION_u-boot-fw-utils = "${uboot_v}"
 PREFERRED_VERSION_u-boot-tools = "${uboot_v}"
 PREFERRED_VERSION_u-boot-tools-native = "${uboot_v}"
 PREFERRED_VERSION_u-boot = "${uboot_v}"
 
 # possible values:
-# linux-sprel - public github version
-# linux-spdev - private SP version
+# linux-sp - public github version
 # linux-yocto - traditional Yocto version
+# SRC_URI for "sp" is defined at:
+# meta-sunplus/recipes-kernel/linux/linux-sp_%.bbappend
 
-linux_v = "sprel"
+linux_v = "sp"
 PREFERRED_PROVIDER_virtual/kernel = "linux-${linux_v}"

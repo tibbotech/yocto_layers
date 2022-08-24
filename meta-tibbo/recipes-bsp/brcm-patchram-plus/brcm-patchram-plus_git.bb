@@ -42,7 +42,7 @@ RDEPENDS:${PN} += "kernel-module-cmac"
 RDEPENDS:${PN} += "tps-bash"
 
 # can't parse @ - fix it
-SYSTEMD_SERVICE:brcm-patchram-plus = "brcm-patchram-plus@.service brcm-patchram-plus@S4"
-SYSTEMD_AUTO_ENABLE:brcm-patchram-plus = "enable"
+SYSTEMD_SERVICE:${PN} = "brcm-patchram-plus@S4.service"
+SYSTEMD_AUTO_ENABLE:${PN} = "enable"
 
 LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/${LICENSE};md5=89aea4e17d99a7cacdbeed46a0096b10"

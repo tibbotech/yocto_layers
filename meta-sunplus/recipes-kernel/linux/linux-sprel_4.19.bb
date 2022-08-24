@@ -1,1 +1,0 @@
-./linux-spdev_4.19.bb

@@ -36,17 +36,15 @@ pin_dir ${p_STATUS} "in"
 
 #----------------------
 logger "${sock}: Powering up the modem...";
-# old initial set
-#pin_set ${p_RESET} "1"
-# new: making both off first
-pin_set ${p_RESET} "0"
-pin_set ${p_SDWIN} "0"
-pin_set ${p_PWRKEY} "0"
-# start modem
+pin_set ${p_RESET} "1"
 pin_set ${p_SDWIN} "1"
+sleep 1
 pin_set ${p_PWRKEY} "1"
-sleep 0.5
+sleep 2
 pin_set ${p_PWRKEY} "0"
+sleep 2
+pin_set ${p_RESET} "0"
+sleep 5
 
 i=0
 s=0

@@ -5,10 +5,8 @@ description = "Linux TPP3 Gen 2 - LTPP3g2 base board definition"
 board = "boards/ltpp3g2.brd"
 
 [sockets]
-sga = "wm6256"
 
 [bom]
-tibbit_wm6256 = 1
 board_ltpp3g2 = 1
 
 [messages]

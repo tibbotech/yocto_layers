@@ -1,8 +1,8 @@
 [Unit]
 Description=WPA (interface- and nl80211 driver-specific)
 ConditionPathExists=/sys/class/net/%i
-Requires=sys-subsystem-net-devices-%i.device
-After=sys-subsystem-net-devices-%i.device
+#Requires=sys-subsystem-net-devices-%i.device
+#After=sys-subsystem-net-devices-%i.device
 Before=network.target
 Wants=network.target
 

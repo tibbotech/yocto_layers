@@ -24,7 +24,6 @@ IMAGE_FEATURES += "package-management"
 IMAGE_INSTALL += "gdbserver"
 IMAGE_INSTALL += "tcf-agent"
 
-IMAGE_INSTALL += "resize-helper"
 IMAGE_INSTALL += "tzdata-asia"
 
 IMAGE_INSTALL += "tps-wan"

@@ -3,6 +3,7 @@ ROOTFS_POSTPROCESS_COMMAND:prepend += "dv_rootfs_issue;"
 ROOTFS_POSTPROCESS_COMMAND:prepend += "dv_rootfs_clean;"
 ROOTFS_POSTPROCESS_COMMAND:prepend += "dv_rootfs_sshroot;"
 ROOTFS_POSTPROCESS_COMMAND:prepend += "dv_rootfs_bash;"
+#ROOTFS_POSTPROCESS_COMMAND:prepend += "dv_rootfs_growfs;"
 #ROOTFS_POSTPROCESS_COMMAND:prepend += "dv_rootfs_mounts;"
 
 dv_rootfs_issue() {
@@ -31,6 +32,13 @@ dv_rootfs_bash() {
  if [ -e ${IMAGE_ROOTFS}/bin/bash ] || [ -h ${IMAGE_ROOTFS}/bin/bash ]; then
    sed -i "s/^\(root.*\):\/bin\/sh/\1:\/bin\/bash/" ${IMAGE_ROOTFS}/etc/passwd
  fi;
+}
+
+# use x-systemd.growfs if systemd (not working for some reason)
+dv_rootfs_growfs() {
+ if [ -f ${IMAGE_ROOTFS}/etc/fstab ] && [ "${@bb.utils.filter('DISTRO_FEATURES', 'systemd', d)}" ]; then
+   sed -i -e '/^[#[:space:]]*\/dev\/root/{s/defaults/defaults,x-systemd.growfs/;s/\([[:space:]]*[[:digit:]]\)\([[:space:]]*\)\([[:digit:]]\)$/\1\2\3/}' ${IMAGE_ROOTFS}/etc/fstab
+ fi
 }
 
 dv_rootfs_mounts() {

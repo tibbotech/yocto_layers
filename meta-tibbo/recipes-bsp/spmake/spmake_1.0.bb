@@ -4,14 +4,19 @@ HOMEPAGE = "https://tibbo.com/"
 SECTION = "devel"
 LICENSE = "GPLv3+"
 
-SRC_URI += "file://sp_make.mk"
-SRC_URI += "file://sp_make.inc.mk"
+SRCREV="${AUTOREV}"
+
+SRC_URI  = "git://github.com/tibbotech/spmake.git;protocol=https;branch=main"
+#SRC_URI += "file://sp_make.mk"
+#SRC_URI += "file://sp_make.inc.mk"
+
+S="${WORKDIR}/git"
 
 inherit deploy
 
 do_deploy() {
  echo "DV3:${DEPLOYDIR}"
- install -p -m0644 ${WORKDIR}/sp_make*.mk ${DEPLOYDIR}/
+ install -p -m0644 ${S}/sp_make*.mk ${DEPLOYDIR}/
 }
 
 addtask do_deploy after do_compile before do_build

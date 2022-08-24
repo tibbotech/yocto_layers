@@ -1,0 +1,11 @@
+--- a/arch/arm/boot/dts/sp7021-ltpp3g2revD.dts	2022-08-16 04:04:25.811482475 +0300
++++ a/arch/arm/boot/dts/sp7021-ltpp3g2revD.dts	2022-08-17 11:50:05.617392046 +0300
+@@ -8,5 +8,7 @@
+ #include "sp7021-ltpp3g2revD.dtsi"
+ 
+ / {
+-	model = "SP7021 LTPP3G2 Rev. D (empty sockets)";
++	model = "SP7021 LTPP3G2 Rev. D (empty+wifi)";
+ };
++
++&sdio {  status = "okay";  };

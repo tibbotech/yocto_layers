@@ -1,0 +1,54 @@
+--- a/drivers/pinctrl/sunplus/sppctl_gpio_ops.c	2022-08-04 22:09:24.952880448 +0300
++++ a/drivers/pinctrl/sunplus/sppctl_gpio_ops.c	2022-08-04 22:10:24.325879881 +0300
+@@ -52,6 +52,7 @@
+ #define R32_VAL(r,boff)         (((r)>>(boff)) & BIT(0))
+ 
+ int sppctlgpio_f_gdi(struct gpio_chip *_c, unsigned _n);
++void sppctlgpio_unmux_irq( struct gpio_chip *_c, unsigned _pin);
+ 
+ // who is first: GPIO(1) | MUX(0)
+ int sppctlgpio_u_gfrst(struct gpio_chip *_c, unsigned int _n)
+@@ -245,6 +246,7 @@
+ 	if (_v < 0) return (0);
+ 	r = (BIT(R16_BOF(_n))<<16) | ((_v & BIT(0)) << R16_BOF(_n));
+ 	writel(r, pc->base0 + SPPCTL_GPIO_OFF_OUT + R16_ROF(_n));
++	sppctlgpio_unmux_irq( _c, _n);
+ 	return (0);
+ }
+ 
+@@ -332,12 +334,10 @@
+ 	sppctlgpio_chip_t *pc = ( sppctlgpio_chip_t *)gpiochip_get_data(_c);
+ 	int i;
+ 
+-#ifdef SUPPORT_PINMUX
+ 	if ( _off < SPPCTL_MUXABLE_MIN || _off > SPPCTL_MUXABLE_MAX) {
+ 	  KERR(_c->parent, "i_map: %d is not muxable\n", _off);
+ 	  return -ENXIO;
+ 	}
+-#endif
+ 
+ 	for ( i = 0; i < SPPCTL_GPIO_IRQS; i++) {
+ 	  if ( pc->irq[ i] < 0) continue;
+@@ -351,5 +351,22 @@
+ 	  KDBG(_c->parent, "i_map: pin %d muxed to %d irq\n", _off, pc->irq[ i]);
+ 	  return pc->irq[ i];
+ 	}
++	KERR(_c->parent, "i_map: no free IRQ for %d\n", _off);
+ 	return -ENXIO;
+ }
++
++void sppctlgpio_unmux_irq( struct gpio_chip *_c, unsigned _pin) {
++	sppctlgpio_chip_t *pc = ( sppctlgpio_chip_t *)gpiochip_get_data( _c);
++	int i;
++	KDBG(_c->parent, "%s(%d)\n", __FUNCTION__, _pin);
++	// if irq is binded - free it
++	for ( i = 0; i < SPPCTL_GPIO_IRQS; i++) {
++	  if ( pc->irq[ i] < 0) continue;
++	  if ( pc->irq_pin[ i] != _pin) continue;
++	  KDBG(_c->parent, "%s(%03d) detouching from irq: %d\n", __FUNCTION__, _pin, pc->irq[ i]);
++#ifdef SUPPORT_PINMUX
++	  sppctl_pin_set( ( sppctl_pdata_t *)( _c->parent->platform_data), 0, MUXF_GPIO_INT0 + i - 2);
++#endif
++	  pc->irq_pin[ i] = -1;
++       }
++}
