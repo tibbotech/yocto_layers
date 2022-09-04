@@ -58,6 +58,7 @@ Final images and parts will be placed at
 | -------------- | ------- | ------------ | ------------------------------------ | ---------------------- | ---------------------------------------------|
 | tpp-tppg2-arm5 | tps     | imgf-xboot   | bitbake mc:tpp-tppg2-arm5:imgf-xboot |  ~2800 /  6 GB / 29 GB | Builds several versions of XBoot and A926 FW |
 | tpp-tppg2      | tps     | img-tst-tini | bitbake mc::img-tst-tini             |  ~4800 /  7 GB / 30 GB | Small CLI systemd-only image                 |
+| tpp-tppg2      | tin     | img-tst-tini | DISTRO=tin bitbake mc::img-tst-tini  |  ~3300 /  3 GB / 10 GB | Test: No systemd, no WiFi, no BT image       |
 | tpp-tppg2      | tps     | img-tps-free | bitbake mc::img-tps-free             |  ~4950 /  7 GB / 31 GB | + package management, gdb, tcf-agent         |
 | tpp-tppg2      | tps     | img-tps-base | bitbake mc::img-tps-base             |  ~5400 /  7 GB / 32 GB | + TiOS, TPS-WAN, other closed-source apps    |
 | tpp-tppg2      | tps     | img-tps-repo | bitbake mc::img-tps-repo             |  ~9900 / 12 GB / 40 GB | Packages free + private collection           |
