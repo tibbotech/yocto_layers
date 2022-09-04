@@ -7,6 +7,10 @@ Read [Tibbo Yocto Layers Howto](https://tibbotech.github.io/plus1_layers/) for m
 
 ## 1. Preparing the ENV
 
+### 1.0 Checking your OS requirements
+
+[Yocto Reference Manual](https://docs.yoctoproject.org/ref-manual/system-requirements.html#required-packages-for-the-build-host)
+
 ### 1.1 Clonning layers
 ```
 rel="dunfell"
