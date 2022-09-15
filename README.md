@@ -20,7 +20,7 @@ git clone https://github.com/OpenAMP/meta-openamp.git ./poky/meta-openamp
 git clone -b ${rel} git://git.openembedded.org/meta-openembedded ./poky/meta-openembedded
 git clone -b ${rel} https://github.com/tibbotech/yocto_layers.git ./poky.x
 rsync -a --exclude=.git ./poky.x/ ./poky/
-patch -p0 < ./poky/npm.${rel}.patch
+patch -d ./poky -p0 < ./meta-tibbo/npm.${rel}.patch
 sed -i 's/"honister/"dunfell honister/g' ./poky/meta-openamp/conf/layer.conf
 ```
 
