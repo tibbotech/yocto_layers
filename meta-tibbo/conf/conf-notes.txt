@@ -1,11 +1,29 @@
 Targets are:
-    imgm-spmn
-    imgm-spmt
-    imgm-spba
+    mc:tpp-tppg2-arm5:imgf-xboot // (0) Xboot + a926 FW
+    mc::img-tps-tini	// (1) Small CLI systemd-only
+    mc::img-tps-free	// (2) = (1) + package management, gdb, tcf-agent
+    mc::img-tps-base	// (3) = (2) + Tibbo private apps
+    imim-spmn	// (0) + (2)
+    imgm-spmt	// (0) + (3)
+    imgm-spba	// Build Applience image
+    mc::img-tps-repo	// Tibbo packages collection
+
+DISTROs:
+    tps		// (default) Systemd enabled + WiFi/BT/usb + X11/Wayland
+    tin		// rc-based test image
+
+SDK generation:
+    -c populate_sdk (0),(3)
 
 Additional targets are:
     meta-toolchain
     adt-installer
     meta-ide-support
 
-You can also run generated qemu images with a command like 'runqemu qemux86'
+Examples:
+    bitbake imgm-spmn
+    bitbakle mc::img-tps-free
+    bitbake mc:tpp-tppg2-arm5:imgf-xboot
+    DISTRO=tin bitbake mc::img-tps-tini
+    bitbake -c populate_sdk mc:tpp-tppg2-arm5:imgf-xboot
+    bitbake -c populate_sdk mc::img-tps-free

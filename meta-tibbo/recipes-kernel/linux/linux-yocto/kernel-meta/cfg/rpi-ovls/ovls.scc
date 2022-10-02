@@ -1,6 +1,0 @@
-define KFEATURE_DESCRIPTION "Enable ConfigFS device tree updates (from RPi)"
-define KFEATURE_COMPATIBILITY all
-force kconf non-hardware ovls.cfg
-patch Kconfig.ovls.patch
-#patch Makefile.ovls.patch
-#patch configfs.c.ovls.patch

@@ -1,9 +1,0 @@
---- a/drivers/pinctrl/sunplus/sppctl_gpio_ops.h	2022-08-04 18:02:25.698021775 +0300
-+++ a/drivers/pinctrl/sunplus/sppctl_gpio_ops.h	2022-08-04 19:17:03.653979070 +0300
-@@ -81,4 +81,6 @@
- 
- int sppctlgpio_i_map(struct gpio_chip *_c, unsigned _off);
- 
-+void sppctlgpio_unmux_irq( struct gpio_chip *_c, unsigned _pin);
-+
- #endif // SPPCTL_GPIO_OPS_H

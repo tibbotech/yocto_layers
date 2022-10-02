@@ -1,6 +1,0 @@
-fix kernels < 4.4.21.
-
-http://www.spinics.net/lists/linux-usb/msg141251.html
-
-DMA channel messing up!
-use RX instead of TX

@@ -5,7 +5,6 @@ SECTION = "bootloaders"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 COMPATIBLE_HOST = "(arm).*-linux"
 
-#SRC_URI += "file://xboot.Makefile.size.patch"
 SRC_URI += "file://Makefile.autoc.patch"
 
 SRC_URI += "file://q628_emmc_no_otp.patch"

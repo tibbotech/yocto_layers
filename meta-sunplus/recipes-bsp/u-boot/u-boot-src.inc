@@ -22,9 +22,6 @@ SRC_URI += "file://sandbox_defconfig.patch"
 SRC_URI += "file://Makefile.dtsev.patch"
 SRC_URI += "file://sp7021-ev.dts.patch"
 
-# icognize test
-#SRC_URI += "file://sp7021-ltpp3g2revD.dts.nousb.patch"
-
 S = "${WORKDIR}/git"
 B = "${WORKDIR}/build"
 do_configure[cleandirs] = "${B}"

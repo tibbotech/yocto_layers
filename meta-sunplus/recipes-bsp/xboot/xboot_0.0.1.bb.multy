@@ -14,10 +14,6 @@ git://git@113.196.136.131:22/qac628/boot/draminit;protocol=ssh;name=draminit;bra
 git://git@113.196.136.131:22/qac628/boot/xboot;protocol=ssh;name=xboot;branch=master;destsuffix=xboot; \
 "
 
-SRC_URI += "file://xboot.boot.ldi.patch"
-SRC_URI += "file://xboot.config.h.patch"
-SRC_URI += "file://xboot.Makefile.size.patch"
-
 S = "${WORKDIR}/xboot"
 
 XBOOT_CONFIG ?= "q628_defconfig"

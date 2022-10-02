@@ -1,0 +1,37 @@
+# POKY_BBLAYERS_CONF_VERSION is increased each time build/conf/bblayers.conf
+# changes incompatibly
+POKY_BBLAYERS_CONF_VERSION = "2"
+
+BBPATH = "${TOPDIR}"
+BBFILES ?= ""
+
+BBLAYERS ?= " \
+  ${TOPDIR}/../meta \
+  ${TOPDIR}/../meta-poky \
+  ${TOPDIR}/../meta-yocto-bsp \
+  "
+BBLAYERS += " \
+  ${TOPDIR}/../meta-openembedded/meta-multimedia \
+  ${TOPDIR}/../meta-openembedded/meta-networking \
+  ${TOPDIR}/../meta-openembedded/meta-oe \
+  ${TOPDIR}/../meta-openembedded/meta-perl \
+  ${TOPDIR}/../meta-openembedded/meta-python \
+  ${TOPDIR}/../meta-openembedded/meta-webserver \
+  ${TOPDIR}/../meta-openembedded/meta-filesystems \
+  "
+
+BBLAYERS += "${TOPDIR}/../meta-tibbo"
+BBLAYERS += "${TOPDIR}/../meta-sunplus"
+BBLAYERS += "${TOPDIR}/../meta-priv-tibbo"
+BBLAYERS += "${TOPDIR}/../meta-priv-ublox"
+
+BBLAYERS += "${TOPDIR}/../meta-qt5"
+BBLAYERS += "${TOPDIR}/../meta-openamp"
+
+# tensorflow (face recognition)
+# BBLAYERS += "${TOPDIR}/../meta-scipy"
+# BBLAYERS += "${TOPDIR}/../meta-tensorflow"
+# browser test
+# BBLAYERS += "${TOPDIR}/../meta-clang"
+# BBLAYERS += "${TOPDIR}/../meta-rust"
+# BBLAYERS += "##OEROOT##/../meta-browser"

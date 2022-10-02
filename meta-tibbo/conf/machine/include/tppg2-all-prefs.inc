@@ -1,5 +1,5 @@
 
-# SRC_URI is defined at:
+# SRC_URI mirrors is defined at:
 # meta-sunplus/recipes-bsp/isp/isp.bb
 # meta-sunplus/recipes-bsp/b-chip/bnoos.bb
 # meta-sunplus/recipes-bsp/xboot/xboot-src.inc

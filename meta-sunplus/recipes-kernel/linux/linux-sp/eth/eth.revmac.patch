@@ -1,0 +1,35 @@
+--- a/drivers/net/ethernet/sunplus/l2sw_driver.c	2022-09-30 02:00:25.665271943 +0300
++++ a/drivers/net/ethernet/sunplus/l2sw_driver.c	2022-09-30 02:17:38.521262093 +0300
+@@ -325,10 +325,16 @@
+ 	// Check vendor id and convert byte order if it is wrong.
+ 	if ((mac_addr[5] == 0xFC) && (mac_addr[4] == 0x4B) && (mac_addr[3] == 0xBC) &&
+ 		((mac_addr[0] != 0xFC) || (mac_addr[1] != 0x4B) || (mac_addr[2] != 0xBC))) {
++#if 0
+ 		char tmp;
+ 		tmp = mac_addr[0]; mac_addr[0] = mac_addr[5]; mac_addr[5] = tmp;
+ 		tmp = mac_addr[1]; mac_addr[1] = mac_addr[4]; mac_addr[4] = tmp;
+ 		tmp = mac_addr[2]; mac_addr[2] = mac_addr[3]; mac_addr[3] = tmp;
++#else
++		swap(mac_addr[0], mac_addr[5]);
++		swap(mac_addr[1], mac_addr[4]);
++		swap(mac_addr[2], mac_addr[3]);
++#endif
+ 	}
+ }
+ 
+@@ -373,6 +379,15 @@
+ 	} else {
+ 		// Check if mac-address is valid or not. If not, copy from default.
+ 		memcpy(mac->mac_addr, otp_v, 6);
++#if 0
++#else
++		/* Order of MAC address stored in OTP are reverse.
++		 * Convert them to correct order.
++		 */
++		swap(mac->mac_addr[0], mac->mac_addr[5]);
++		swap(mac->mac_addr[1], mac->mac_addr[4]);
++		swap(mac->mac_addr[2], mac->mac_addr[3]);
++#endif
+ 
+ 		// Byte order of Some samples are reversed. Convert byte order here.
+ 		check_mac_vendor_id_and_convert(mac->mac_addr);

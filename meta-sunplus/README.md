@@ -1,21 +1,27 @@
-# meta-sunplus
+# SunPlus BSP OpenEmbedded Project Layer
 
-Yocto layer for SunPlus (<http://sunplus.com/>) BSPs.
+SunPlus SoC producer (https://www.sunplus.com/)
 
-## Quick links
+## Dependances
 
-* Git repo: https://github.com/tibbotech/yocto_layers
+https://git.openembedded.org/openembedded-core
+    Core
 
 ## Description
 
-This is the bootloader and kernel for Plus1/SP7021
+SoCs supported: sp7021.
+
+Contains:
+- a926 Xboot;
+- a926 FW sample (B-Chip);
+- U-Boot;
+- Kernel;
+- ISPBOOOT.BIN assemble helper;
+- base image files.
 
 ## Quick Start
 
-1. source poky/oe-init-build-env c.tppg2
-2. bitbake imgm-spmn
-3. cd /disk2/build.26/tmp/deploy/images/tppg2/; make -f sp_make.mk
-4. Follow instructions at https://tibbo.com/downloads/LTPS/FW/LTPPg2/
+TBD
 
 ## Maintainers
 

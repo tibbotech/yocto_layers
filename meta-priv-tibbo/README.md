@@ -1,6 +1,20 @@
-# meta-sunplus
+# meta-priv-tibbo
 
-Yocto private layer for Tibbo (<http://tibbo.com/>) BSPs.
+Private layer of Tibbo Technology Inc. (https://tibbo.com.com/)
+
+## Dependances
+
+https://github.com/tibbotech/meta-tibbo
+    tibbo
+
+https://git.openembedded.org/openembedded-core
+    Core
+    networking-layer
+    multimedia-layer
+    webserver
+
+https://github.com/meta-qt5/meta-qt5
+    qt5-layer
 
 ## Quick links
 
@@ -8,14 +22,11 @@ Yocto private layer for Tibbo (<http://tibbo.com/>) BSPs.
 
 ## Description
 
-This is the proprietary/closed source applications for Plus1/SP7021
+Tibbo special apps and configuration files for SoCs.
 
 ## Quick Start
 
-1. source poky/oe-init-build-env c.tppg2
-2. bitbake img-spmn
-3. cd /disk2/build.24/tmp/deploy/images/tppg2/; make -f sp_make.mk
-4. Follow instructions at https://tibbo.com/downloads/LTPS/FW/LTPPg2/
+bitbake-layers add-layer ../tibbo/meta-priv-tibbo
 
 ## Maintainers
 

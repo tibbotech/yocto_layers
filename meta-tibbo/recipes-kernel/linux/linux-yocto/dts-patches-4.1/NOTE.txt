@@ -1,3 +1,0 @@
-
-test if am33xx-clocks.dtsi.patch required?
-

@@ -1,0 +1,4 @@
+define KFEATURE_DESCRIPTION "Enable SunPlus sound SoC"
+define KFEATURE_COMPATIBILITY board
+
+kconf hardware sound.cfg

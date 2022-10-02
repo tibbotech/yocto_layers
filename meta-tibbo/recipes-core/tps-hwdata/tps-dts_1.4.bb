@@ -45,7 +45,7 @@ do_install:append:tppg2() {
 }
 
 RDEPENDS:${PN} += "dtc tps-wifi"
-RRECOMMENDS:${PN} += "tps-ini2dts"
+#RRECOMMENDS:${PN} += "tps-ini2dts"
 DEPENDS  = "virtual/kernel"
 
 LIC_FILES_CHKSUM = "file://${FILESDIR_tibbo}/common-licenses/GPL-3.0-or-later;md5=1c76c4cc354acaac30ed4d5eefea7245"

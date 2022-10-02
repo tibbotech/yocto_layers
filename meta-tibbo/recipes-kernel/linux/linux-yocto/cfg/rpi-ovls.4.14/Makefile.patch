@@ -1,9 +1,0 @@
---- a/drivers/of/Makefile	2018-10-10 21:36:03.983908093 +0300
-+++ a/drivers/of/Makefile	2018-10-11 11:44:38.505139045 +0300
-@@ -1,4 +1,5 @@
--obj-y = base.o device.o platform.o
-+obj-y = base.o device.o platform.o property.o
-+obj-$(CONFIG_OF_CONFIGFS) += configfs.o
- obj-$(CONFIG_OF_DYNAMIC) += dynamic.o
- obj-$(CONFIG_OF_FLATTREE) += fdt.o
- obj-$(CONFIG_OF_EARLY_FLATTREE) += fdt_address.o

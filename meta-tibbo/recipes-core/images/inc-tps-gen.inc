@@ -27,7 +27,6 @@ IMAGE_INSTALL:append:tppg2 += "${@bb.utils.contains("DISTRO_FEATURES", "bluetoot
 IMAGE_INSTALL += "${@bb.utils.contains("DISTRO_FEATURES", "sysXtemd", "", "resize-helper",d)}"
 IMAGE_INSTALL += "u-boot-fw-utils"
 #IMAGE_INSTALL:append:tppg2 += "kernel-module-mcp251x"
-#IMAGE_INSTALL:append:tppg2 += "kernel-module-mcp25xxfd"
 IMAGE_INSTALL:append:tppg2 += "kernel-module-mcp251xfd"
 IMAGE_INSTALL += "kernel-module-can-raw can-utils"
 IMAGE_INSTALL += "kernel-module-fuse"

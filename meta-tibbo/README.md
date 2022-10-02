@@ -1,6 +1,27 @@
-# meta-sunplus
+# meta-tibbo
 
-Yocto layer for Tibbo Linux (<http://tibbo.com/>).
+Yocto support layer for Tibbo SoCs.
+
+Tibbo Technology Inc. (https://tibbo.com.com/)
+
+## Dependances
+
+https://git.openembedded.org/openembedded-core
+    Core
+    networking-layer
+    multimedia-layer
+    perl-layer
+    meta-python
+    webserver
+
+Recommended layers:
+
+https://github.com/meta-qt5/meta-qt5
+    qt5-layer
+https://github.com/OpenAMP/meta-openamp
+    openamp-layer
+https://github.com/tibbotech/meta-sunplus
+    sunplus
 
 ## Quick links
 
@@ -8,14 +29,11 @@ Yocto layer for Tibbo Linux (<http://tibbo.com/>).
 
 ## Description
 
-This is the applications collection
+Tibbo SoCs support images and apps
 
 ## Quick Start
 
-1. source poky/oe-init-build-env c.tppg2
-2. bitbake img-spmn
-3. cd /disk2/build.24/tmp/deploy/images/tppg2/; make -f sp_make.mk
-4. Follow instructions at https://tibbo.com/downloads/LTPS/FW/LTPPg2/
+TBD
 
 ## Maintainers
 

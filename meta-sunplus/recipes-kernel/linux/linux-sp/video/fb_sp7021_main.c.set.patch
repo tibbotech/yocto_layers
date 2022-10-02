@@ -80,28 +80,28 @@
  	unsigned short trans = ~0;
  	unsigned int *palette = (unsigned int *)info->pseudo_palette;
  
-+pr_info( "%s():%d par:%p\n", __FUNCTION__, __LINE__, info->par);
++pr_debug( "%s():%d par:%p\n", __FUNCTION__, __LINE__, info->par);
  	if (!palette)
  		return -1;
  
-+pr_info( "%s():%d\n", __FUNCTION__, __LINE__);
++pr_debug( "%s():%d\n", __FUNCTION__, __LINE__);
  	red = cmap->red;
  	green = cmap->green;
  	blue = cmap->blue;
  	transp = cmap->transp;
  
-+pr_info( "%s():%d start:%d len:%d len2:%d\n", __FUNCTION__, __LINE__, cmap->start, cmap->len, FB_PALETTE_LEN / sizeof(unsigned int));
++pr_debug( "%s():%d start:%d len:%d len2:%d\n", __FUNCTION__, __LINE__, cmap->start, cmap->len, FB_PALETTE_LEN / sizeof(unsigned int));
  	for (i = cmap->start;
 -			(i < (cmap->start + cmap->len)) ||
 -				(i < (FB_PALETTE_LEN / sizeof(unsigned int)));
 +			(i < (cmap->start + cmap->len))/* ||
 +				(i < (FB_PALETTE_LEN / sizeof(unsigned int)))*/;
  			++i) {
-+pr_info( "%s():%d i:%d %p\n", __FUNCTION__, __LINE__, i, transp);
++pr_debug( "%s():%d i:%d %p\n", __FUNCTION__, __LINE__, i, transp);
  		if (transp)
  			trans = *(transp++);
  
-+pr_info( "%s():%d cfmt:%X\n", __FUNCTION__, __LINE__, fb_par->ColorFmt);
++pr_debug( "%s():%d cfmt:%X\n", __FUNCTION__, __LINE__, fb_par->ColorFmt);
  		if (fb_par->ColorFmt == DRV_OSD_REGION_FORMAT_ARGB_8888) {
  			palette[i] = 0xff000000;
  			palette[i] |= sp7021_fb_chan_by_field((unsigned char)*(red++),
@@ -109,20 +109,20 @@
  		}		
  		else if ( (fb_par->ColorFmt == DRV_OSD_REGION_FORMAT_8BPP) || 
  					(fb_par->ColorFmt == DRV_OSD_REGION_FORMAT_RGB_565) ) {
-+pr_info( "%s():%d palette:%p\n", __FUNCTION__, __LINE__, palette);
-+pr_info( "%s():%d trans:%p\n", __FUNCTION__, __LINE__, transp);
++pr_debug( "%s():%d palette:%p\n", __FUNCTION__, __LINE__, palette);
++pr_debug( "%s():%d trans:%p\n", __FUNCTION__, __LINE__, transp);
  			palette[i] = sp7021_fb_chan_by_field((unsigned char)trans,
  					&info->var.transp);
-+pr_info( "%s():%d red:%p\n", __FUNCTION__, __LINE__, red);
++pr_debug( "%s():%d red:%p\n", __FUNCTION__, __LINE__, red);
  			palette[i] |= sp7021_fb_chan_by_field((unsigned char)*(red++),
  					&info->var.red);
-+pr_info( "%s():%d green:%p\n", __FUNCTION__, __LINE__, green);
++pr_debug( "%s():%d green:%p\n", __FUNCTION__, __LINE__, green);
  			palette[i] |= sp7021_fb_chan_by_field((unsigned char)*(green++),
  					&info->var.green);
-+pr_info( "%s():%d blue:%p\n", __FUNCTION__, __LINE__, blue);
++pr_debug( "%s():%d blue:%p\n", __FUNCTION__, __LINE__, blue);
  			palette[i] |= sp7021_fb_chan_by_field((unsigned char)*(blue++),
  					&info->var.blue);
-+pr_info( "%s():%d\n", __FUNCTION__, __LINE__);
++pr_debug( "%s():%d\n", __FUNCTION__, __LINE__);
  		}
  		else if (fb_par->ColorFmt == DRV_OSD_REGION_FORMAT_ARGB_4444) {
  			palette[i] = 0xf000f000;
@@ -130,7 +130,7 @@
  		}
  	}
  
-+pr_info( "%s():%d\n", __FUNCTION__, __LINE__);
++pr_debug( "%s():%d\n", __FUNCTION__, __LINE__);
  	if (fb_par->ColorFmt == DRV_OSD_REGION_FORMAT_YUY2) {
  		palette[0] = 0x80008000; //V Y U Y (black)
  		palette[1] = 0x7213D513; //V Y U Y
