@@ -6,8 +6,7 @@ SRC_URI:append = " file://kmeta-tppg2;type=kmeta;name=kmeta-tppg2;destsuffix=kme
 
 # additional DTSes
 SRC_URI += "file://dts/sp7021-ttt.dts.patch"
-SRC_URI += "file://dts/sp7021-ublox.dts.patch"
-SRC_URI += "file://dts/sp7021-tpsgpio.dts.patch"
+SRC_URI += "file://dts/sp7021-ltpp3g2-empty.dts.patch"
 SRC_URI += "file://dts/sp7021-dsx.dts.patch"
 SRC_URI += "file://dts/sp7021-dsx.dtsi.patch"
 SRC_URI += "file://dts/sp7021-icognize.dts.patch"
@@ -58,3 +57,5 @@ KERNEL_FEATURES:append = " ${@bb.utils.contains('MACHINE_FEATURES', 'vfat', 'cfg
 KERNEL_FEATURES:append = " custom/tunnel/udp.scc"
 KERNEL_FEATURES:append = " cgl/net/l2tp.scc"
 KERNEL_FEATURES:append = " custom/netfilter/addrtype.scc"
+
+KERNEL_DEVICETREE:append:tppg2 = " sp7021-ltpp3g2-empty.dtb"

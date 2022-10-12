@@ -34,7 +34,6 @@ KERNEL_DEVICETREE += "sp7021-bpi-f2p.dtb"
 KERNEL_DEVICETREE += "sp7021-bpi-f2s.dtb"
 KERNEL_DEVICETREE += "sp7021-demov2.dtb"
 KERNEL_DEVICETREE += "sp7021-demov3.dtb"
-KERNEL_DEVICETREE += "sp7021-ublox.dtb"
 KERNEL_DEVICETREE += "sp7021-icognize.dtb"
 KERNEL_EXTRA_ARGS += "LOADADDR=${UBOOT_ENTRYPOINT}"
 
@@ -50,10 +49,12 @@ UBOOT_CONFIG[a7021_dsxe] = "sp7021_dsxe_defconfig"
 UBOOT_ENTRYPOINT = "0x00308000"
 UBOOT_LOADADDRESS = "0x00308000"
 
-IMAGE_BOOT_FILES  = "u-boot.bin-a7021_emmc;u-boot.img"
+IMAGE_BOOT_FILES  = "u-boot.bin-a7021_emmc.img;u-boot.img"
 IMAGE_BOOT_FILES += "sdcard_uEnv.txt;uEnv.txt"
 #IMAGE_BOOT_FILES += "a926.img"
 IMAGE_BOOT_FILES += "${KERNEL_IMAGETYPE}-initramfs-tppg2.img;${KERNEL_IMAGETYPE}"
 #IMAGE_BOOT_FILES += "ISPBOOOT.BIN"
+# move this
+IMAGE_BOOT_FILES += "sp7021-ltpp3g2-empty.dtb;dtb"
 
 PACKAGE_FEED_ARCHS = "cortexa9hf_neon noarch ${MACHINE}"

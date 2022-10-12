@@ -29,18 +29,10 @@ SRCREV_machine:tppg2 = "1cc820c8fb982b0dc359513dc069bba4e097fcd1"
 # 5.4 tibbo/spi_exp2
 SRCREV_machine:tppg2 = "acd013f0a071284c010f25bc71b7b96d042bfcc1"
 # 5.4 master
-SRCREV_machine:tppg2 = "dc87914677d8b12f55cfd8e3e05bd640f65533f8"
-## test 22.04.24 - ok
-#SRCREV_machine:tppg2 = "9de251f094a3953aec7762964c7cbd56fdfedbe0"
-## test 22.07.13 - ?
-#SRCREV_machine:tppg2 = "9c0d7988b59f8ae6330c234de106f030b556bcc7"
+SRCREV_machine:tppg2 = "0ab8cad0e2cec2ca30981b1d2a118632f61f73a1"
 
 # temporary it is the copy
-SRCREV = "dc87914677d8b12f55cfd8e3e05bd640f65533f8"
-## test 22.04.24 - ok
-#SRCREV = "9de251f094a3953aec7762964c7cbd56fdfedbe0"
-## test 22.07.13 - ?
-#SRCREV = "9c0d7988b59f8ae6330c234de106f030b556bcc7"
+SRCREV = "0ab8cad0e2cec2ca30981b1d2a118632f61f73a1"
 
 # if using meta from master
 #SRCREV_meta ?= "cebe198870d781829bd997a188cc34d9f7a61023"
@@ -75,20 +67,11 @@ KMETA="kernel-meta"
 # FB patch
 SRC_URI += "file://video/fb_sp7021_main.c.set.patch"
 
-# new gcc audio patch
-SRC_URI += "file://audio/sp7021_auido.c.newgcc.patch"
-
 # 485 test
 SRC_URI += "file://uart_485/sp_uart.c.sleep1.patch"
 
 # SPI backport
 #SRC_URI += "file://spi_backport/spi-sunplus-sp7021.c.new.patch"
-
-# IRQ temporary revert
-SRC_URI += "file://irq/REV.irq.patch"
-
-# Eth revmac temporary there
-SRC_URI += "file://eth/eth.revmac.patch"
 
 do_deploy:append() {
  dd="${DEPLOYDIR}"

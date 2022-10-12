@@ -1,0 +1,22 @@
+--- a/tools/sdcard_boot/uEnv.txt	2022-10-09 02:20:11.939543783 +0300
++++ a/tools/sdcard_boot/uEnv.txt	2022-10-09 02:22:51.161542265 +0300
+@@ -8,7 +8,7 @@
+ sRpi_args=setenv filesize 0; fatsize $isp_if $isp_dev /cmdline.txt; if test $filesize != 0; then fatload $isp_if $isp_dev $addr_dst_dtb /cmdline.txt; raspb init $fileaddr $filesize; fi;
+ 
+ ##bootargs
+-sbootargs=setenv bootargs console=tty1 console=ttyS0,115200 earlyprintk root=/dev/mmcblk1p2 rw user_debug=255 rootwait $bootargs;
++sbootargs=setenv bootargs console=tty1 console=ttyS0,115200 earlyprintk root=/dev/mmcblk1p2 rw user_debug=255 rootwait systemd.crash_shell=yes $bootargs;
+ 
+ ## load kernel
+ sload_kernel=fatload $isp_if $isp_dev $addr_dst_kernel /$KERNEL_IMG;
+@@ -22,8 +22,8 @@
+ sboot_nonos=setenv filesize 0; fatsize $isp_if $isp_dev /$NONOS_IMG; if itest.l ${filesize} != 0; then run sload_nonos; run snonos_run; fi;
+ 
+ ##boot cmd
+-sboot=bootm ${addr_dst_kernel} - ${fdtcontroladdr};
+-uenvcmd=run sboot_nonos; run sload_kernel; run sbootargs sboot;
++sboot=bootm ${addr_dst_kernel} - ${addr_dst_dtb};
++uenvcmd=run sboot_nonos; run sload_dtb; run sload_kernel; run sbootargs sboot;
+ 
+ #
+ ## END

@@ -1,0 +1,17 @@
+--- /dev/null	2022-10-05 00:31:45.327901734 +0300
++++ a/arch/arm/boot/dts/sp7021-ltpp3g2-empty.dts	2022-10-08 19:02:31.917794219 +0300
+@@ -0,0 +1,14 @@
++/*
++ * {desc_long}
++ * Copyright (C) 2020 Tibbo Tech. - http://tibbo.com/tps/
++ * License: GPLv2 or later
++ */
++/dts-v1/;
++
++#include "sp7021-ltpp3g2revD.dtsi"
++
++/ {
++	model = "SP7021 LTPP3G2 Rev. D (empty)";
++};
++
++&sdio {  status = "disabled";  };
