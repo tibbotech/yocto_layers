@@ -12,10 +12,18 @@ do_image_wic[depends] += "isp-native:do_deploy"
 
 IMAGE_FSTYPES += "tar.bz2 ext4 squashfs ubi"
 UBI_VOLNAME="rootfs"
+# 
+# -m is min io unit
+# -s is sub-page-size (flash can support smaller blocks - subpages)
+# -p is PEB (x*1024)
+# -e is LEB size = PEB size - EC - VID
+# -c is maximum ubi volume size (for auto-resize)
+# calcs: http://www.linux-mtd.infradead.org/faq/ubi.html#L_ubi_mkimg
 #MKUBIFS_ARGS = "-F -m 2048 -e 126976 -c 4036"
 # 2030 is for 2G NAND
 #MKUBIFS_ARGS = "-F -m 2048 -e 126976 -c 2030 -x zlib"
-MKUBIFS_ARGS = "-F -m 2048 -e 126976 -c 2030"
+#MKUBIFS_ARGS = "-F -m 2048 -e 126976 -c 2030"
+MKUBIFS_ARGS = "-F -m 2048 -e 126976 -c 4060"
 #UBINIZE_ARGS = "-m 2048 -p 128KiB -s 2048"
 UBINIZE_ARGS = "-m 2048 -p 124KiB -s 2048"
 
