@@ -1,6 +1,8 @@
 # Tibbo/SunPlus Yocto Layers
 Tibbo/SunPlus Linux Yocto layers for sp7021, am335x -based boards
 
+<code style="color : name_color">This repo is moving to ARCHIVE, please use https://github.com/tibbotech/repo-manifests/tree/master/yocto-layers or https://github.com/tibbotech/yocto_docker instead</code>
+
 Plus1 (sp7021): [A Linux Chip for IoT and Industrial Control Applications](https://tibbo.com/store/plus1.html)
 
 Read [Tibbo Yocto Layers Howto](https://tibbotech.github.io/plus1_layers/) for more details.
